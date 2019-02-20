@@ -62,7 +62,7 @@ Section rwlockwriteguard.
   Qed.
 
   Global Instance rwlockwriteguard_wf α ty `{!TyWf ty} : TyWf (rwlockwriteguard α ty) :=
-    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty.(ty_outlives_E) α }.
+    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty α }.
 
   Global Instance rwlockwriteguard_type_contractive α : TypeContractive (rwlockwriteguard α).
   Proof.

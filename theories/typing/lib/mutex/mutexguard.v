@@ -74,7 +74,7 @@ Section mguard.
   Qed.
 
   Global Instance mutexguard_wf α ty `{!TyWf ty} : TyWf (mutexguard α ty) :=
-    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty.(ty_outlives_E) α }.
+    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty α }.
 
   Global Instance mutexguard_type_contractive α : TypeContractive (mutexguard α).
   Proof.

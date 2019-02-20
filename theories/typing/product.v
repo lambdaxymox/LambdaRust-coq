@@ -157,7 +157,7 @@ Section product.
   Definition unit := product [].
 
   Global Instance product_wf tyl `{!TyWfLst tyl} : TyWf (product tyl) :=
-    { ty_lfts := tyl.(tyl_lfts); ty_wf_E := tyl.(tyl_wf_E) }.
+    { ty_lfts := tyl_lfts tyl; ty_wf_E := tyl_wf_E tyl }.
 
   Lemma outlives_product ty1 ty2 ϝ `{!TyWf ty1, !TyWf ty2} :
     ty_outlives_E (product [ty1; ty2]) ϝ = ty_outlives_E ty1 ϝ ++ ty_outlives_E ty2 ϝ.

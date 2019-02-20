@@ -16,7 +16,7 @@ Section shr_bor.
   Next Obligation. intros κ ty tid [|[[]|][]]; apply _. Qed.
 
   Global Instance shr_bor_wf κ ty `{!TyWf ty} : TyWf (shr_bor κ ty) :=
-    { ty_lfts := [κ]; ty_wf_E := ty.(ty_wf_E) ++ ty.(ty_outlives_E) κ }.
+    { ty_lfts := [κ]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty κ }.
 
   Lemma shr_type_incl κ1 κ2 ty1 ty2 :
     κ2 ⊑ κ1 -∗ type_incl ty1 ty2 -∗ type_incl (shr_bor κ1 ty1) (shr_bor κ2 ty2).

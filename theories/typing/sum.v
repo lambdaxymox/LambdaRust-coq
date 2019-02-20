@@ -84,7 +84,7 @@ Section sum.
   Qed.
 
   Global Instance sum_wf tyl `{!TyWfLst tyl} : TyWf (sum tyl) :=
-    { ty_lfts := tyl.(tyl_lfts); ty_wf_E := tyl.(tyl_wf_E) }.
+    { ty_lfts := tyl_lfts tyl; ty_wf_E := tyl_wf_E tyl }.
 
   Global Instance sum_type_ne n : Proper (Forall2 (type_dist2 n) ==> type_dist2 n) sum.
   Proof.

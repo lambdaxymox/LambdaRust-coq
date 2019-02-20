@@ -22,7 +22,7 @@ Section diverging_static.
     (* F : FnOnce(&'static T), as witnessed by the impl call_once *)
     typed_val call_once (fn(∅; F, &shr{static} T) → unit) →
     typed_val (diverging_static_loop call_once)
-              (fn(∀ α, λ ϝ, T.(ty_outlives_E) static; &shr{α} T, F) → ∅).
+              (fn(∀ α, λ ϝ, ty_outlives_E T static; &shr{α} T, F) → ∅).
   Proof.
     intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x f. simpl_subst.

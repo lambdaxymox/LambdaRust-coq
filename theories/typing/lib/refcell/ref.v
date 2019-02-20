@@ -70,7 +70,7 @@ Section ref.
   Qed.
 
   Global Instance ref_wf α ty `{!TyWf ty} : TyWf (ref α ty) :=
-    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty.(ty_outlives_E) α }.
+    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty α }.
 
   Global Instance ref_type_contractive α : TypeContractive (ref α).
   Proof. solve_type_proper. Qed.

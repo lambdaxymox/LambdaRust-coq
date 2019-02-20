@@ -60,9 +60,9 @@ Definition ty_outlives_E `{typeG Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
   (λ α, κ ⊑ₑ α) <$> ty.(ty_lfts).
 
 Lemma ty_outlives_E_elctx_sat `{typeG Σ} E L ty `{!TyWf ty} α β :
-  ty.(ty_outlives_E) β ⊆+ E →
+  ty_outlives_E ty β ⊆+ E →
   lctx_lft_incl E L α β →
-  elctx_sat E L (ty.(ty_outlives_E) α).
+  elctx_sat E L (ty_outlives_E ty α).
 Proof.
   unfold ty_outlives_E. induction ty.(ty_lfts) as [|κ l IH]=>/= Hsub Hαβ.
   - solve_typing.
@@ -96,14 +96,14 @@ Fixpoint tyl_wf_E `{typeG Σ} tyl {WF : TyWfLst tyl} : elctx :=
 Fixpoint tyl_outlives_E `{typeG Σ} tyl {WF : TyWfLst tyl} (κ : lft) : elctx :=
   match WF with
   | tyl_wf_nil => []
-  | tyl_wf_cons ty [] => ty.(ty_outlives_E) κ
-  | tyl_wf_cons ty tyl => ty.(ty_outlives_E) κ ++ tyl.(tyl_outlives_E) κ
+  | tyl_wf_cons ty [] => ty_outlives_E ty κ
+  | tyl_wf_cons ty tyl => ty_outlives_E ty κ ++ tyl.(tyl_outlives_E) κ
   end.
 
 Lemma tyl_outlives_E_elctx_sat `{typeG Σ} E L tyl {WF : TyWfLst tyl} α β :
-  tyl.(tyl_outlives_E) β ⊆+ E →
+  tyl_outlives_E tyl β ⊆+ E →
   lctx_lft_incl E L α β →
-  elctx_sat E L (tyl.(tyl_outlives_E) α).
+  elctx_sat E L (tyl_outlives_E tyl α).
 Proof.
   induction WF as [|? [] ?? IH]=>/=.
   - solve_typing.
