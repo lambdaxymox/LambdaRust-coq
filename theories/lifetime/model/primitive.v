@@ -448,10 +448,10 @@ Proof.
     as (γE) "(% & #Hslice & Hbox)".
   iMod (own_inh_update with "HE") as "[HE HE◯]".
   { by eapply auth_update_alloc, (gset_disj_alloc_empty_local_update _ {[γE]}),
-      disjoint_singleton_l, lookup_to_gmap_None. }
+      disjoint_singleton_l, lookup_gset_to_gmap_None. }
   iModIntro. iSplitL "Hbox HE".
   { iNext. rewrite /lft_inh. iExists ({[γE]} ∪ PE).
-    rewrite to_gmap_union_singleton. iFrame. }
+    rewrite gset_to_gmap_union_singleton. iFrame. }
   clear dependent PE. rewrite -(left_id_L ε op (◯ GSet {[γE]})).
   iDestruct "HE◯" as "[HE◯' HE◯]". iSplitL "HE◯'".
   { iIntros (I) "HI". iApply (own_inh_auth with "HI HE◯'"). }
@@ -462,11 +462,11 @@ Proof.
   { apply auth_update_dealloc, gset_disj_dealloc_local_update. }
   iMod (slice_delete_full _ _ true with "Hslice Hbox")
     as (Q'') "($ & #? & Hbox)"; first by solve_ndisj.
-  { rewrite lookup_to_gmap_Some. set_solver. }
+  { rewrite lookup_gset_to_gmap_Some. set_solver. }
   iModIntro. iExists Q''. iSplit; first done.
   iNext. rewrite /lft_inh. iExists (PE ∖ {[γE]}). iFrame "HE".
   rewrite {1}(union_difference_L {[ γE ]} PE); last set_solver.
-  rewrite to_gmap_union_singleton delete_insert // lookup_to_gmap_None.
+  rewrite gset_to_gmap_union_singleton delete_insert // lookup_gset_to_gmap_None.
   set_solver.
 Qed.
 
@@ -477,7 +477,7 @@ Proof.
   rewrite /lft_inh. iIntros (?) "[Hinh HQ]".
   iDestruct "Hinh" as (E') "[Hinh Hbox]".
   iMod (box_fill with "Hbox HQ") as "?"=>//.
-  rewrite fmap_to_gmap. iModIntro. iExists E'. by iFrame.
+  rewrite fmap_gset_to_gmap. iModIntro. iExists E'. by iFrame.
 Qed.
 
 (* View shifts *)

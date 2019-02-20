@@ -123,13 +123,13 @@ Section defs.
 
   Definition lft_bor_dead (κ : lft) : iProp Σ :=
      (∃ (B: gset slice_name) (Pb : iProp Σ),
-       own_bor κ (● to_gmap (1%Qp, to_agree Bor_in) B) ∗
-       box borN (to_gmap false B) Pb)%I.
+       own_bor κ (● gset_to_gmap (1%Qp, to_agree Bor_in) B) ∗
+       box borN (gset_to_gmap false B) Pb)%I.
 
    Definition lft_inh (κ : lft) (s : bool) (Pi : iProp Σ) : iProp Σ :=
      (∃ E : gset slice_name,
        own_inh κ (● GSet E) ∗
-       box inhN (to_gmap s E) Pi)%I.
+       box inhN (gset_to_gmap s E) Pi)%I.
 
    Definition lft_vs_inv_go (κ : lft) (lft_inv_alive : ∀ κ', κ' ⊂ κ → iProp Σ)
        (I : gmap lft lft_names) : iProp Σ :=

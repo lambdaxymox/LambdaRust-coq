@@ -42,7 +42,7 @@ Proof.
   iApply fupd_trans. iApply fupd_mask_mono; first by apply union_subseteq_l.
   iMod ("Hvs" $! I with "[HI Halive Hbox Hbor] HP Hκ") as "(Hinv & HQ & Hcnt')".
   { rewrite lft_vs_inv_unfold. iFrame. rewrite /lft_bor_dead.
-    iExists (dom _ B), P. rewrite !to_gmap_dom -map_fmap_compose.
+    iExists (dom _ B), P. rewrite !gset_to_gmap_dom -map_fmap_compose.
     rewrite (map_fmap_ext _ ((1%Qp,) ∘ to_agree) B); last naive_solver.
     iFrame. }
   rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(?&HI&Halive)".
@@ -63,7 +63,7 @@ Lemma lfts_kill (A : gmap atomic_lft _) (I : gmap lft lft_names) (K K' : gset lf
     ={↑borN ∪ ↑inhN}=∗ Iinv K' ∗ [∗ set] κ ∈ K, lft_inv_dead κ.
 Proof.
   intros Iinv. revert K'.
-  induction (collection_wf K) as [K _ IH]=> K' HKK' HK HK'.
+  induction (set_wf K) as [K _ IH]=> K' HKK' HK HK'.
   iIntros "[HI Halive] HK".
   pose (Kalive := filter (lft_alive_in A) K).
   destruct (decide (Kalive = ∅)) as [HKalive|].

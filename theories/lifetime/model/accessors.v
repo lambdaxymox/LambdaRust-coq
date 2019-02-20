@@ -102,7 +102,7 @@ Proof.
       iDestruct (own_bor_valid_2 with "Hinv Hf")
         as %[(_ & <- & INCL%option_included)%singleton_included _]%auth_valid_discrete_2.
       by destruct INCL as [[=]|(? & ? & [=<-] &
-        [[_<-]%lookup_to_gmap_Some [[_ ?%(inj to_agree)]|[]%(exclusive_included _)]])].
+        [[_<-]%lookup_gset_to_gmap_Some [[_ ?%(inj to_agree)]|[]%(exclusive_included _)]])].
   - iMod (lft_dead_in_tok with "HA") as "[_ H†]". done.
     iDestruct (lft_tok_dead with "Htok H†") as "[]".
 Qed.
@@ -206,7 +206,7 @@ Proof.
       iDestruct (own_bor_valid_2 with "Hinv Hbor")
         as %[(_ & <- & INCL%option_included)%singleton_included _]%auth_valid_discrete_2.
       by destruct INCL as [[=]|(? & ? & [=<-] &
-        [[_<-]%lookup_to_gmap_Some [[_?%(inj to_agree)]|[]%(exclusive_included _)]])].
+        [[_<-]%lookup_gset_to_gmap_Some [[_?%(inj to_agree)]|[]%(exclusive_included _)]])].
   - iMod (lft_dead_in_tok with "HA") as "[_ H†]". done.
     iDestruct (lft_tok_dead with "Htok H†") as "[]".
 Qed.

@@ -33,14 +33,14 @@ Proof.
   iAssert (own_cnt κ (◯ 0)) with "[Hcnt']" as "Hcnt'".
   { rewrite /own_cnt. iExists γs. by iFrame. }
   iAssert (∀ b, lft_inh κ b True)%I with "[Hinh]" as "Hinh".
-  { iIntros (b). rewrite /lft_inh. iExists ∅. rewrite to_gmap_empty.
+  { iIntros (b). rewrite /lft_inh. iExists ∅. rewrite gset_to_gmap_empty.
     iSplitL; [|iApply box_alloc]. rewrite /own_inh. iExists γs. by iFrame. }
   iAssert (lft_inv_dead κ ∧ lft_inv_alive κ)%I
     with "[-HA HI Hinv]" as "Hdeadandalive".
   { iSplit.
     - rewrite /lft_inv_dead. iExists True%I. iFrame "Hcnt".
       iSplitL "Hbor"; last by iApply "Hinh".
-      rewrite /lft_bor_dead. iExists ∅, True%I. rewrite !to_gmap_empty.
+      rewrite /lft_bor_dead. iExists ∅, True%I. rewrite !gset_to_gmap_empty.
       iSplitL "Hbor". iExists γs. by iFrame. iApply box_alloc.
     - rewrite lft_inv_alive_unfold. iExists True%I, True%I. iSplitL "Hbor".
       { rewrite /lft_bor_alive. iExists ∅.
@@ -85,9 +85,9 @@ Proof.
   iMod (own_bor_update with "HB●") as "[HB● H◯]".
   { eapply auth_update_alloc,
       (alloc_singleton_local_update _ _ (1%Qp, to_agree Bor_in)); last done.
-    by do 2 eapply lookup_to_gmap_None. }
+    by do 2 eapply lookup_gset_to_gmap_None. }
   rewrite /bor /raw_bor /idx_bor_own /=. iModIntro. iSplitR "H◯".
-  - iExists ({[γ]} ∪ B), (P ∗ Pinh)%I. rewrite !to_gmap_union_singleton. by iFrame.
+  - iExists ({[γ]} ∪ B), (P ∗ Pinh)%I. rewrite !gset_to_gmap_union_singleton. by iFrame.
   - iExists γ. iFrame. iExists P. rewrite -bi.iff_refl. eauto.
 Qed.
 

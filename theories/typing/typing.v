@@ -5,5 +5,5 @@ From lrust.typing Require Export
   product_split borrow type_sum.
 
 (* Last, so that we make sure we shadow the defintion of delete for
-   collections coming from the prelude. *)
+   sets coming from the prelude. *)
 From lrust.lang Require Export new_delete.
