@@ -17,7 +17,7 @@ Module Export lft_notation.
 End lft_notation.
 
 Definition static : lft := (∅ : gmultiset _).
-Definition lft_intersect (κ κ' : lft) : lft := κ ∪ κ'.
+Definition lft_intersect (κ κ' : lft) : lft := κ ⊎ κ'.
 
 Infix "⊓" := lft_intersect (at level 40) : stdpp_scope.
 

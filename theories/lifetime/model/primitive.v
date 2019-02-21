@@ -221,7 +221,7 @@ Proof. exists Λ. by rewrite lookup_insert. Qed.
 Lemma lft_dead_in_alive_in_union A κ κ' :
   lft_dead_in A (κ ⊓ κ') → lft_alive_in A κ → lft_dead_in A κ'.
 Proof.
-  intros (Λ & [Hin|Hin]%elem_of_union & HΛ) Halive.
+  intros (Λ & [Hin|Hin]%gmultiset_elem_of_disj_union & HΛ) Halive.
   - contradict HΛ. rewrite (Halive _ Hin). done.
   - exists Λ. auto.
 Qed.
@@ -264,7 +264,7 @@ Instance lft_intersect_left_id : LeftId eq static lft_intersect := _.
 Instance lft_intersect_right_id : RightId eq static lft_intersect := _.
 
 Lemma lft_tok_sep q κ1 κ2 : q.[κ1] ∗ q.[κ2] ⊣⊢ q.[κ1 ⊓ κ2].
-Proof. by rewrite /lft_tok -big_sepMS_union. Qed.
+Proof. by rewrite /lft_tok -big_sepMS_disj_union. Qed.
 
 Lemma lft_dead_or κ1 κ2 : [†κ1] ∨ [†κ2] ⊣⊢ [† κ1 ⊓ κ2].
 Proof.

@@ -173,9 +173,9 @@ Proof.
   rewrite /idx_bor /bor. destruct i as [κ0 i].
   iDestruct "HP" as "[Hκκ0 HP]". iDestruct "HP" as (P') "[HPP' HP']".
   iMod (raw_bor_shorten _ _ (κ0 ⊓ κ'0) with "LFT Hbor") as "Hbor";
-    [done|by apply gmultiset_union_subseteq_r|].
+    [done|by apply gmultiset_disj_union_subseteq_r|].
   iMod (raw_idx_bor_unnest with "LFT HP' Hbor") as "Hbor";
-    [done|by apply gmultiset_union_subset_l|].
+    [done|by apply gmultiset_disj_union_subset_l|].
   iExists _. iDestruct (raw_bor_iff with "HPP' Hbor") as "$".
     by iApply lft_intersect_mono.
 Qed.

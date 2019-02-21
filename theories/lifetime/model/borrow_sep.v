@@ -78,9 +78,9 @@ Proof.
   iIntros (?) "#LFT HP HQ". rewrite {1 2}/bor.
   iDestruct "HP" as (κ1) "[#Hκ1 Hbor1]". iDestruct "HQ" as (κ2) "[#Hκ2 Hbor2]".
   iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor1") as "Hbor1".
-    done. by apply gmultiset_union_subseteq_l.
+    done. by apply gmultiset_disj_union_subseteq_l.
   iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor2") as "Hbor2".
-    done. by apply gmultiset_union_subseteq_r.
+    done. by apply gmultiset_disj_union_subseteq_r.
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose". unfold raw_bor, idx_bor_own.
   iDestruct "Hbor1" as (j1) "[Hbor1 Hslice1]". iDestruct "Hbor2" as (j2) "[Hbor2 Hslice2]".
   iDestruct "Hslice1" as (P') "[#HPP' Hslice1]".
