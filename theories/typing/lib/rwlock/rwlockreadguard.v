@@ -7,7 +7,7 @@ From lrust.typing.lib.rwlock Require Import rwlock.
 Set Default Proof Using "Type".
 
 Section rwlockreadguard.
-  Context `{typeG Σ, rwlockG Σ}.
+  Context `{!typeG Σ, !rwlockG Σ}.
 
   (* Original Rust type:
     pub struct RwLockReadGuard<'a, T: ?Sized + 'a> {

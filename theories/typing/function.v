@@ -5,7 +5,7 @@ From lrust.typing Require Import own programs cont.
 Set Default Proof Using "Type".
 
 Section fn.
-  Context `{typeG Σ} {A : Type} {n : nat}.
+  Context `{!typeG Σ} {A : Type} {n : nat}.
 
   Record fn_params := FP { fp_E : lft → elctx; fp_tys : vec type n; fp_ty : type }.
 
@@ -141,7 +141,7 @@ Notation "'fn(' E ')' '→' R" :=
 Instance elctx_empty : Empty (lft → elctx) := λ ϝ, [].
 
 Section typing.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Lemma fn_subtype {A n} E0 L0 (fp fp' : A → fn_params n) :
     (∀ x ϝ, let EE := E0 ++ (fp' x).(fp_E) ϝ in
@@ -390,7 +390,7 @@ Section typing.
   Qed.
 
   Lemma type_rec {A} E L fb (argsb : list binder) ef e n
-        (fp : A → fn_params n) T `{!CopyC T, !SendC T, Closed _ e} :
+        (fp : A → fn_params n) T `{!CopyC T, !SendC T, !Closed _ e} :
     IntoVal ef (funrec: fb argsb := e) →
     n = length argsb →
     □ (∀ x ϝ (f : val) k (args : vec val (length argsb)),
@@ -413,7 +413,7 @@ Section typing.
   Qed.
 
   Lemma type_fn {A} E L (argsb : list binder) ef e n
-        (fp : A → fn_params n) T `{!CopyC T, !SendC T, Closed _ e} :
+        (fp : A → fn_params n) T `{!CopyC T, !SendC T, !Closed _ e} :
     IntoVal ef (funrec: <> argsb := e) →
     n = length argsb →
     □ (∀ x ϝ k (args : vec val (length argsb)),

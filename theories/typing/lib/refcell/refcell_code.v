@@ -9,7 +9,7 @@ From lrust.typing.lib.refcell Require Import refcell ref refmut.
 Set Default Proof Using "Type".
 
 Section refcell_functions.
-  Context `{typeG Σ, refcellG Σ}.
+  Context `{!typeG Σ, !refcellG Σ}.
 
   (* Constructing a refcell. *)
   Definition refcell_new ty : val :=

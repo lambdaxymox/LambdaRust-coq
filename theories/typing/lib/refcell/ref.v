@@ -9,7 +9,7 @@ Set Default Proof Using "Type".
 Definition refcell_refN := refcellN .@ "ref".
 
 Section ref.
-  Context `{typeG Σ, refcellG Σ}.
+  Context `{!typeG Σ, !refcellG Σ}.
 
   (* The Rust type looks as follows (after some unfolding):
 

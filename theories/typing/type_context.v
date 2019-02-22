@@ -7,7 +7,7 @@ Bind Scope expr_scope with path.
 
 (* TODO: Consider making this a pair of a path and the rest. We could
    then e.g. formulate tctx_elt_hasty_path more generally. *)
-Inductive tctx_elt `{typeG Σ} : Type :=
+Inductive tctx_elt `{!typeG Σ} : Type :=
 | TCtx_hasty (p : path) (ty : type)
 | TCtx_blocked (p : path) (κ : lft) (ty : type).
 
@@ -18,7 +18,7 @@ Notation "p ◁{ κ } ty" := (TCtx_blocked p κ ty)
    (at level 70, format "p  ◁{ κ }  ty").
 
 Section type_context.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
   Implicit Types T : tctx.
 
   Fixpoint eval_path (p : path) : option val :=

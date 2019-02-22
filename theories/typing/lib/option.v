@@ -3,7 +3,7 @@ From lrust.typing Require Import typing lib.panic.
 Set Default Proof Using "Type".
 
 Section option.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition option (τ : type) := Σ[unit; τ]%T.
 

@@ -4,7 +4,7 @@ From lrust.lang.lib Require Import swap.
 Set Default Proof Using "Type".
 
 Section swap.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition swap ty : val :=
     funrec: <> ["p1"; "p2"] :=

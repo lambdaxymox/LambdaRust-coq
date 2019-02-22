@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section get_x.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition get_x : val :=
     funrec: <> ["p"] :=

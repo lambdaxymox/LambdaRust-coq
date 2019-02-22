@@ -7,7 +7,7 @@ From lrust.typing.lib.refcell Require Import refcell.
 Set Default Proof Using "Type".
 
 Section refmut.
-  Context `{typeG Σ, refcellG Σ}.
+  Context `{!typeG Σ, !refcellG Σ}.
 
   (* The Rust type looks as follows (after some unfolding):
 

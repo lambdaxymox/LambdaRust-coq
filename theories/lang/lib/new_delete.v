@@ -13,7 +13,7 @@ Definition delete : val :=
     else Free "n" "loc".
 
 Section specs.
-  Context `{lrustG Σ}.
+  Context `{!lrustG Σ}.
 
   Lemma wp_new E n:
     0 ≤ n →

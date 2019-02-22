@@ -7,7 +7,7 @@ Set Default Proof Using "Type".
 Import uPred.
 
 Section primitive.
-Context `{invG Σ, lftG Σ}.
+Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
 
 Lemma to_borUR_included (B : gmap slice_name bor_state) i s q :

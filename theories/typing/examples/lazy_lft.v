@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section lazy_lft.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition lazy_lft : val :=
     funrec: <> [] :=

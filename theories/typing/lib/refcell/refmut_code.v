@@ -8,7 +8,7 @@ From lrust.typing.lib.refcell Require Import refcell refmut.
 Set Default Proof Using "Type".
 
 Section refmut_functions.
-  Context `{typeG Σ, refcellG Σ}.
+  Context `{!typeG Σ, !refcellG Σ}.
 
   (* Turning a refmut into a shared borrow. *)
   Definition refmut_deref : val :=

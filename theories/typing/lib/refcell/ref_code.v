@@ -8,7 +8,7 @@ From lrust.typing.lib.refcell Require Import refcell ref.
 Set Default Proof Using "Type".
 
 Section ref_functions.
-  Context `{typeG Σ, refcellG Σ}.
+  Context `{!typeG Σ, !refcellG Σ}.
 
   Lemma refcell_inv_reading_inv tid l γ α ty q ν :
     refcell_inv tid l γ α ty -∗

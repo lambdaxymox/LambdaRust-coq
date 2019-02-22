@@ -23,17 +23,17 @@ Module Type lifetime_sig.
   Parameter static : lft.
   Parameter lft_intersect : lft → lft → lft.
 
-  Parameter lft_ctx : ∀ `{invG, lftG Σ}, iProp Σ.
+  Parameter lft_ctx : ∀ `{!invG Σ, !lftG Σ}, iProp Σ.
 
-  Parameter lft_tok : ∀ `{lftG Σ} (q : Qp) (κ : lft), iProp Σ.
-  Parameter lft_dead : ∀ `{lftG Σ} (κ : lft), iProp Σ.
+  Parameter lft_tok : ∀ `{!lftG Σ} (q : Qp) (κ : lft), iProp Σ.
+  Parameter lft_dead : ∀ `{!lftG Σ} (κ : lft), iProp Σ.
 
-  Parameter lft_incl : ∀ `{invG, lftG Σ} (κ κ' : lft), iProp Σ.
-  Parameter bor : ∀ `{invG, lftG Σ} (κ : lft) (P : iProp Σ), iProp Σ.
+  Parameter lft_incl : ∀ `{!invG Σ, !lftG Σ} (κ κ' : lft), iProp Σ.
+  Parameter bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (P : iProp Σ), iProp Σ.
 
   Parameter bor_idx : Type.
-  Parameter idx_bor_own : ∀ `{lftG Σ} (q : frac) (i : bor_idx), iProp Σ.
-  Parameter idx_bor : ∀ `{invG, lftG Σ} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
+  Parameter idx_bor_own : ∀ `{!lftG Σ} (q : frac) (i : bor_idx), iProp Σ.
+  Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
 
   (** Notation *)
   Notation "q .[ κ ]" := (lft_tok q κ)
@@ -47,7 +47,7 @@ Module Type lifetime_sig.
   Infix "⊓" := lft_intersect (at level 40) : stdpp_scope.
 
   Section properties.
-  Context `{invG, lftG Σ}.
+  Context `{!invG Σ, !lftG Σ}.
 
   (** Instances *)
   Global Declare Instance lft_inhabited : Inhabited lft.
@@ -155,6 +155,6 @@ Module Type lifetime_sig.
   Parameter lftΣ : gFunctors.
   Global Declare Instance subG_lftPreG Σ : subG lftΣ Σ → lftPreG Σ.
 
-  Parameter lft_init : ∀ `{invG Σ, !lftPreG Σ} E, ↑lftN ⊆ E →
+  Parameter lft_init : ∀ `{!invG Σ, !lftPreG Σ} E, ↑lftN ⊆ E →
     (|={E}=> ∃ _ : lftG Σ, lft_ctx)%I.
 End lifetime_sig.

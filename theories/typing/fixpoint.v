@@ -4,7 +4,7 @@ Set Default Proof Using "Type".
 Import uPred.
 
 Section fixpoint_def.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
   Context (T : type → type) {HT: TypeContractive T}.
 
   Global Instance type_inhabited : Inhabited type := populate bool.
@@ -25,7 +25,7 @@ Section fixpoint_def.
      I believe this gives the right sets for all types that we can define in
      Rust, but I do not have any proof of this.
      TODO : investigate this in more detail. *)
-  Global Instance type_fixpoint_wf `{∀ `{!TyWf ty}, TyWf (T ty)} : TyWf type_fixpoint :=
+  Global Instance type_fixpoint_wf `{!∀ `{!TyWf ty}, TyWf (T ty)} : TyWf type_fixpoint :=
     let lfts :=
       let _ : TyWf type_fixpoint := {| ty_lfts := []; ty_wf_E := [] |} in
       (T type_fixpoint).(ty_lfts)
@@ -37,13 +37,13 @@ Section fixpoint_def.
     {| ty_lfts := lfts; ty_wf_E := wf_E |}.
 End fixpoint_def.
 
-Lemma type_fixpoint_ne `{typeG Σ} (T1 T2 : type → type)
+Lemma type_fixpoint_ne `{!typeG Σ} (T1 T2 : type → type)
     `{!TypeContractive T1, !TypeContractive T2} n :
   (∀ t, T1 t ≡{n}≡ T2 t) → type_fixpoint T1 ≡{n}≡ type_fixpoint T2.
 Proof. eapply fixpointK_ne; apply type_contractive_ne, _. Qed.
 
 Section fixpoint.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
   Context (T : type → type) {HT: TypeContractive T}.
 
   Global Instance fixpoint_copy :
@@ -98,7 +98,7 @@ Section fixpoint.
 End fixpoint.
 
 Section subtyping.
-  Context `{typeG Σ} (E : elctx) (L : llctx).
+  Context `{!typeG Σ} (E : elctx) (L : llctx).
 
   (* TODO : is there a way to declare these as a [Proper] instances ? *)
   Lemma fixpoint_mono T1 `{!TypeContractive T1} T2 `{!TypeContractive T2} :
@@ -114,7 +114,7 @@ Section subtyping.
       apply bi.limit_preserving_entails; solve_proper.
   Qed.
 
-  Lemma fixpoint_proper T1 `{TypeContractive T1} T2 `{TypeContractive T2} :
+  Lemma fixpoint_proper T1 `{!TypeContractive T1} T2 `{!TypeContractive T2} :
     (∀ ty1 ty2, eqtype E L ty1 ty2 → eqtype E L (T1 ty1) (T2 ty2)) →
     eqtype E L (type_fixpoint T1) (type_fixpoint T2).
   Proof.
@@ -127,16 +127,16 @@ Section subtyping.
         apply bi.limit_preserving_entails; solve_proper.
   Qed.
 
-  Lemma fixpoint_unfold_subtype_l ty T `{TypeContractive T} :
+  Lemma fixpoint_unfold_subtype_l ty T `{!TypeContractive T} :
     subtype E L ty (T (type_fixpoint T)) → subtype E L ty (type_fixpoint T).
   Proof. intros. by rewrite fixpoint_unfold_eqtype. Qed.
-  Lemma fixpoint_unfold_subtype_r ty T `{TypeContractive T} :
+  Lemma fixpoint_unfold_subtype_r ty T `{!TypeContractive T} :
     subtype E L (T (type_fixpoint T)) ty → subtype E L (type_fixpoint T) ty.
   Proof. intros. by rewrite fixpoint_unfold_eqtype. Qed.
-  Lemma fixpoint_unfold_eqtype_l ty T `{TypeContractive T} :
+  Lemma fixpoint_unfold_eqtype_l ty T `{!TypeContractive T} :
     eqtype E L ty (T (type_fixpoint T)) → eqtype E L ty (type_fixpoint T).
   Proof. intros. by rewrite fixpoint_unfold_eqtype. Qed.
-  Lemma fixpoint_unfold_eqtype_r ty T `{TypeContractive T} :
+  Lemma fixpoint_unfold_eqtype_r ty T `{!TypeContractive T} :
     eqtype E L (T (type_fixpoint T)) ty → eqtype E L (type_fixpoint T) ty.
   Proof. intros. by rewrite fixpoint_unfold_eqtype. Qed.
 End subtyping.

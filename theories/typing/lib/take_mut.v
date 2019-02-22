@@ -6,7 +6,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section code.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition take ty (call_once : val) : val :=
     funrec: <> ["x"; "f"] :=

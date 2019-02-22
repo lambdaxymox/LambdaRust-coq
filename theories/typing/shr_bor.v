@@ -4,7 +4,7 @@ From lrust.typing Require Import lft_contexts type_context programs.
 Set Default Proof Using "Type".
 
 Section shr_bor.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Program Definition shr_bor (κ : lft) (ty : type) : type :=
     {| st_own tid vl :=
@@ -60,7 +60,7 @@ End shr_bor.
 Notation "&shr{ κ }" := (shr_bor κ) (format "&shr{ κ }") : lrust_type_scope.
 
 Section typing.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Lemma shr_mono' E L κ1 κ2 ty1 ty2 :
     lctx_lft_incl E L κ2 κ1 → subtype E L ty1 ty2 →

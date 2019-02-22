@@ -4,7 +4,7 @@ From lrust.typing Require Import type lft_contexts type_context.
 Set Default Proof Using "Type".
 
 Section cont_context_def.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition cont_postcondition : iProp Σ := True%I.
 
@@ -20,7 +20,7 @@ Notation "k ◁cont( L , T )" := (CCtx_iscont k L _ T)
   (at level 70, format "k  ◁cont( L ,  T )").
 
 Section cont_context.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition cctx_elt_interp (tid : thread_id) (x : cctx_elt) : iProp Σ :=
     let '(k ◁cont(L, T)) := x in

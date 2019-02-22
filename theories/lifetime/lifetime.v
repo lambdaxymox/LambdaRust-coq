@@ -23,7 +23,7 @@ Instance lft_inhabited : Inhabited lft := populate static.
 Canonical lftC := leibnizC lft.
 
 Section derived.
-Context `{invG Σ, lftG Σ}.
+Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
 
 Lemma bor_acc_atomic_cons E κ P :

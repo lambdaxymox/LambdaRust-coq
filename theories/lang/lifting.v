@@ -11,7 +11,7 @@ Class lrustG Σ := LRustG {
   lrustG_gen_heapG :> heapG Σ
 }.
 
-Instance lrustG_irisG `{lrustG Σ} : irisG lrust_lang Σ := {
+Instance lrustG_irisG `{!lrustG Σ} : irisG lrust_lang Σ := {
   iris_invG := lrustG_invG;
   state_interp σ κs _ := heap_ctx σ;
   fork_post _ := True%I;
@@ -61,7 +61,7 @@ Instance do_subst_vec xl (vsl : vec val (length xl)) e :
 Proof. by rewrite /DoSubstL subst_v_eq. Qed.
 
 Section lifting.
-Context `{lrustG Σ}.
+Context `{!lrustG Σ}.
 Implicit Types P Q : iProp Σ.
 Implicit Types e : expr.
 Implicit Types ef : option expr.

@@ -5,7 +5,7 @@ From lrust.typing Require Export type.
 Set Default Proof Using "Type".
 
 Section product.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   (* TODO: Find a better spot for this. *)
   Lemma Z_nat_add (n1 n2 : nat) : Z.to_nat (n1 + n2) = (n1 + n2)%nat.
@@ -195,7 +195,7 @@ End product.
 Notation Π := product.
 
 Section typing.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Global Instance prod2_assoc E L : Assoc (eqtype E L) product2.
   Proof.

@@ -10,7 +10,7 @@ Definition swap : val :=
          "p2" <- "x";;
          "swap" ["p1" +ₗ #1 ; "p2" +ₗ #1 ; "len" - #1].
 
-Lemma wp_swap `{lrustG Σ} E l1 l2 vl1 vl2 (n : Z):
+Lemma wp_swap `{!lrustG Σ} E l1 l2 vl1 vl2 (n : Z):
   Z.of_nat (length vl1) = n → Z.of_nat (length vl2) = n →
   {{{ l1 ↦∗ vl1 ∗ l2 ↦∗ vl2 }}}
     swap [ #l1; #l2; #n] @ E

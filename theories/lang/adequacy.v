@@ -17,8 +17,8 @@ Definition lrustΣ : gFunctors :=
 Instance subG_heapPreG {Σ} : subG lrustΣ Σ → lrustPreG Σ.
 Proof. solve_inG. Qed.
 
-Definition lrust_adequacy Σ `{lrustPreG Σ} e σ φ :
-  (∀ `{lrustG Σ}, True ⊢ WP e {{ v, ⌜φ v⌝ }}) →
+Definition lrust_adequacy Σ `{!lrustPreG Σ} e σ φ :
+  (∀ `{!lrustG Σ}, True ⊢ WP e {{ v, ⌜φ v⌝ }}) →
   adequate NotStuck e σ (λ v _, φ v).
 Proof.
   intros Hwp; eapply (wp_adequacy _ _); iIntros (??).

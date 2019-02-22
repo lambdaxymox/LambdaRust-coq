@@ -9,7 +9,7 @@ From lrust.typing.lib.rwlock Require Import rwlock rwlockreadguard rwlockwritegu
 Set Default Proof Using "Type".
 
 Section rwlock_functions.
-  Context `{typeG Σ, rwlockG Σ}.
+  Context `{!typeG Σ, !rwlockG Σ}.
 
   (* Constructing a rwlock. *)
   Definition rwlock_new ty : val :=

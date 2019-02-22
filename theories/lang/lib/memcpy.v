@@ -19,7 +19,7 @@ Notation "e1 <-{ n ',Σ' i } ! e2" :=
   (at level 80, n, i at next level,
    format "e1  <-{ n ,Σ  i }  ! e2") : expr_scope.
 
-Lemma wp_memcpy `{lrustG Σ} E l1 l2 vl1 vl2 q (n : Z):
+Lemma wp_memcpy `{!lrustG Σ} E l1 l2 vl1 vl2 q (n : Z):
   Z.of_nat (length vl1) = n → Z.of_nat (length vl2) = n →
   {{{ l1 ↦∗ vl1 ∗ l2 ↦∗{q} vl2 }}}
     #l1 <-{n} !#l2 @ E

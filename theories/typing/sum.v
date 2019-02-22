@@ -5,7 +5,7 @@ From lrust.typing Require Export type.
 Set Default Proof Using "Type".
 
 Section sum.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   (* We define the actual empty type as being the empty sum, so that it is
      convertible to it---and in particular, we can pattern-match on it

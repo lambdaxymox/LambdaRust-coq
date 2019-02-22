@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section rebor.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   Definition rebor : val :=
     funrec: <> ["t1"; "t2"] :=

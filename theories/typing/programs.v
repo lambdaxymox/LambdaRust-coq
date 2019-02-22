@@ -3,7 +3,7 @@ From lrust.typing Require Export type lft_contexts type_context cont_context.
 Set Default Proof Using "Type".
 
 Section typing.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   (** Function Body *)
   (* This is an iProp because it is also used by the function type. *)
@@ -77,17 +77,17 @@ Section typing.
   Global Arguments typed_read _ _ _%T _%T _%T.
 End typing.
 
-Definition typed_instruction_ty `{typeG Σ} (E : elctx) (L : llctx) (T : tctx)
+Definition typed_instruction_ty `{!typeG Σ} (E : elctx) (L : llctx) (T : tctx)
     (e : expr) (ty : type) : iProp Σ :=
   typed_instruction E L T e (λ v, [v ◁ ty]).
 Arguments typed_instruction_ty {_ _} _ _ _ _%E _%T.
 
-Definition typed_val `{typeG Σ} (v : val) (ty : type) : Prop :=
+Definition typed_val `{!typeG Σ} (v : val) (ty : type) : Prop :=
   ∀ E L, typed_instruction_ty E L [] (of_val v) ty.
 Arguments typed_val _ _ _%V _%T.
 
 Section typing_rules.
-  Context `{typeG Σ}.
+  Context `{!typeG Σ}.
 
   (* This lemma is helpful when switching from proving unsafe code in Iris
      back to proving it in the type system. *)

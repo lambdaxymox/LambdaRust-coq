@@ -91,7 +91,7 @@ Proof. rewrite /Closed. apply _. Qed.
 
 Inductive val :=
 | LitV (l : base_lit)
-| RecV (f : binder) (xl : list binder) (e : expr) `{Closed (f :b: xl +b+ []) e}.
+| RecV (f : binder) (xl : list binder) (e : expr) `{!Closed (f :b: xl +b+ []) e}.
 
 Bind Scope val_scope with val.
 
