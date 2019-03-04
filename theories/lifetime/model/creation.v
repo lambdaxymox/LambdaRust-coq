@@ -111,7 +111,7 @@ Lemma lft_create E :
 Proof.
   iIntros (?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
-  destruct (exist_fresh (dom (gset _) A)) as [Λ HΛ%not_elem_of_dom].
+  destruct (exist_fresh (dom (gset atomic_lft) A)) as [Λ HΛ%not_elem_of_dom].
   iMod (own_update with "HA") as "[HA HΛ]".
   { apply auth_update_alloc, (alloc_singleton_local_update _ Λ (Cinl 1%Qp))=>//.
     by rewrite lookup_fmap HΛ. }
