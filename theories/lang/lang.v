@@ -42,13 +42,13 @@ Instance binder_dec_eq : EqDecision binder.
 Proof. solve_decision. Defined.
 
 Instance set_unfold_cons_binder x mx X P :
-  SetUnfold (x ∈ X) P → SetUnfold (x ∈ mx :b: X) (BNamed x = mx ∨ P).
+  SetUnfoldElemOf x X P → SetUnfoldElemOf x (mx :b: X) (BNamed x = mx ∨ P).
 Proof.
   constructor. rewrite -(set_unfold (x ∈ X) P).
   destruct mx; rewrite /= ?elem_of_cons; naive_solver.
 Qed.
 Instance set_unfold_app_binder x mxl X P :
-  SetUnfold (x ∈ X) P → SetUnfold (x ∈ mxl +b+ X) (BNamed x ∈ mxl ∨ P).
+  SetUnfoldElemOf x X P → SetUnfoldElemOf x (mxl +b+ X) (BNamed x ∈ mxl ∨ P).
 Proof.
   constructor. rewrite -(set_unfold (x ∈ X) P).
   induction mxl as [|?? IH]; set_solver.
