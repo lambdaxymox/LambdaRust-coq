@@ -1,5 +1,5 @@
 From iris.program_logic Require Export language ectx_language ectxi_language.
-From stdpp Require Export strings.
+From stdpp Require Export strings binders.
 From stdpp Require Import gmap.
 Set Default Proof Using "Type".
 
@@ -20,39 +20,13 @@ Inductive bin_op : Set :=
 Inductive order : Set :=
 | ScOrd | Na1Ord | Na2Ord.
 
-Inductive binder := BAnon | BNamed : string → binder.
-Delimit Scope lrust_binder_scope with RustB.
-Bind Scope lrust_binder_scope with binder.
-
-Notation "[ ]" := (@nil binder) : lrust_binder_scope.
-Notation "a :: b" := (@cons binder a%RustB b%RustB)
-  (at level 60, right associativity) : lrust_binder_scope.
+Notation "[ ]" := (@nil binder) : binder_scope.
+Notation "a :: b" := (@cons binder a%binder b%binder)
+  (at level 60, right associativity) : binder_scope.
 Notation "[ x1 ; x2 ; .. ; xn ]" :=
-  (@cons binder x1%RustB (@cons binder x2%RustB
-        (..(@cons binder xn%RustB (@nil binder))..))) : lrust_binder_scope.
-Notation "[ x ]" := (@cons binder x%RustB (@nil binder)) : lrust_binder_scope.
-
-Definition cons_binder (mx : binder) (X : list string) : list string :=
-  match mx with BAnon => X | BNamed x => x :: X end.
-Infix ":b:" := cons_binder (at level 60, right associativity).
-Fixpoint app_binder (mxl : list binder) (X : list string) : list string :=
-  match mxl with [] => X | b :: mxl => b :b: app_binder mxl X end.
-Infix "+b+" := app_binder (at level 60, right associativity).
-Instance binder_dec_eq : EqDecision binder.
-Proof. solve_decision. Defined.
-
-Instance set_unfold_cons_binder x mx X P :
-  SetUnfoldElemOf x X P → SetUnfoldElemOf x (mx :b: X) (BNamed x = mx ∨ P).
-Proof.
-  constructor. rewrite -(set_unfold (x ∈ X) P).
-  destruct mx; rewrite /= ?elem_of_cons; naive_solver.
-Qed.
-Instance set_unfold_app_binder x mxl X P :
-  SetUnfoldElemOf x X P → SetUnfoldElemOf x (mxl +b+ X) (BNamed x ∈ mxl ∨ P).
-Proof.
-  constructor. rewrite -(set_unfold (x ∈ X) P).
-  induction mxl as [|?? IH]; set_solver.
-Qed.
+  (@cons binder x1%binder (@cons binder x2%binder
+        (..(@cons binder xn%binder (@nil binder))..))) : binder_scope.
+Notation "[ x ]" := (@cons binder x%binder (@nil binder)) : binder_scope.
 
 Inductive expr :=
 | Var (x : string)
@@ -176,12 +150,12 @@ Fixpoint subst_l (xl : list binder) (esl : list expr) (e : expr) : option expr :
   | x::xl, es::esl => subst' x es <$> subst_l xl esl e
   | _, _ => None
   end.
-Arguments subst_l _%RustB _ _%E.
+Arguments subst_l _%binder _ _%E.
 
 Definition subst_v (xl : list binder) (vsl : vec val (length xl))
                    (e : expr) : expr :=
   Vector.fold_right2 (λ b, subst' b ∘ of_val) e _ (list_to_vec xl) vsl.
-Arguments subst_v _%RustB _ _%E.
+Arguments subst_v _%binder _ _%E.
 
 Lemma subst_v_eq (xl : list binder) (vsl : vec val (length xl)) e :
   Some $ subst_v xl vsl e = subst_l xl (of_val <$> vec_to_list vsl) e.

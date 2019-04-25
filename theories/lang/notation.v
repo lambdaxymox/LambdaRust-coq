@@ -9,9 +9,6 @@ Coercion of_val : val >-> expr.
 
 Coercion Var : string >-> expr.
 
-Coercion BNamed : string >-> binder.
-Notation "<>" := BAnon : lrust_binder_scope.
-
 Notation "[ ]" := (@nil expr) : expr_scope.
 Notation "[ x ]" := (@cons expr x%E (@nil expr)) : expr_scope.
 Notation "[ x1 ; x2 ; .. ; xn ]" :=
@@ -45,9 +42,9 @@ Notation "e1 <-ˢᶜ e2" := (Write ScOrd e1%E e2%E)
   (at level 80) : expr_scope.
 Notation "e1 <- e2" := (Write Na1Ord e1%E e2%E)
   (at level 80) : expr_scope.
-Notation "'rec:' f xl := e" := (Rec f%RustB xl%RustB e%E)
+Notation "'rec:' f xl := e" := (Rec f%binder xl%binder e%E)
   (at level 102, f, xl at level 1, e at level 200) : expr_scope.
-Notation "'rec:' f xl := e" := (locked (RecV f%RustB xl%RustB e%E))
+Notation "'rec:' f xl := e" := (locked (RecV f%binder xl%binder e%E))
   (at level 102, f, xl at level 1, e at level 200) : val_scope.
 Notation "e1 +ₗ e2" := (BinOp OffsetOp e1%E e2%E)
   (at level 50, left associativity) : expr_scope.
@@ -57,9 +54,9 @@ explicitly instead of relying on the Notations Let and Seq as defined
 above. This is needed because App is now a coercion, and these
 notations are otherwise not pretty printed back accordingly. *)
 
-Notation "λ: xl , e" := (Lam xl%RustB e%E)
+Notation "λ: xl , e" := (Lam xl%binder e%E)
   (at level 102, xl at level 1, e at level 200) : expr_scope.
-Notation "λ: xl , e" := (locked (LamV xl%RustB e%E))
+Notation "λ: xl , e" := (locked (LamV xl%binder e%E))
   (at level 102, xl at level 1, e at level 200) : val_scope.
 
 Notation "'funrec:' f xl := e" := (rec: f ("return"::xl) := e)%E
@@ -69,22 +66,22 @@ Notation "'funrec:' f xl := e" := (rec: f ("return"::xl) := e)%V
 Notation "'return:'" := "return" : expr_scope.
 
 Notation "'let:' x := e1 'in' e2" :=
-  ((Lam (@cons binder x%RustB nil) e2%E) (@cons expr e1%E nil))
+  ((Lam (@cons binder x%binder nil) e2%E) (@cons expr e1%E nil))
   (at level 102, x at level 1, e1, e2 at level 150) : expr_scope.
 Notation "e1 ;; e2" := (let: <> := e1 in e2)%E
   (at level 100, e2 at level 200, format "e1  ;;  e2") : expr_scope.
 (* These are not actually values, but we want them to be pretty-printed. *)
 Notation "'let:' x := e1 'in' e2" :=
-  (LamV (@cons binder x%RustB nil) e2%E (@cons expr e1%E nil))
+  (LamV (@cons binder x%binder nil) e2%E (@cons expr e1%E nil))
   (at level 102, x at level 1, e1, e2 at level 150) : val_scope.
 Notation "e1 ;; e2" := (let: <> := e1 in e2)%V
   (at level 100, e2 at level 200, format "e1  ;;  e2") : val_scope.
 
 Notation "'letcont:' k xl := e1 'in' e2" :=
-  ((Lam (@cons binder k%RustB nil) e2%E) [Rec k%RustB xl%RustB e1%E])
+  ((Lam (@cons binder k%binder nil) e2%E) [Rec k%binder xl%binder e1%E])
   (at level 102, k, xl at level 1, e1, e2 at level 150) : expr_scope.
 Notation "'withcont:' k1 ':' e1 'cont:' k2 xl := e2" :=
-  ((Lam (@cons binder k1%RustB nil) e1%E) [Rec k2%RustB ((fun _ : eq k1%RustB k2%RustB => xl%RustB) eq_refl) e2%E])
+  ((Lam (@cons binder k1%binder nil) e1%E) [Rec k2%binder ((fun _ : eq k1%binder k2%binder => xl%binder) eq_refl) e2%E])
   (only parsing, at level 151, k1, k2, xl at level 1, e2 at level 150) : expr_scope.
 
 Notation "'call:' f args → k" := (f (@cons expr (λ: ["_r"], Endlft ;; k ["_r"]) args))%E
