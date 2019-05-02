@@ -289,7 +289,7 @@ Proof. rewrite /lft_dead. iDestruct 1 as (Λ) "[% H']". set_solver. Qed.
 (* Fractional and AsFractional instances *)
 Global Instance lft_tok_fractional κ : Fractional (λ q, q.[κ])%I.
 Proof.
-  intros p q. rewrite /lft_tok -big_sepMS_sepMS. apply big_sepMS_proper.
+  intros p q. rewrite /lft_tok -big_sepMS_sep. apply big_sepMS_proper.
   intros Λ ?. rewrite -Cinl_op -op_singleton auth_frag_op own_op //.
 Qed.
 Global Instance lft_tok_as_fractional κ q :

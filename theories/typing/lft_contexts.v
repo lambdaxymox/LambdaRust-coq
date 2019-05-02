@@ -60,7 +60,7 @@ Section lft_contexts.
   Global Arguments llctx_interp _ _%Qp.
   Global Instance llctx_interp_fractional L :
     Fractional (llctx_interp L).
-  Proof. intros ??. rewrite -big_sepL_sepL. by setoid_rewrite <-fractional. Qed.
+  Proof. intros ??. rewrite -big_sepL_sep. by setoid_rewrite <-fractional. Qed.
   Global Instance llctx_interp_as_fractional L q :
     AsFractional (llctx_interp L q) (llctx_interp L) q.
   Proof. split. done. apply _. Qed.

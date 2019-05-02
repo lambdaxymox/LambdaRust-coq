@@ -129,7 +129,7 @@ Section heap.
 
   Global Instance heap_mapsto_vec_fractional l vl: Fractional (λ q, l ↦∗{q} vl)%I.
   Proof.
-    intros p q. rewrite /heap_mapsto_vec -big_sepL_sepL.
+    intros p q. rewrite /heap_mapsto_vec -big_sepL_sep.
     by setoid_rewrite (fractional (Φ := λ q, _ ↦{q} _)%I).
   Qed.
   Global Instance heap_mapsto_vec_as_fractional l q vl:
