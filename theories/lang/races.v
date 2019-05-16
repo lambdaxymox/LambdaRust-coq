@@ -86,9 +86,9 @@ Lemma next_access_head_reducible_state e σ a l :
   next_access_head e σ a l → head_reducible e σ →
   head_reduce_not_to_stuck e σ →
   match a with
-  | (ReadAcc, ScOrd | Na1Ord) => ∃ v n, σ !! l = Some (RSt n, v)
+  | (ReadAcc, (ScOrd | Na1Ord)) => ∃ v n, σ !! l = Some (RSt n, v)
   | (ReadAcc, Na2Ord) => ∃ v n, σ !! l = Some (RSt (S n), v)
-  | (WriteAcc, ScOrd | Na1Ord) => ∃ v, σ !! l = Some (RSt 0, v)
+  | (WriteAcc, (ScOrd | Na1Ord)) => ∃ v, σ !! l = Some (RSt 0, v)
   | (WriteAcc, Na2Ord) => ∃ v, σ !! l = Some (WSt, v)
   | (FreeAcc, _) => ∃ v ls, σ !! l = Some (ls, v)
   end.
