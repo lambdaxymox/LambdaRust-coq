@@ -32,7 +32,7 @@ Proof.
     iDestruct (@big_sepS_elem_of with "Hdead") as "Hdead"; first by eauto.
     rewrite /lft_inv_dead; iDestruct "Hdead" as (R) "(_ & Hcnt' & _)".
     iDestruct (own_cnt_valid_2 with "Hcnt' Hcnt")
-      as %[?%nat_included _]%auth_valid_discrete_2; lia. }
+      as %[?%nat_included _]%auth_both_valid; lia. }
   iMod (box_empty with "Hbox") as "[HP Hbox]"=>//; first set_solver.
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
@@ -129,7 +129,7 @@ Proof.
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   rewrite /lft_tok big_sepMS_singleton.
   iDestruct (own_valid_2 with "HA HΛ")
-    as %[[s [?%leibniz_equiv ?]]%singleton_included _]%auth_valid_discrete_2.
+    as %[[s [?%leibniz_equiv ?]]%singleton_included _]%auth_both_valid.
   iMod (own_update_2 with "HA HΛ") as "[HA HΛ]".
   { by eapply auth_update, singleton_local_update,
       (exclusive_local_update _ (Cinr ())). }

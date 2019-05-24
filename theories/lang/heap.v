@@ -142,7 +142,7 @@ Section heap.
   Lemma heap_mapsto_agree l q1 q2 v1 v2 : l ↦{q1} v1 ∗ l ↦{q2} v2 ⊢ ⌜v1 = v2⌝.
   Proof.
     rewrite heap_mapsto_eq -own_op -auth_frag_op own_valid discrete_valid.
-    eapply pure_elim; [done|]=> /auth_own_valid /=.
+    eapply pure_elim; [done|]=> /auth_frag_valid /=.
     rewrite op_singleton pair_op singleton_valid=> -[? /agree_op_invL'->]; eauto.
   Qed.
 
@@ -215,7 +215,7 @@ Section heap.
       {[l +ₗ i := (q, Cinr 0%nat, to_agree v)]}).
   Proof.
     rewrite /heap_mapsto_vec heap_mapsto_eq /heap_mapsto_def /heap_mapsto_st=>?.
-    by rewrite (big_opL_commute (Auth None)) big_opL_commute1 //.
+    by rewrite /auth_frag (big_opL_commute (Auth None)) big_opL_commute1 //.
   Qed.
 
   Global Instance heap_mapsto_pred_fractional l (P : list val → iProp Σ):
@@ -406,7 +406,7 @@ Section heap.
   Proof.
     iDestruct 1 as (hF) "(Hvalσ & HhF & REL)"; iDestruct "REL" as %REL.
     iIntros "Hmt Hf". rewrite heap_freeable_eq /heap_freeable_def.
-    iDestruct (own_valid_2 with "HhF Hf") as % [Hl Hv]%auth_valid_discrete_2.
+    iDestruct (own_valid_2 with "HhF Hf") as % [Hl Hv]%auth_both_valid.
     move: Hl=> /singleton_included [[q qs] [/leibniz_equiv_iff Hl Hq]].
     apply (Some_included_exclusive _ _) in Hq as [=<-<-]%leibniz_equiv; last first.
     { move: (Hv (l.1)). rewrite Hl. by intros [??]. }
@@ -429,7 +429,7 @@ Section heap.
         σ !! l = Some (match ls with RSt n => RSt (n+n') | WSt => WSt end, v)⌝.
   Proof.
     iIntros "H● H◯".
-    iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_valid_discrete_2.
+    iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_both_valid.
     iPureIntro. move: Hl=> /singleton_included [[[q' ls'] dv]].
     rewrite /to_heap lookup_fmap fmap_Some_equiv.
     move=> [[[ls'' v'] [?[[/=??]->]]]]; simplify_eq.
@@ -446,7 +446,7 @@ Section heap.
     ⌜σ !! l = Some (ls, v)⌝.
   Proof.
     iIntros "H● H◯".
-    iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_valid_discrete_2.
+    iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_both_valid.
     iPureIntro. move: Hl=> /singleton_included [[[q' ls'] dv]].
     rewrite /to_heap lookup_fmap fmap_Some_equiv.
     move=> [[[ls'' v'] [?[[/=??]->]]] Hincl]; simplify_eq.

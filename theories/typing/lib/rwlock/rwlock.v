@@ -1,5 +1,5 @@
 From iris.proofmode Require Import tactics.
-From iris.algebra Require Import auth csum frac agree.
+From iris.algebra Require Import auth csum frac agree excl.
 From iris.bi Require Import fractional.
 From lrust.lifetime Require Import at_borrow.
 From lrust.typing Require Import typing.
@@ -128,7 +128,8 @@ Section rwlock.
         iExists κ, γ. iSplitR. by iApply lft_incl_refl. iApply bor_share; try done.
         solve_ndisj. }
     clear dependent n. iDestruct "H" as ([|n|[]]) "[Hn >%]"; try lia.
-    - iFrame. iMod (own_alloc (● None)) as (γ) "Hst". done. iExists γ, None. by iFrame.
+    - iFrame. iMod (own_alloc (● None)) as (γ) "Hst"; first by apply auth_auth_valid.
+      iExists γ, None. by iFrame.
     - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
       iMod (own_alloc (● Some (Cinr (to_agree ν, (1/2)%Qp, n)))) as (γ) "Hst".
       { by apply auth_auth_valid. }

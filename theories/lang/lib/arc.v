@@ -189,7 +189,7 @@ Section arc.
     iIntros "Hl1 Hl2 [HP1 HP1']".
     iMod (own_alloc ((● (Some $ Cinl ((1/2)%Qp, xH, None), O) ⋅
                       ◯ (Some $ Cinl ((1/2)%Qp, xH, None), O))))
-      as (γ) "[H● H◯]"; first done.
+      as (γ) "[H● H◯]"; first by apply auth_both_valid.
     iExists _, _. iFrame. iApply inv_alloc. iExists _. iFrame. iExists _. iFrame.
     rewrite Qp_div_2. auto.
   Qed.
@@ -198,7 +198,8 @@ Section arc.
     l ↦ #0 -∗ (l +ₗ 1) ↦ #1 -∗ P2 ={E}=∗ ∃ γ, is_arc P1 P2 N γ l ∗ weak_tok γ.
   Proof.
     iIntros "Hl1 Hl2 HP2".
-    iMod (own_alloc ((● (None, 1%nat) ⋅ ◯ (None, 1%nat)))) as (γ) "[H● H◯]"; first done.
+    iMod (own_alloc ((● (None, 1%nat) ⋅ ◯ (None, 1%nat)))) as (γ) "[H● H◯]";
+      first by apply auth_both_valid.
     iExists _. iFrame. iApply inv_alloc. iExists _. iFrame.
   Qed.
 
@@ -209,7 +210,7 @@ Section arc.
                              else ∃ q'', q' = (q + q'')%Qp⌝.
   Proof.
     iIntros "H● Htok". iDestruct (own_valid_2 with "H● Htok") as
-        %[[Hincl%option_included _]%prod_included [Hval _]]%auth_valid_discrete_2.
+        %[[Hincl%option_included _]%prod_included [Hval _]]%auth_both_valid.
     destruct st, Hincl as [[=]|(?&?&[= <-]&?&[Hincl|Hincl%csum_included])];
       simpl in *; subst.
     - setoid_subst. iExists _, _, _, _. by iSplit.
@@ -336,7 +337,7 @@ Section arc.
   Proof.
     iIntros "H● Htok". iDestruct (own_valid_2 with "H● Htok") as
         %[[Hincl%option_included Hincl'%nat_included]%prod_included [Hval _]]
-         %auth_valid_discrete_2.
+         %auth_both_valid.
     destruct st as [?[]], Hincl as [_|(?&?&[=]&?)]; simpl in *; try lia. eauto.
   Qed.
 
@@ -491,7 +492,7 @@ Section arc.
   Proof.
     iIntros "INV H◯ HP2". iInv N as ([st ?]) "[>H● H]" "Hclose".
     iDestruct (own_valid_2 with "H● H◯")
-      as %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_valid_discrete_2.
+      as %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_both_valid.
     simpl in Hincl. destruct Hincl as (?&?&[=<-]&->&[?|[]%exclusive_included]);
         try done; try apply _. setoid_subst.
     iMod (own_update_2 with "H● H◯") as "[H● $]".
@@ -588,7 +589,7 @@ Section arc.
       iMod ("Hclose" with "[-HΦ HP1 H◯]") as "_"; first by iExists _; eauto with iFrame.
       iModIntro. wp_case. wp_bind (!ˢᶜ_)%E. iInv N as ([st ?]) "[>H● H]" "Hclose".
       iDestruct (own_valid_2 with "H● H◯") as
-        %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_valid_discrete_2.
+        %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_both_valid.
       simpl in Hincl. destruct Hincl as (? & ? & [=<-] & -> & [|Hincl]); last first.
       + apply csum_included in Hincl. destruct Hincl as [->|[Hincl|(?&?&[=]&?)]]=>//.
         destruct Hincl as (?&[[??]?]&[=<-]&->&[[_ Hlt]%prod_included _]%prod_included).
@@ -598,7 +599,7 @@ Section arc.
         iModIntro. wp_let. wp_op; case_bool_decide; [lia|]. wp_let. wp_op. wp_bind (_ <-ˢᶜ _)%E.
         iInv N as ([st w]) "[>H● H]" "Hclose".
         iDestruct (own_valid_2 with "H● H◯") as
-           %[[[[=]|Hincl]%option_included _]%prod_included [Hval _]]%auth_valid_discrete_2.
+           %[[[[=]|Hincl]%option_included _]%prod_included [Hval _]]%auth_both_valid.
         simpl in Hincl. destruct Hincl as (? & ? & [=<-] & -> & Hincl); last first.
         assert (∃ q p, x2 = Cinl (q, p, Excl' ())) as (? & ? & ->).
         { destruct Hincl as [|Hincl]; first by setoid_subst; eauto.
@@ -650,7 +651,7 @@ Section arc.
       clear w. iModIntro. wp_case. wp_op. wp_bind (!ˢᶜ_)%E.
       iInv N as ([st w']) "[>H● H]" "Hclose".
       iDestruct (own_valid_2 with "H● H◯")
-        as %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_valid_discrete_2.
+        as %[[[[=]|Hincl]%option_included _]%prod_included [? _]]%auth_both_valid.
       simpl in Hincl. destruct Hincl as (?&?&[=<-]&->&[?|[]%exclusive_included]);
         [|by apply _|done]. setoid_subst. iDestruct "H" as "[Hl Hl1]".
       wp_read. destruct w'.

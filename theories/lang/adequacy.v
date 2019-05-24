@@ -24,7 +24,8 @@ Proof.
   intros Hwp; eapply (wp_adequacy _ _); iIntros (??).
   iMod (own_alloc (● to_heap σ)) as (vγ) "Hvγ".
   { apply (auth_auth_valid (to_heap _)), to_heap_valid. }
-  iMod (own_alloc (● (∅ : heap_freeableUR))) as (fγ) "Hfγ"; first done.
+  iMod (own_alloc (● (∅ : heap_freeableUR))) as (fγ) "Hfγ";
+    first by apply auth_auth_valid.
   set (Hheap := HeapG _ _ _ vγ fγ).
   iModIntro. iExists (λ σ _, heap_ctx σ). iSplitL.
   { iExists ∅. by iFrame. }

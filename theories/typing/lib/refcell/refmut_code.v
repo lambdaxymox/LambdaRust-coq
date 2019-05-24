@@ -131,7 +131,7 @@ Section refmut_functions.
       with "[H↦lrc H● H◯ Hν INV]" as "INV".
     { iDestruct (own_valid_2 with "H● H◯") as
         %[[[=]|(? & [[? q'] ?] & [= <-] & Hst & INCL)]%option_included _]
-         %auth_valid_discrete_2.
+         %auth_both_valid.
       destruct st as [[[[??]?]?]|]; [|done]. move: Hst=>-[= ???]. subst.
       destruct INCL as [[[[ν' ?]%to_agree_inj ?] ?]|
             [[[??]%to_agree_included [q'' Hq'']]%prod_included [n' Hn']]%prod_included].
@@ -299,7 +299,7 @@ Section refmut_functions.
     iMod (na_bor_acc with "LFT Hinv Hβ Hna") as "(INV & Hna & Hclosena)"; [done..|].
     wp_seq. wp_op. wp_read.
     iDestruct "INV" as (st) "(Hlrc & H● & Hst)".
-    iDestruct (own_valid_2 with "H● Hγ") as %[Hst _]%auth_valid_discrete_2.
+    iDestruct (own_valid_2 with "H● Hγ") as %[Hst _]%auth_both_valid.
     destruct st as [[[[??]?]?]|]; last by destruct Hst as [[?|] Hst]; inversion Hst.
     move:Hst=>/Some_pair_included [/Some_pair_included_total_1
               [/to_agree_included /(leibniz_equiv _ _) [= <- <-] _] _].

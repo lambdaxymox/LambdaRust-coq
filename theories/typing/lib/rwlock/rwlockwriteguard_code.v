@@ -126,7 +126,7 @@ Section rwlockwriteguard_functions.
     iDestruct "INV" as (st) "(H↦ & H● & INV)". wp_write.
     iMod ("Hcloseβ" with "[> H↦ H● H◯ INV Hx']") as "Hβ".
     { iDestruct (own_valid_2 with "H● H◯") as %[[[=]| (? & st0 & [=<-] & -> &
-         [Heq|Hle])]%option_included Hv]%auth_valid_discrete_2;
+         [Heq|Hle])]%option_included Hv]%auth_both_valid;
       last by destruct (exclusive_included _ _ Hle).
       destruct st0 as [[[]|]| |]; try by inversion Heq.
       iExists None. iFrame. iMod (own_update_2 with "H● H◯") as "$"; last done.

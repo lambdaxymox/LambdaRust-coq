@@ -22,8 +22,8 @@ Lemma lft_init `{!lftPreG Σ} E :
   ↑lftN ⊆ E → (|={E}=> ∃ _ : lftG Σ, lft_ctx)%I.
 Proof.
   iIntros (?). rewrite /lft_ctx.
-  iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first done.
-  iMod (own_alloc (● ∅ : authR ilftUR)) as (γi) "Hi"; first done.
+  iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first by apply auth_auth_valid.
+  iMod (own_alloc (● ∅ : authR ilftUR)) as (γi) "Hi"; first by apply auth_auth_valid.
   set (HlftG := LftG _ _ _ γa _ γi _ _ _). iExists HlftG.
   iMod (inv_alloc _ _ lfts_inv with "[Ha Hi]") as "$"; last done.
   iModIntro. rewrite /lfts_inv /own_alft_auth /own_ilft_auth. iExists ∅, ∅.
@@ -37,7 +37,7 @@ Lemma own_ilft_auth_agree (I : gmap lft lft_names) κ γs :
     own ilft_name (◯ {[κ := to_agree γs]}) -∗ ⌜is_Some (I !! κ)⌝.
 Proof.
   iIntros "HI Hκ". iDestruct (own_valid_2 with "HI Hκ")
-    as %[[? [Hl ?]]%singleton_included _]%auth_valid_discrete_2.
+    as %[[? [Hl ?]]%singleton_included _]%auth_both_valid.
   unfold to_ilftUR in *. simplify_map_eq.
   destruct (fmap_Some_equiv_1 _ _ _ Hl) as (?&?&?). eauto.
 Qed.
@@ -47,7 +47,7 @@ Lemma own_alft_auth_agree (A : gmap atomic_lft bool) Λ b :
     own alft_name (◯ {[Λ := to_lft_stateR b]}) -∗ ⌜A !! Λ = Some b⌝.
 Proof.
   iIntros "HA HΛ".
-  iDestruct (own_valid_2 with "HA HΛ") as %[HA _]%auth_valid_discrete_2.
+  iDestruct (own_valid_2 with "HA HΛ") as %[HA _]%auth_both_valid.
   iPureIntro. move: HA=> /singleton_included [qs [/leibniz_equiv_iff]].
   rewrite lookup_fmap fmap_Some=> -[b' [? ->]] /Some_included.
   move=> [/leibniz_equiv_iff|/csum_included]; destruct b, b'; naive_solver.
@@ -65,8 +65,8 @@ Proof.
   { iDestruct 1 as (γs) "[#? [Hx Hy]]"; iSplitL "Hx"; iExists γs; eauto. }
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
-  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs%auth_own_valid.
-  move: Hγs; rewrite /= op_singleton singleton_valid=> /agree_op_invL' <-.
+  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move : Hγs.
+  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL' <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_bor_into_op κ x x1 x2 :
@@ -99,14 +99,14 @@ Proof.
   { iDestruct 1 as (γs) "[#? [Hx Hy]]"; iSplitL "Hx"; iExists γs; eauto. }
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
-  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs%auth_own_valid.
-  move: Hγs; rewrite /= op_singleton singleton_valid=> /agree_op_invL'=> <-.
+  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
+  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL'=> <-.
   iExists γs. iSplit; first done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_cnt_into_op κ x x1 x2 :
   IsOp x x1 x2 → IntoSep (own_cnt κ x) (own_cnt κ x1) (own_cnt κ x2).
 Proof.
-  rewrite /IsOp /IntoSep=> /leibniz_equiv_iff->. by rewrite -own_cnt_op.
+  rewrite /IsOp /IntoSep=> ->. by rewrite -own_cnt_op.
 Qed.
 Lemma own_cnt_valid κ x : own_cnt κ x -∗ ✓ x.
 Proof. iDestruct 1 as (γs) "[#? Hx]". by iApply own_valid. Qed.
@@ -133,14 +133,14 @@ Proof.
   { iDestruct 1 as (γs) "[#? [Hx Hy]]"; iSplitL "Hx"; iExists γs; eauto. }
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
-  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs%auth_own_valid.
-  move: Hγs; rewrite /= op_singleton singleton_valid=> /agree_op_invL' <-.
+  iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
+  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL'=> <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_inh_into_op κ x x1 x2 :
   IsOp x x1 x2 → IntoSep (own_inh κ x) (own_inh κ x1) (own_inh κ x2).
 Proof.
-  rewrite /IsOp /IntoSep=> /leibniz_equiv_iff->. by rewrite -own_inh_op.
+  rewrite /IsOp /IntoSep=> ->. by rewrite -own_inh_op.
 Qed.
 Lemma own_inh_valid κ x : own_inh κ x -∗ ✓ x.
 Proof. iDestruct 1 as (γs) "[#? Hx]". by iApply own_valid. Qed.
@@ -277,7 +277,7 @@ Proof.
   rewrite /lft_tok /lft_dead. iIntros "H"; iDestruct 1 as (Λ') "[% H']".
   iDestruct (@big_sepMS_elem_of _ _ _ _ _ _ Λ' with "H") as "H"=> //.
   iDestruct (own_valid_2 with "H H'") as %Hvalid.
-  move: Hvalid=> /auth_own_valid /=; by rewrite op_singleton singleton_valid.
+  move: Hvalid=> /auth_frag_valid /=; by rewrite op_singleton singleton_valid.
 Qed.
 
 Lemma lft_tok_static q : q.[static]%I.
@@ -452,12 +452,12 @@ Proof.
   iModIntro. iSplitL "Hbox HE".
   { iNext. rewrite /lft_inh. iExists ({[γE]} ∪ PE).
     rewrite gset_to_gmap_union_singleton. iFrame. }
-  clear dependent PE. rewrite -(left_id_L ε op (◯ GSet {[γE]})).
+  clear dependent PE. rewrite -(left_id ε op (◯ GSet {[γE]})).
   iDestruct "HE◯" as "[HE◯' HE◯]". iSplitL "HE◯'".
   { iIntros (I) "HI". iApply (own_inh_auth with "HI HE◯'"). }
   iIntros (Q'). rewrite {1}/lft_inh. iDestruct 1 as (PE) "[>HE Hbox]".
   iDestruct (own_inh_valid_2 with "HE HE◯")
-    as %[Hle%gset_disj_included _]%auth_valid_discrete_2.
+    as %[Hle%gset_disj_included _]%auth_both_valid.
   iMod (own_inh_update_2 with "HE HE◯") as "HE".
   { apply auth_update_dealloc, gset_disj_dealloc_local_update. }
   iMod (slice_delete_full _ _ true with "Hslice Hbox")

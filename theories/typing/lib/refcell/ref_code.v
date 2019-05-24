@@ -26,7 +26,7 @@ Section ref_functions.
     { destruct st as [[[[??]?]?]|];
       iDestruct (own_valid_2 with "H● H◯")
         as %[[[=]|(?&[[? q'] n]&[=<-]&[=]&[[[Eq_ag ?%leibniz_equiv]_]|Hle])]
-               %option_included Hv]%auth_valid_discrete_2; simpl in *; subst.
+               %option_included Hv]%auth_both_valid; simpl in *; subst.
       - apply (inj to_agree), (inj2 pair) in Eq_ag.
         destruct Eq_ag. setoid_subst. eauto.
       - revert Hle=> /prod_included [/= /prod_included
@@ -166,7 +166,7 @@ Section ref_functions.
       with "[H↦lrc H●◯ Hν Hν' Hshr H†]" as "INV".
     { iDestruct (own_valid with "H●◯") as
           %[[[[_ ?]?]|[[_ [q0 Hq0]]%prod_included [n' Hn']]%prod_included]
-              %Some_included _]%auth_valid_discrete_2.
+              %Some_included _]%auth_both_valid.
       - simpl in *. setoid_subst.
         iExists None. iFrame. iMod (own_update with "H●◯") as "$".
         { apply auth_update_dealloc. rewrite -(right_id None op (Some _)).

@@ -137,7 +137,8 @@ Section refcell.
       - iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
         iExists κ, γ. iSplitR. by iApply lft_incl_refl. by iApply bor_na. }
     clear dependent n. iDestruct "H" as ([|n|n]) "Hn"; try lia.
-    - iFrame. iMod (own_alloc (● None)) as (γ) "Hst". done. iExists γ, None. by iFrame.
+    - iFrame. iMod (own_alloc (● None)) as (γ) "Hst"; first by apply auth_auth_valid.
+      iExists γ, None. by iFrame.
     - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
       iMod (own_alloc (● (refcell_st_to_R $ Some (ν, false, (1/2)%Qp, n)))) as (γ) "Hst".
       { by apply auth_auth_valid. }
