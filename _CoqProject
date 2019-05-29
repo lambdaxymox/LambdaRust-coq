@@ -1,5 +1,11 @@
 -Q theories lrust
--arg -w -arg -notation-overridden,-redundant-canonical-projection,-several-object-files,-convert_concl_no_check
+# We sometimes want to locally override notation and there is no good way to do that with scopes.
+-arg -w -arg -notation-overridden
+# non-canonical projections (https://github.com/coq/coq/pull/10076) do not exist yet in 8.9.
+-arg -w -arg -redundant-canonical-projection
+# change_no_check does not exist yet in 8.9.
+-arg -w -arg -convert_concl_no_check
+
 theories/lifetime/model/definitions.v
 theories/lifetime/model/faking.v
 theories/lifetime/model/creation.v
