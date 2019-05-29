@@ -215,7 +215,7 @@ Section heap.
       {[l +ₗ i := (q, Cinr 0%nat, to_agree v)]}).
   Proof.
     rewrite /heap_mapsto_vec heap_mapsto_eq /heap_mapsto_def /heap_mapsto_st=>?.
-    by rewrite /auth_frag (big_opL_commute (Auth None)) big_opL_commute1 //.
+    rewrite (big_opL_commute auth_frag) big_opL_commute1 //.
   Qed.
 
   Global Instance heap_mapsto_pred_fractional l (P : list val → iProp Σ):
