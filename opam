@@ -11,5 +11,5 @@ build: [make "-j%{jobs}%"]
 install: [make "install"]
 remove: [ "sh" "-c" "rm -rf '%{lib}%/coq/user-contrib/lrust'" ]
 depends: [
-  "coq-iris" { (= "dev.2019-06-05.3.9b2c6308") | (= "dev") }
+  "coq-iris" { (= "dev.2019-06-05.4.4e8ce7be") | (= "dev") }
 ]
