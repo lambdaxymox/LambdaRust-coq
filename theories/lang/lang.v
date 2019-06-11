@@ -596,9 +596,9 @@ Defined.
 Instance expr_inhabited : Inhabited expr := populate (Lit LitPoison).
 Instance val_inhabited : Inhabited val := populate (LitV LitPoison).
 
-Canonical Structure stateC := leibnizC state.
-Canonical Structure valC := leibnizC val.
-Canonical Structure exprC := leibnizC expr.
+Canonical Structure stateO := leibnizO state.
+Canonical Structure valO := leibnizO val.
+Canonical Structure exprO := leibnizO expr.
 
 (** Language *)
 Lemma lrust_lang_mixin : EctxiLanguageMixin of_val to_val fill_item head_step.

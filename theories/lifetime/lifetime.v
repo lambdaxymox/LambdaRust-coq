@@ -20,7 +20,7 @@ Notation lft_intersect_list l := (foldr lft_intersect static l).
 
 Instance lft_inhabited : Inhabited lft := populate static.
 
-Canonical lftC := leibnizC lft.
+Canonical lftO := leibnizO lft.
 
 Section derived.
 Context `{!invG Σ, !lftG Σ}.

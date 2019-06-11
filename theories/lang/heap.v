@@ -10,13 +10,13 @@ Set Default Proof Using "Type".
 Import uPred.
 
 Definition lock_stateR : cmraT :=
-  csumR (exclR unitC) natR.
+  csumR (exclR unitO) natR.
 
 Definition heapUR : ucmraT :=
-  gmapUR loc (prodR (prodR fracR lock_stateR) (agreeR valC)).
+  gmapUR loc (prodR (prodR fracR lock_stateR) (agreeR valO)).
 
 Definition heap_freeableUR : ucmraT :=
-  gmapUR block (prodR fracR (gmapR Z (exclR unitC))).
+  gmapUR block (prodR fracR (gmapR Z (exclR unitO))).
 
 Class heapG Σ := HeapG {
   heap_inG :> inG Σ (authR heapUR);
@@ -50,7 +50,7 @@ Section definitions.
   Definition heap_mapsto_vec (l : loc) (q : Qp) (vl : list val) : iProp Σ :=
     ([∗ list] i ↦ v ∈ vl, heap_mapsto (l +ₗ i) q v)%I.
 
-  Fixpoint inter (i0 : Z) (n : nat) : gmapR Z (exclR unitC) :=
+  Fixpoint inter (i0 : Z) (n : nat) : gmapR Z (exclR unitO) :=
     match n with O => ∅ | S n => <[i0 := Excl ()]>(inter (i0+1) n) end.
 
   Definition heap_freeable_def (l : loc) (q : Qp) (n: nat) : iProp Σ :=

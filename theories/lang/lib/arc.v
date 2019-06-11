@@ -103,11 +103,11 @@ Definition try_unwrap_full : val :=
 (* Not bundling heapG, as it may be shared with other users. *)
 
 (* See rc.v for understanding the structure of this CMRA.
-   The only additional thing is the [optionR (exclR unitC))], used to handle
+   The only additional thing is the [optionR (exclR unitO))], used to handle
    properly the locking mechanisme for the weak count. *)
 Definition arc_stR :=
-  prodUR (optionUR (csumR (prodR (prodR fracR positiveR) (optionR (exclR unitC)))
-                          (exclR unitC))) natUR.
+  prodUR (optionUR (csumR (prodR (prodR fracR positiveR) (optionR (exclR unitO)))
+                          (exclR unitO))) natUR.
 Class arcG Σ :=
   RcG :> inG Σ (authR arc_stR).
 Definition arcΣ : gFunctors := #[GFunctor (authR arc_stR)].

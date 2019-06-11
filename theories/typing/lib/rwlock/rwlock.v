@@ -6,7 +6,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Definition rwlock_stR :=
-  optionUR (csumR (exclR unitC) (prodR (prodR (agreeR lftC) fracR) positiveR)).
+  optionUR (csumR (exclR unitO) (prodR (prodR (agreeR lftO) fracR) positiveR)).
 Class rwlockG Σ :=
   RwLockG :> inG Σ (authR rwlock_stR).
 Definition rwlockΣ : gFunctors := #[GFunctor (authR rwlock_stR)].

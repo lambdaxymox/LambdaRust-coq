@@ -28,8 +28,8 @@ Definition join : val :=
       "join" ["c"].
 
 (** The CMRA & functor we need. *)
-Class spawnG Σ := SpawnG { spawn_tokG :> inG Σ (exclR unitC) }.
-Definition spawnΣ : gFunctors := #[GFunctor (exclR unitC)].
+Class spawnG Σ := SpawnG { spawn_tokG :> inG Σ (exclR unitO) }.
+Definition spawnΣ : gFunctors := #[GFunctor (exclR unitO)].
 
 Instance subG_spawnΣ {Σ} : subG spawnΣ Σ → spawnG Σ.
 Proof. solve_inG. Qed.

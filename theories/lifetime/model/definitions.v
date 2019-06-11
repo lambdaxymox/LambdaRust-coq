@@ -25,19 +25,19 @@ Inductive bor_state :=
   | Bor_in
   | Bor_open (q : frac)
   | Bor_rebor (κ : lft).
-Canonical bor_stateC := leibnizC bor_state.
+Canonical bor_stateO := leibnizO bor_state.
 
 Record lft_names := LftNames {
   bor_name : gname;
   cnt_name : gname;
   inh_name : gname
 }.
-Canonical lft_namesC := leibnizC lft_names.
+Canonical lft_namesO := leibnizO lft_names.
 
 Definition lft_stateR := csumR fracR unitR.
 Definition alftUR := gmapUR atomic_lft lft_stateR.
-Definition ilftUR := gmapUR lft (agreeR lft_namesC).
-Definition borUR := gmapUR slice_name (prodR fracR (agreeR bor_stateC)).
+Definition ilftUR := gmapUR lft (agreeR lft_namesO).
+Definition borUR := gmapUR slice_name (prodR fracR (agreeR bor_stateO)).
 Definition inhUR := gset_disjUR slice_name.
 
 Class lftG Σ := LftG {

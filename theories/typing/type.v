@@ -165,9 +165,9 @@ Section ofe.
       type_dist' n ty1 ty2.
   Instance type_dist : Dist type := type_dist'.
 
-  Let T := prodC
-    (prodC natC (thread_id -c> list val -c> iProp Σ))
-    (lft -c> thread_id -c> loc -c> iProp Σ).
+  Let T := prodO
+    (prodO natO (thread_id -d> list val -d> iProp Σ))
+    (lft -d> thread_id -d> loc -d> iProp Σ).
   Let P (x : T) : Prop :=
     (∀ κ tid l, Persistent (x.2 κ tid l)) ∧
     (∀ tid vl, x.1.2 tid vl -∗ ⌜length vl = x.1.1⌝) ∧
@@ -188,7 +188,7 @@ Section ofe.
     - split; [by destruct 1|by intros [[??] ?]; constructor].
     - split; [by destruct 1|by intros [[??] ?]; constructor].
   Qed.
-  Canonical Structure typeC : ofeT := OfeT type type_ofe_mixin.
+  Canonical Structure typeO : ofeT := OfeT type type_ofe_mixin.
 
   Global Instance ty_size_ne n : Proper (dist n ==> eq) ty_size.
   Proof. intros ?? EQ. apply EQ. Qed.
@@ -206,7 +206,7 @@ Section ofe.
     Proper ((≡) ==> eq ==> eq ==> eq ==> (≡)) ty_shr.
   Proof. intros ?? EQ ??-> ??-> ??->. apply EQ. Qed.
 
-  Global Instance type_cofe : Cofe typeC.
+  Global Instance type_cofe : Cofe typeO.
   Proof.
     apply (iso_cofe_subtype' P type_pack type_unpack).
     - by intros [].
@@ -231,7 +231,7 @@ Section ofe.
       st_dist' n ty1 ty2.
   Instance st_dist : Dist simple_type := st_dist'.
 
-  Definition st_unpack (ty : simple_type) : thread_id -c> list val -c> iProp Σ :=
+  Definition st_unpack (ty : simple_type) : thread_id -d> list val -d> iProp Σ :=
     λ tid vl, ty.(ty_own) tid vl.
 
   Definition st_ofe_mixin : OfeMixin simple_type.
@@ -240,7 +240,7 @@ Section ofe.
     - split; [by destruct 1|by constructor].
     - split; [by destruct 1|by constructor].
   Qed.
-  Canonical Structure stC : ofeT := OfeT simple_type st_ofe_mixin.
+  Canonical Structure stO : ofeT := OfeT simple_type st_ofe_mixin.
 
   Global Instance st_own_ne n :
     Proper (dist n ==> eq ==> eq ==> dist n) st_own.

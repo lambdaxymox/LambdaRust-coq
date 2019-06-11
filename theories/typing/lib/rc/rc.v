@@ -8,7 +8,7 @@ From lrust.typing Require Import typing option.
 Set Default Proof Using "Type".
 
 Definition rc_stR :=
-  prodUR (optionUR (csumR (prodR fracR positiveR) (exclR unitC))) natUR.
+  prodUR (optionUR (csumR (prodR fracR positiveR) (exclR unitO))) natUR.
 Class rcG Σ :=
   RcG :> inG Σ (authR rc_stR).
 Definition rcΣ : gFunctors := #[GFunctor (authR rc_stR)].

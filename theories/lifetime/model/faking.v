@@ -18,7 +18,7 @@ Proof.
   { iModIntro. iExists A, I. by iFrame. }
   iMod (own_alloc (● 0 ⋅ ◯ 0)) as (γcnt) "[Hcnt Hcnt']"; first by apply auth_both_valid.
   iMod (own_alloc ((● ∅ ⋅ ◯ ∅) :auth (gmap slice_name
-      (frac * agree bor_stateC)))) as (γbor) "[Hbor Hbor']";
+      (frac * agree bor_stateO)))) as (γbor) "[Hbor Hbor']";
     first by apply auth_both_valid.
   iMod (own_alloc ((● ε) :auth (gset_disj slice_name)))
      as (γinh) "Hinh"; first by apply auth_auth_valid.

@@ -7,7 +7,7 @@ Set Default Proof Using "Type".
 
 Definition refcell_stR :=
   optionUR (prodR (prodR
-             (agreeR (prodC lftC boolC))
+             (agreeR (prodO lftO boolO))
              fracR)
              positiveR).
 Class refcellG Σ :=
