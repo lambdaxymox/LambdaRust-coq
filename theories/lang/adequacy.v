@@ -27,7 +27,7 @@ Proof.
   iMod (own_alloc (● (∅ : heap_freeableUR))) as (fγ) "Hfγ";
     first by apply auth_auth_valid.
   set (Hheap := HeapG _ _ _ vγ fγ).
-  iModIntro. iExists (λ σ _, heap_ctx σ). iSplitL.
+  iModIntro. iExists (λ σ _, heap_ctx σ), (λ _, True%I). iSplitL.
   { iExists ∅. by iFrame. }
   by iApply (Hwp (LRustG _ _ Hheap)).
 Qed.
