@@ -290,7 +290,7 @@ Proof. rewrite /lft_dead. iDestruct 1 as (Λ) "[% H']". set_solver. Qed.
 Global Instance lft_tok_fractional κ : Fractional (λ q, q.[κ])%I.
 Proof.
   intros p q. rewrite /lft_tok -big_sepMS_sep. apply big_sepMS_proper.
-  intros Λ ?. rewrite -Cinl_op -op_singleton auth_frag_op own_op //.
+  intros Λ ?. rewrite Cinl_op -op_singleton auth_frag_op own_op //.
 Qed.
 Global Instance lft_tok_as_fractional κ q :
   AsFractional q.[κ] (λ q, q.[κ])%I q.
@@ -298,7 +298,7 @@ Proof. split. done. apply _. Qed.
 Global Instance idx_bor_own_fractional i : Fractional (λ q, idx_bor_own q i)%I.
 Proof.
   intros p q. rewrite /idx_bor_own -own_bor_op /own_bor. f_equiv=>?.
-  rewrite -auth_frag_op op_singleton pair_op agree_idemp. done.
+  rewrite -auth_frag_op op_singleton -pair_op agree_idemp. done.
 Qed.
 Global Instance idx_bor_own_as_fractional i q :
   AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.

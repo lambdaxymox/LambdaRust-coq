@@ -118,7 +118,7 @@ Section heap.
   Global Instance heap_mapsto_fractional l v: Fractional (λ q, l ↦{q} v)%I.
   Proof.
     intros p q.
-    by rewrite heap_mapsto_eq -own_op -auth_frag_op op_singleton pair_op agree_idemp.
+    by rewrite heap_mapsto_eq -own_op -auth_frag_op op_singleton -pair_op agree_idemp.
   Qed.
   Global Instance heap_mapsto_as_fractional l q v:
     AsFractional (l ↦{q} v) (λ q, l ↦{q} v)%I q.
@@ -143,7 +143,7 @@ Section heap.
   Proof.
     rewrite heap_mapsto_eq -own_op -auth_frag_op own_valid discrete_valid.
     eapply pure_elim; [done|]=> /auth_frag_valid /=.
-    rewrite op_singleton pair_op singleton_valid=> -[? /agree_op_invL'->]; eauto.
+    rewrite op_singleton -pair_op singleton_valid=> -[? /agree_op_invL'->]; eauto.
   Qed.
 
   Lemma heap_mapsto_vec_nil l q : l ↦∗{q} [] ⊣⊢ True.
@@ -272,7 +272,7 @@ Section heap.
     †{q1}l…n ∗ †{q2}l+ₗn … n' ⊣⊢ †{q1+q2}l…(n+n').
   Proof.
     by rewrite heap_freeable_eq /heap_freeable_def -own_op -auth_frag_op
-      op_singleton pair_op inter_op.
+      op_singleton -pair_op inter_op.
   Qed.
 
   (** Properties about heap_freeable_rel and heap_freeable *)

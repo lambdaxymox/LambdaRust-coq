@@ -527,7 +527,7 @@ Section arc.
         iApply ("HΦ"). rewrite -{2}Hq''. iFrame. by iApply close_last_strong.
       + destruct Hqq' as [? ->].
         rewrite -[in (_, _)](Pos.succ_pred s) // -[wl in Cinl (_, wl)]left_id
-                -Pos.add_1_l -2!pair_op -Cinl_op Some_op.
+                -Pos.add_1_l 2!pair_op Cinl_op Some_op.
         iMod (own_update_2 _ _ _ _ with "H● Hown") as "H●".
         { apply auth_update_dealloc, prod_local_update_1, @cancel_local_update_unit, _. }
         iMod ("Hclose" with "[- HΦ]") as "_".

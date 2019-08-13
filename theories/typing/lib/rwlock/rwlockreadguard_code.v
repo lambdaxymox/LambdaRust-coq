@@ -117,7 +117,7 @@ Section rwlockreadguard_functions.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.
           assert (n = 1%positive ⋅ Pos.pred n) as EQn.
           { rewrite pos_op_plus -Pplus_one_succ_l Pos.succ_pred // =>?. by subst. }
-          rewrite {1}EQn -{1}(agree_idemp (to_agree _)) -2!pair_op -Cinr_op Some_op.
+          rewrite {1}EQn -{1}(agree_idemp (to_agree _)) 2!pair_op Cinr_op Some_op.
           apply (cancel_local_update_unit (reading_st q ν)) , _. }
       iApply (wp_step_fupd with "INV"). done. set_solver.
       iApply (wp_cas_int_suc with "Hlx"); try done. iNext. iIntros "Hlx INV !>".

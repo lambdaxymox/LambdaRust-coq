@@ -190,7 +190,7 @@ Section refcell_functions.
               apply Qcplus_le_mono_r, Qp_ge_0.
             - done. }
           iFrame "∗#". iExists (Some (ν, false, _, _)). iFrame "∗#".
-          rewrite [_ ⋅ _]comm -Some_op !pair_op agree_idemp. iFrame.
+          rewrite [_ ⋅ _]comm -Some_op -!pair_op agree_idemp. iFrame.
           iExists _. iFrame. rewrite -(assoc Qp_plus) Qp_div_2 //.
         - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
           iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply

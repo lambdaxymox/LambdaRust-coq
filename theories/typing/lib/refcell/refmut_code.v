@@ -143,7 +143,7 @@ Section refmut_functions.
         iDestruct "Hq" as (q) "(<- & ?)". iFrame.
       - simpl in *. setoid_subst. iExists (Some (_, _, _, _)).
         iMod (own_update_2 with "H● H◯") as "$".
-        { apply auth_update_dealloc. rewrite -(agree_idemp (to_agree _)) -!pair_op Some_op.
+        { apply auth_update_dealloc. rewrite -(agree_idemp (to_agree _)) !pair_op Some_op.
           apply (cancel_local_update_unit (writing_stR q _)), _. }
         iDestruct "INV" as "(H† & Hq & _)".
         rewrite /= (_:Z.neg (1%positive ⋅ n') + 1 = Z.neg n');
@@ -322,7 +322,7 @@ Section refmut_functions.
     rewrite !shift_loc_assoc. wp_write. do 3 (wp_op; wp_write).
     iMod ("Hclosena" with "[Hlrc H● Hν1 H†] Hna") as "[Hβ Hna]".
     { iExists (Some (_, true, _, _)).
-      rewrite -Some_op !pair_op agree_idemp /= (comm _ xH _).
+      rewrite -Some_op -!pair_op agree_idemp /= (comm _ xH _).
       iFrame. iSplitL; [|done]. iExists _. iFrame.
       rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
     iMod ("Hβclose" with "Hβ") as "Hα". iMod ("Hclose1" with "Hα HL") as "HL".

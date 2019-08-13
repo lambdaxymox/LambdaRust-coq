@@ -83,7 +83,7 @@ Section ref_functions.
     wp_let. wp_apply (wp_memcpy with "[$Hlr $H↦]"); [done..|].
     iIntros "[Hlr H↦]". wp_seq. iMod ("Hcloseα2" with "[$H◯] Hna") as "[Hα1 Hna]".
     iMod ("Hcloseδ" with "[H↦lrc H● Hν1 Hshr' H†] Hna") as "[Hδ Hna]".
-    { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op !pair_op agree_idemp.
+    { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op -!pair_op agree_idemp.
       iFrame. iExists _. iFrame.
       rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
     iMod ("Hcloseβ" with "Hδ") as "Hβ". iMod ("Hcloseα1" with "[$H↦]") as "Hα2".
@@ -178,7 +178,7 @@ Section ref_functions.
           by rewrite Pos.add_1_l Pos.pred_succ. }
         iMod (own_update with "H●◯") as "$".
         { apply auth_update_dealloc.
-          rewrite -(agree_idemp (to_agree _)) -!pair_op Some_op.
+          rewrite -(agree_idemp (to_agree _)) !pair_op Some_op.
           apply (cancel_local_update_unit (reading_stR q ν)), _. }
         iApply step_fupd_intro; first set_solver. iExists (q+q'')%Qp. iFrame.
         by rewrite assoc (comm _ q0 q). }
@@ -349,7 +349,7 @@ Section ref_functions.
     iDestruct "Hrefs" as "(Hrefs1 & Hrefs2 & Hrefs3 & Hrefs4)".
     rewrite !shift_loc_assoc. wp_write. do 3 (wp_op; wp_write).
     iMod ("Hclosena" with "[H↦lrc H● Hν1 Hshr' H†] Hna") as "[Hβ Hna]".
-    { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op !pair_op agree_idemp.
+    { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op -!pair_op agree_idemp.
       iFrame. iExists _. iFrame.
       rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
     iMod ("Hβclose" with "Hβ") as "Hα". iMod ("Hclose1" with "Hα HL") as "HL".

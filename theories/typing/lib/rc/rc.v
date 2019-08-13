@@ -365,7 +365,7 @@ Section code.
           iFrame. iExists _. iFrame. auto with iFrame.
         * iMod (own_update_2 with "Hst Htok") as "Hst".
           { apply auth_update_dealloc.
-            rewrite -pair_op -Cinl_op Some_op -{1}(left_id 0%nat _ weak) -pair_op.
+            rewrite pair_op Cinl_op Some_op -{1}(left_id 0%nat _ weak) pair_op.
             apply (cancel_local_update_unit _ (_, _)). }
           iApply "Hclose". iFrame. iExists _. iFrame. iExists (q+q'')%Qp. iFrame.
           iSplitL; first last.
@@ -585,7 +585,7 @@ Section code.
       split; simpl; last done. apply frac_valid'. rewrite -H comm_L -{2}(Qp_div_2 qb).
       apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
       apply Qcplus_le_mono_r, Qp_ge_0. }
-    rewrite right_id -Some_op Cinl_op pair_op. iDestruct "Hνtok" as "[Hνtok1 Hνtok2]".
+    rewrite right_id -Some_op -Cinl_op -pair_op. iDestruct "Hνtok" as "[Hνtok1 Hνtok2]".
     iMod ("Hclose3" with "[$Hrctok] Hna") as "[Hα1 Hna]".
     iMod ("Hclose2" with "[Hrc● Hl'1 Hl'2 Hl'† Hνtok2 Hν† $Hna]") as "Hna".
     { iExists _. iFrame "Hrc●". iExists _. rewrite Z.add_comm. iFrame.

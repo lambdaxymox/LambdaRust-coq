@@ -172,7 +172,7 @@ Section code.
         rewrite -Hq''q0 comm_L -{2}(Qp_div_2 qb).
         apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
         apply Qcplus_le_mono_r, Qp_ge_0. }
-      rewrite right_id -Some_op Cinl_op pair_op.
+      rewrite right_id -Some_op -Cinl_op -pair_op.
       iMod ("Hclose3" with "[$Hwtok] Hna") as "[Hα1 Hna]".
       iMod ("Hclose2" with "[Hrc● Hl'1 Hl'2 Hl'† Hν2 Hν† $Hna]") as "Hna".
       { iExists _. iFrame "Hrc●". iExists _. rewrite Z.add_comm. iFrame.
