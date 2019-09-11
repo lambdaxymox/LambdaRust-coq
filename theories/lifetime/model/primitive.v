@@ -256,12 +256,12 @@ Qed.
 (** Basic rules about lifetimes  *)
 Instance lft_inhabited : Inhabited lft := _.
 Instance bor_idx_inhabited : Inhabited bor_idx := _.
-Instance lft_intersect_comm : Comm eq lft_intersect := _.
-Instance lft_intersect_assoc : Assoc eq lft_intersect := _.
-Instance lft_intersect_inj_1 κ : Inj eq eq (lft_intersect κ) := _.
-Instance lft_intersect_inj_2 κ : Inj eq eq (λ κ', lft_intersect κ' κ) := _.
-Instance lft_intersect_left_id : LeftId eq static lft_intersect := _.
-Instance lft_intersect_right_id : RightId eq static lft_intersect := _.
+Instance lft_intersect_comm : Comm (A:=lft) eq (⊓) := _.
+Instance lft_intersect_assoc : Assoc (A:=lft) eq (⊓) := _.
+Instance lft_intersect_inj_1 κ : Inj eq eq (κ ⊓) := _.
+Instance lft_intersect_inj_2 κ : Inj eq eq (⊓ κ) := _.
+Instance lft_intersect_left_id : LeftId eq static (⊓) := _.
+Instance lft_intersect_right_id : RightId eq static (⊓) := _.
 
 Lemma lft_tok_sep q κ1 κ2 : q.[κ1] ∗ q.[κ2] ⊣⊢ q.[κ1 ⊓ κ2].
 Proof. by rewrite /lft_tok -big_sepMS_disj_union. Qed.
@@ -269,7 +269,7 @@ Proof. by rewrite /lft_tok -big_sepMS_disj_union. Qed.
 Lemma lft_dead_or κ1 κ2 : [†κ1] ∨ [†κ2] ⊣⊢ [† κ1 ⊓ κ2].
 Proof.
   rewrite /lft_dead -or_exist. apply exist_proper=> Λ.
-  rewrite -sep_or_r -pure_or. do 2 f_equiv. unfold lft_intersect. set_solver.
+  rewrite -sep_or_r -pure_or. do 2 f_equiv. set_solver.
 Qed.
 
 Lemma lft_tok_dead q κ : q.[κ] -∗ [† κ] -∗ False.

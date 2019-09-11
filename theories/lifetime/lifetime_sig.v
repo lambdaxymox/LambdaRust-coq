@@ -21,7 +21,7 @@ Module Type lifetime_sig.
   (** Definitions *)
   Parameter lft : Type.
   Parameter static : lft.
-  Parameter lft_intersect : lft → lft → lft.
+  Declare Instance lft_intersect : Meet lft.
 
   Parameter lft_ctx : ∀ `{!invG Σ, !lftG Σ}, iProp Σ.
 
@@ -44,7 +44,6 @@ Module Type lifetime_sig.
   Notation "&{ κ , i }" := (idx_bor κ i) (format "&{ κ , i }") : bi_scope.
 
   Infix "⊑" := lft_incl (at level 70) : bi_scope.
-  Infix "⊓" := lft_intersect (at level 40) : stdpp_scope.
 
   Section properties.
   Context `{!invG Σ, !lftG Σ}.
@@ -53,12 +52,12 @@ Module Type lifetime_sig.
   Global Declare Instance lft_inhabited : Inhabited lft.
   Global Declare Instance bor_idx_inhabited : Inhabited bor_idx.
 
-  Global Declare Instance lft_intersect_comm : Comm eq lft_intersect.
-  Global Declare Instance lft_intersect_assoc : Assoc eq lft_intersect.
-  Global Declare Instance lft_intersect_inj_1 κ : Inj eq eq (lft_intersect κ).
-  Global Declare Instance lft_intersect_inj_2 κ : Inj eq eq (λ κ', lft_intersect κ' κ).
-  Global Declare Instance lft_intersect_left_id : LeftId eq static lft_intersect.
-  Global Declare Instance lft_intersect_right_id : RightId eq static lft_intersect.
+  Global Declare Instance lft_intersect_comm : Comm (A:=lft) eq (⊓).
+  Global Declare Instance lft_intersect_assoc : Assoc (A:=lft) eq (⊓).
+  Global Declare Instance lft_intersect_inj_1 (κ : lft) : Inj eq eq (κ ⊓).
+  Global Declare Instance lft_intersect_inj_2 (κ : lft) : Inj eq eq (⊓ κ).
+  Global Declare Instance lft_intersect_left_id : LeftId eq static meet.
+  Global Declare Instance lft_intersect_right_id : RightId eq static meet.
 
   Global Declare Instance lft_ctx_persistent : Persistent lft_ctx.
   Global Declare Instance lft_dead_persistent κ : Persistent ([†κ]).

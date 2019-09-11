@@ -16,7 +16,7 @@ Module Export lifetime : lifetime_sig.
   Include creation.
 End lifetime.
 
-Notation lft_intersect_list l := (foldr lft_intersect static l).
+Notation lft_intersect_list l := (foldr (⊓) static l).
 
 Instance lft_inhabited : Inhabited lft := populate static.
 

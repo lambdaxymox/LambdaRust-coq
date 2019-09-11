@@ -51,7 +51,7 @@ Section lft_contexts.
     - iDestruct "H" as "[Hq Hq']".
       iDestruct "Hq" as (κ0) "(% & Hq & #?)".
       iDestruct "Hq'" as (κ0') "(% & Hq' & #?)". simpl in *.
-      rewrite (inj (lft_intersect (foldr lft_intersect static κs)) κ0' κ0); last congruence.
+      rewrite (inj ((lft_intersect_list κs) ⊓) κ0' κ0); last congruence.
       iExists κ0. by iFrame "∗%".
   Qed.
 
@@ -229,8 +229,8 @@ Section lft_contexts.
     iDestruct "HL" as "[HL1 HL2]". rewrite {2}/llctx_interp /llctx_elt_interp.
     iDestruct (big_sepL_lookup_acc with "HL2") as "[Hκ Hclose]". done.
     iDestruct "Hκ" as (κ0) "(EQ & Htok & #Hend)". simpl. iDestruct "EQ" as %->.
-    iAssert (∃ q', q'.[foldr lft_intersect static κs] ∗
-      (q'.[foldr lft_intersect static κs] ={F}=∗ llctx_interp L (qL / 2)))%I
+    iAssert (∃ q', q'.[lft_intersect_list κs] ∗
+      (q'.[lft_intersect_list κs] ={F}=∗ llctx_interp L (qL / 2)))%I
       with "[> HE HL1]" as "H".
     { move:(qL/2)%Qp=>qL'. clear HL. iClear "Hend".
       iInduction Hκs as [|κ κs Hκ ?] "IH" forall (qL').
