@@ -1,6 +1,6 @@
 From Coq Require Import Qcanon.
 From iris.proofmode Require Import tactics.
-From lrust.lang.lib Require Import new_delete memcpy.
+From lrust.lang.lib Require Import memcpy.
 From lrust.typing Require Export type.
 From lrust.typing Require Import util uninit type_context programs.
 Set Default Proof Using "Type".
@@ -254,7 +254,7 @@ Section typing.
     iApply wp_new; try done. iModIntro.
     iIntros (l) "(H† & Hlft)". rewrite tctx_interp_singleton tctx_hasty_val.
     iNext. rewrite freeable_sz_full Z2Nat.id //. iFrame.
-    iExists (repeat #☠ (Z.to_nat n)). iFrame. by rewrite /= repeat_length. 
+    iExists (repeat #☠ (Z.to_nat n)). iFrame. by rewrite /= repeat_length.
   Qed.
 
   Lemma type_new {E L C T} (n' : nat) x (n : Z) e :

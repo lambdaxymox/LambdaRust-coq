@@ -21,7 +21,7 @@ Section join.
                             letcall: "r" := "call_once_A" ["fA"]%E in
                             finish ["c"; "r"]] in
       letcall: "retB" := "call_once_B" ["fB"]%E in
-      let: "retA" := join ["join"] in
+      let: "retA" := spawn.join ["join"] in
       (* Put the results in a pair. *)
       let: "ret" := new [ #(R_A.(ty_size) + R_B.(ty_size)) ] in
       "ret" +ₗ #0 <-{R_A.(ty_size)} !"retA";;

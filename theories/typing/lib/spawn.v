@@ -110,7 +110,7 @@ Section spawn.
   Definition join : val :=
     funrec: <> ["c"] :=
       let: "c'" := !"c" in
-      let: "r" := join ["c'"] in
+      let: "r" := spawn.join ["c'"] in
       delete [ #1; "c"];; return: ["r"].
 
   Lemma join_type retty `{!TyWf retty} :
