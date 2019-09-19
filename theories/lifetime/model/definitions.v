@@ -74,7 +74,7 @@ Definition to_lft_stateR (b : bool) : lft_stateR :=
   if b then Cinl 1%Qp else Cinr ().
 Definition to_alftUR : gmap atomic_lft bool → alftUR := fmap to_lft_stateR.
 Definition to_ilftUR : gmap lft lft_names → ilftUR := fmap to_agree.
-Definition to_borUR : gmap slice_name bor_state → borUR := fmap ((1%Qp,) ∘ to_agree).
+Definition to_borUR : gmap slice_name bor_state → borUR := fmap ((1%Qp,.) ∘ to_agree).
 
 Section defs.
   Context `{!invG Σ, !lftG Σ}.

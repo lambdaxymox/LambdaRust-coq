@@ -166,8 +166,8 @@ Section ofe.
   Instance type_dist : Dist type := type_dist'.
 
   Let T := prodO
-    (prodO natO (thread_id -d> list val -d> iProp Σ))
-    (lft -d> thread_id -d> loc -d> iProp Σ).
+    (prodO natO (thread_id -d> list val -d> iPropO Σ))
+    (lft -d> thread_id -d> loc -d> iPropO Σ).
   Let P (x : T) : Prop :=
     (∀ κ tid l, Persistent (x.2 κ tid l)) ∧
     (∀ tid vl, x.1.2 tid vl -∗ ⌜length vl = x.1.1⌝) ∧
@@ -231,7 +231,7 @@ Section ofe.
       st_dist' n ty1 ty2.
   Instance st_dist : Dist simple_type := st_dist'.
 
-  Definition st_unpack (ty : simple_type) : thread_id -d> list val -d> iProp Σ :=
+  Definition st_unpack (ty : simple_type) : thread_id -d> list val -d> iPropO Σ :=
     λ tid vl, ty.(ty_own) tid vl.
 
   Definition st_ofe_mixin : OfeMixin simple_type.

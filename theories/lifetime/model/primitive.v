@@ -258,8 +258,8 @@ Instance lft_inhabited : Inhabited lft := _.
 Instance bor_idx_inhabited : Inhabited bor_idx := _.
 Instance lft_intersect_comm : Comm (A:=lft) eq (⊓) := _.
 Instance lft_intersect_assoc : Assoc (A:=lft) eq (⊓) := _.
-Instance lft_intersect_inj_1 κ : Inj eq eq (κ ⊓) := _.
-Instance lft_intersect_inj_2 κ : Inj eq eq (⊓ κ) := _.
+Instance lft_intersect_inj_1 κ : Inj eq eq (κ ⊓.) := _.
+Instance lft_intersect_inj_2 κ : Inj eq eq (.⊓ κ) := _.
 Instance lft_intersect_left_id : LeftId eq static (⊓) := _.
 Instance lft_intersect_right_id : RightId eq static (⊓) := _.
 

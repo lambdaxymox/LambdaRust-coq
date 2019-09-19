@@ -54,8 +54,8 @@ Module Type lifetime_sig.
 
   Global Declare Instance lft_intersect_comm : Comm (A:=lft) eq (⊓).
   Global Declare Instance lft_intersect_assoc : Assoc (A:=lft) eq (⊓).
-  Global Declare Instance lft_intersect_inj_1 (κ : lft) : Inj eq eq (κ ⊓).
-  Global Declare Instance lft_intersect_inj_2 (κ : lft) : Inj eq eq (⊓ κ).
+  Global Declare Instance lft_intersect_inj_1 (κ : lft) : Inj eq eq (κ ⊓.).
+  Global Declare Instance lft_intersect_inj_2 (κ : lft) : Inj eq eq (.⊓ κ).
   Global Declare Instance lft_intersect_left_id : LeftId eq static meet.
   Global Declare Instance lft_intersect_right_id : RightId eq static meet.
 

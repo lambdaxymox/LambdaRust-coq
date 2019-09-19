@@ -51,7 +51,7 @@ Section lft_contexts.
     - iDestruct "H" as "[Hq Hq']".
       iDestruct "Hq" as (κ0) "(% & Hq & #?)".
       iDestruct "Hq'" as (κ0') "(% & Hq' & #?)". simpl in *.
-      rewrite (inj ((lft_intersect_list κs) ⊓) κ0' κ0); last congruence.
+      rewrite (inj ((lft_intersect_list κs) ⊓.) κ0' κ0); last congruence.
       iExists κ0. by iFrame "∗%".
   Qed.
 

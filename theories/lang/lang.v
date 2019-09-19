@@ -430,13 +430,13 @@ Qed.
 
 Definition fresh_block (σ : state) : block :=
   let loclst : list loc := elements (dom _ σ : gset loc) in
-  let blockset : gset block := foldr (λ l, ({[l.1]} ∪)) ∅ loclst in
+  let blockset : gset block := foldr (λ l, ({[l.1]} ∪.)) ∅ loclst in
   fresh blockset.
 
 Lemma is_fresh_block σ i : σ !! (fresh_block σ,i) = None.
 Proof.
   assert (∀ (l : loc) ls (X : gset block),
-    l ∈ ls → l.1 ∈ foldr (λ l, ({[l.1]} ∪)) X ls) as help.
+    l ∈ ls → l.1 ∈ foldr (λ l, ({[l.1]} ∪.)) X ls) as help.
   { induction 1; set_solver. }
   rewrite /fresh_block /shift_loc /= -(not_elem_of_dom (D := gset loc)) -elem_of_elements.
   move=> /(help _ _ ∅) /=. apply is_fresh.

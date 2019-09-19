@@ -174,7 +174,7 @@ Section heap.
       { rewrite !heap_mapsto_vec_nil. iIntros "_"; auto. }
       rewrite !heap_mapsto_vec_cons. iIntros "[[Hv1 Hvl1] [Hv2 Hvl2]]".
       iDestruct (IH (l +ₗ 1) with "[$Hvl1 $Hvl2]") as "[% $]"; subst.
-      rewrite (inj_iff (:: vl2)).
+      rewrite (inj_iff (.:: vl2)).
       iDestruct (heap_mapsto_agree with "[$Hv1 $Hv2]") as %<-.
       iSplit; first done. iFrame.
     - by iIntros "[% [$ Hl2]]"; subst.

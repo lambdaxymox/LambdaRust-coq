@@ -36,14 +36,14 @@ Proof.
   iMod (box_empty with "Hbox") as "[HP Hbox]"=>//; first set_solver.
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
-  iDestruct (big_sepS_filter_acc (⊂ κ) _ _ (dom _ I) with "Halive")
+  iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom _ I) with "Halive")
     as "[Halive Halive']".
   { intros κ'. rewrite elem_of_dom. eauto. }
   iApply fupd_trans. iApply fupd_mask_mono; first by apply union_subseteq_l.
   iMod ("Hvs" $! I with "[HI Halive Hbox Hbor] HP Hκ") as "(Hinv & HQ & Hcnt')".
   { rewrite lft_vs_inv_unfold. iFrame. rewrite /lft_bor_dead.
     iExists (dom _ B), P. rewrite !gset_to_gmap_dom -map_fmap_compose.
-    rewrite (map_fmap_ext _ ((1%Qp,) ∘ to_agree) B); last naive_solver.
+    rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last naive_solver.
     iFrame. }
   rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(?&HI&Halive)".
   iSpecialize ("Halive'" with "Halive").
@@ -100,7 +100,7 @@ Proof.
 Qed.
 
 Definition kill_set (I : gmap lft lft_names) (Λ : atomic_lft) : gset lft :=
-  filter (Λ ∈) (dom (gset lft) I).
+  filter (Λ ∈.) (dom (gset lft) I).
 
 Lemma elem_of_kill_set I Λ κ : κ ∈ kill_set I Λ ↔ Λ ∈ κ ∧ is_Some (I !! κ).
 Proof. by rewrite /kill_set elem_of_filter elem_of_dom. Qed.
