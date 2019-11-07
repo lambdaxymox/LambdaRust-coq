@@ -29,12 +29,12 @@ Ltac inv_bin_op_eval :=
   | H : bin_op_eval _ ?c _ _ _ |- _ => is_constructor c; inversion H; clear H; simplify_eq/=
   end.
 
-Local Hint Extern 0 (atomic _) => solve_atomic.
-Local Hint Extern 0 (head_reducible _ _) => eexists _, _, _, _; simpl.
+Local Hint Extern 0 (atomic _) => solve_atomic : core.
+Local Hint Extern 0 (head_reducible _ _) => eexists _, _, _, _; simpl : core.
 
-Local Hint Constructors head_step bin_op_eval lit_neq lit_eq.
-Local Hint Resolve alloc_fresh.
-Local Hint Resolve to_of_val.
+Local Hint Constructors head_step bin_op_eval lit_neq lit_eq : core.
+Local Hint Resolve alloc_fresh : core.
+Local Hint Resolve to_of_val : core.
 
 Class AsRec (e : expr) (f : binder) (xl : list binder) (erec : expr) :=
   as_rec : e = Rec f xl erec.
