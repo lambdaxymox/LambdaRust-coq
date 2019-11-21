@@ -181,7 +181,7 @@ Proof.
         solve_ndisj. by rewrite lookup_fmap EQB.
       iDestruct (add_vs with "EQ Hvs [HvsQ]") as "Hvs".
       { iNext. iIntros "HQ H†". iApply "HPP'". iApply ("HvsQ" with "HQ H†"). }
-      iMod (slice_insert_empty _ _ true with "Hbox") as (j) "(% & #Hs' & Hbox)".
+      iMod (slice_insert_empty _ _ true _ Q with "Hbox") as (j) "(% & #Hs' & Hbox)".
       iMod (own_bor_update_2 with "Hown Hbor") as "Hown".
       { apply auth_update. etrans.
         - apply delete_singleton_local_update, _.
