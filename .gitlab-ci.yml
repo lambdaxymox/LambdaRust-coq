@@ -41,10 +41,10 @@ build-coq.8.10.1:
   tags:
   - fp-timing
 
-build-coq.8.9.0:
+build-coq.8.9.1:
   <<: *template
   variables:
-    OPAM_PINS: "coq version 8.9.0"
+    OPAM_PINS: "coq version 8.9.1"
 
 build-iris.dev:
   <<: *template
