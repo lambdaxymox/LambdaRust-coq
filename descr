@@ -1,2 +1,0 @@
-A formal model of a Rust core langauge and type system, a logical relation for
-the type system, and safety proof for some Rust libraries.

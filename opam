@@ -1,15 +1,21 @@
-opam-version: "1.2"
+opam-version: "2.0"
 name: "coq-lambda-rust"
-version: "dev"
 maintainer: "Ralf Jung <jung@mpi-sws.org>"
 authors: "The RustBelt Team"
 license: "BSD"
-homepage: "http://plv.mpi-sws.org/rustbelt/"
+homepage: "https://plv.mpi-sws.org/rustbelt/"
 bug-reports: "https://gitlab.mpi-sws.org/iris/lambda-rust/issues"
-dev-repo: "https://gitlab.mpi-sws.org/iris/lambda-rust.git"
-build: [make "-j%{jobs}%"]
-install: [make "install"]
-remove: [ "sh" "-c" "rm -rf '%{lib}%/coq/user-contrib/lrust'" ]
+dev-repo: "git+https://gitlab.mpi-sws.org/iris/lambda-rust.git"
+
+synopsis: "LambdaRust Coq formalization"
+description: """
+A formal model of a Rust core langauge and type system, a logical relation for
+the type system, and safety proof for some Rust libraries.
+"""
+
 depends: [
   "coq-iris" { (= "dev.2019-12-13.0.335ff6d7") | (= "dev") }
 ]
+
+build: [make "-j%{jobs}%"]
+install: [make "install"]
