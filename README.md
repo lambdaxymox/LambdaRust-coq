@@ -11,7 +11,7 @@ This version is known to compile with:
 
 ## Building from source
 
-When building from source, we recommend to use opam (1.2.2 or newer) for
+When building from source, we recommend to use opam (2.0.0 or newer) for
 installing the dependencies.  This requires the following two repositories:
 
     opam repo add coq-released https://coq.inria.fr/opam/released
