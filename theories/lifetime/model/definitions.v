@@ -230,7 +230,7 @@ Lemma lft_vs_inv_go_ne κ (f f' : ∀ κ', κ' ⊂ κ → iProp Σ) I n :
   (∀ κ' (Hκ : κ' ⊂ κ), f κ' Hκ ≡{n}≡ f' κ' Hκ) →
   lft_vs_inv_go κ f I ≡{n}≡ lft_vs_inv_go κ f' I.
 Proof.
-  intros Hf. apply sep_ne, sep_ne, big_opS_ne=> // κ'.
+  intros Hf. apply sep_ne, sep_ne, big_opS_ne=> // κ' _.
   by apply forall_ne=> Hκ.
 Qed.
 
