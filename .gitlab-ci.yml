@@ -37,7 +37,6 @@ build-coq.8.11.0:
   variables:
     OPAM_PINS: "coq version 8.11.0"
     OPAM_PKG: "coq-lambda-rust"
-    TIMING_CONF: "coq-8.11.0"
   tags:
   - fp-timing
 
