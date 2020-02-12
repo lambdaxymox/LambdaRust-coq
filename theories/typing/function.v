@@ -24,7 +24,7 @@ Section fn.
          ⌜vl = [@RecV fb (kb::xb) e H]⌝ ∗ ⌜length xb = n⌝ ∗
          ▷ ∀ (x : A) (ϝ : lft) (k : val) (xl : vec val (length xb)),
             □ typed_body ((fp x).(fp_E)  ϝ) [ϝ ⊑ₗ []]
-                         [k◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [v!!!0 ◁ box (fp x).(fp_ty)])]
+                         [k◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [(v!!!0%fin:val) ◁ box (fp x).(fp_ty)])]
                          (zip_with (TCtx_hasty ∘ of_val) xl
                                    (box <$> (vec_to_list (fp x).(fp_tys))))
                          (subst_v (fb::kb::xb) (RecV fb (kb::xb) e:::k:::xl) e))%I |}.
@@ -318,7 +318,7 @@ Section typing.
                    {A} (fp : A → fn_params (length ps)) (k : val) x :
     Forall (lctx_lft_alive E L) κs →
     (∀ ϝ, elctx_sat (((λ κ, ϝ ⊑ₑ κ) <$> κs) ++ E) L ((fp x).(fp_E) ϝ)) →
-    typed_body E L [k ◁cont(L, λ v : vec _ 1, (v!!!0 ◁ box (fp x).(fp_ty)) :: T)]
+    typed_body E L [k ◁cont(L, λ v : vec _ 1, ((v!!!0%fin:val) ◁ box (fp x).(fp_ty)) :: T)]
                ((p ◁ fn fp) ::
                 zip_with TCtx_hasty ps (box <$> vec_to_list (fp x).(fp_tys)) ++
                 T)
@@ -366,7 +366,7 @@ Section typing.
     typed_body E L C T (letcall: b := p ps in e).
   Proof.
     iIntros (?? Hpsc ????) "He".
-    iApply (type_cont_norec [_] _ (λ r, (r!!!0 ◁ box (fp x).(fp_ty)) :: T')).
+    iApply (type_cont_norec [_] _ (λ r, ((r!!!0%fin:val) ◁ box (fp x).(fp_ty)) :: T')).
     - (* TODO : make [solve_closed] work here. *)
       eapply is_closed_weaken; first done. set_solver+.
     - (* TODO : make [solve_closed] work here. *)
@@ -395,7 +395,7 @@ Section typing.
     n = length argsb →
     □ (∀ x ϝ (f : val) k (args : vec val (length argsb)),
           typed_body ((fp x).(fp_E) ϝ) [ϝ ⊑ₗ []]
-                     [k ◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [v!!!0 ◁ box (fp x).(fp_ty)])]
+                     [k ◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [(v!!!0%fin:val) ◁ box (fp x).(fp_ty)])]
                      ((f ◁ fn fp) ::
                         zip_with (TCtx_hasty ∘ of_val) args
                                  (box <$> vec_to_list (fp x).(fp_tys)) ++ T)
@@ -418,7 +418,7 @@ Section typing.
     n = length argsb →
     □ (∀ x ϝ k (args : vec val (length argsb)),
         typed_body ((fp x).(fp_E) ϝ) [ϝ ⊑ₗ []]
-                   [k ◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [v!!!0 ◁ box (fp x).(fp_ty)])]
+                   [k ◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [(v!!!0%fin:val) ◁ box (fp x).(fp_ty)])]
                    (zip_with (TCtx_hasty ∘ of_val) args
                              (box <$> vec_to_list (fp x).(fp_tys)) ++ T)
                    (subst_v (BNamed "return" :: argsb) (k ::: args) e)) -∗

@@ -258,7 +258,7 @@ Section rwlock_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_cont [_] [ϝ ⊑ₗ []] (λ r, [x ◁ box (&shr{α}(rwlock ty));
-                                        r!!!0 ◁ box (option (rwlockwriteguard α ty))]));
+                                        (r!!!0%fin:val) ◁ box (option (rwlockwriteguard α ty))]));
       [iIntros (k)|iIntros "/= !#"; iIntros (k arg); inv_vec arg=>r];
       simpl_subst; last first.
     { iApply type_delete; [solve_typing..|]. iApply type_jump; solve_typing. }

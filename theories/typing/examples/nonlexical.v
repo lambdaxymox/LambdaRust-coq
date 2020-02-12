@@ -88,7 +88,7 @@ Section non_lexical.
       iApply type_endlft.
       iApply (type_cont [_] [ϝ ⊑ₗ []]
             (λ r, [o ◁ box (Π[uninit 1;uninit 1]); map ◁ box (uninit 1);
-                   key ◁ box K; r!!!0 ◁ box (&uniq{m} V)])).
+                   key ◁ box K; (r!!!0%fin:val) ◁ box (&uniq{m} V)])).
       { iIntros (k). simpl_subst.
         iApply type_case_own;
           [solve_typing| constructor; [|constructor; [|constructor]]; left].

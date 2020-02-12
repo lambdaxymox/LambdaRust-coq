@@ -1,7 +1,10 @@
 *.vo
 *.vio
 *.v.d
+*.vos
+*.vok
 .coqdeps.d
+.Makefile.coq.d
 *.glob
 *.cache
 *.aux
