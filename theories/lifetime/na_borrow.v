@@ -44,7 +44,7 @@ Section na_bor.
   Proof.
     iIntros (???) "#LFT#HP Hκ Hnaown".
     iDestruct "HP" as (i) "(#Hpers&#Hinv)".
-    iMod (na_inv_open with "Hinv Hnaown") as "(>Hown&Hnaown&Hclose)"; try done.
+    iMod (na_inv_acc with "Hinv Hnaown") as "(>Hown&Hnaown&Hclose)"; try done.
     iMod (idx_bor_acc with "LFT Hpers Hown Hκ") as "[HP Hclose']". done.
     iIntros "{$HP $Hnaown} !> HP Hnaown".
     iMod ("Hclose'" with "HP") as "[Hown $]". iApply "Hclose". by iFrame.

@@ -40,7 +40,7 @@ Section weak.
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ C)%I with "[Hpbown]") as "#Hinv";
       first by iLeft.
     iIntros "!> !# * % Htok".
-    iMod (inv_open with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
+    iMod (inv_acc with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iAssert (&{κ} _)%I with "[Hbtok]" as "Hb".
       { rewrite bor_unfold_idx. iExists _. by iFrame. }
@@ -154,7 +154,7 @@ Section code.
     iModIntro. wp_let. wp_op. rewrite shift_loc_0.
     (* Finally, finally... opening the thread-local Rc protocol. *)
     iPoseProof "Hpersist" as (ty') "(_ & Hinv & _ & _)".
-    iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
     iMod (na_bor_acc with "LFT Hwtokb Hα1 Hna") as "(>Hwtok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hwtok") as
@@ -257,7 +257,7 @@ Section code.
     iModIntro. wp_let. wp_op.
     (* Finally, finally... opening the thread-local Rc protocol. *)
     iPoseProof "Hpersist" as (ty') "(_ & Hinv & _ & _)".
-    iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
@@ -323,7 +323,7 @@ Section code.
     iAssert (∃ wv : Z, (l' +ₗ 1) ↦ #wv ∗ ((l' +ₗ 1) ↦ #(wv + 1) ={⊤}=∗
                na_own tid ⊤ ∗ (q / 2).[α] ∗ own γ weak_tok))%I
       with "[> Hna Hα1]" as (wv) "[Hwv Hclose2]".
-    { iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    { iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
       iMod (na_bor_acc with "LFT Hwtokb Hα1 Hna") as "(>Hwtok & Hna & Hclose3)"; [solve_ndisj..|].
       iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
       iDestruct (own_valid_2 with "Hrc● Hwtok") as
@@ -397,7 +397,7 @@ Section code.
       with "[>Hna Hwtok]" as (wv) "[Hlw [(% & Hna & H)|[% Hclose]]]".
     { iPoseProof "Hpersist" as (ty') "([>Hszeq _] & Hinv & _ & _)".
       iDestruct "Hszeq" as %Hszeq.
-      iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose)"; [solve_ndisj..|].
+      iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose)"; [solve_ndisj..|].
       iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
       iDestruct (own_valid_2 with "Hrc● Hwtok") as
           %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid.

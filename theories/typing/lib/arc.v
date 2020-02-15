@@ -85,7 +85,7 @@ Section arc.
     iExists _, _, _. iFrame "∗#". iCombine "H†" "HPend" as "H".
     iMod (inv_alloc arc_endN _ ([†ν] ∨ _)%I with "[H]") as "#INV";
       first by iRight; iApply "H". iIntros "!> !# Hν".
-    iMod (inv_open with "INV") as "[[H†|[$ Hvs]] Hclose]";
+    iMod (inv_acc with "INV") as "[[H†|[$ Hvs]] Hclose]";
       [set_solver|iDestruct (lft_tok_dead with "Hν H†") as ">[]"|].
     rewrite difference_union_distr_l_L difference_diag_L right_id_L
             difference_disjoint_L; last solve_ndisj.
@@ -124,7 +124,7 @@ Section arc.
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ C)%I
           with "[Hpbown]") as "#Hinv"; first by iLeft.
     iIntros "!> !# * % Htok".
-    iMod (inv_open with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
+    iMod (inv_acc with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iAssert (&{κ} _)%I with "[Hbtok]" as "Hb".
       { rewrite bor_unfold_idx. iExists _. by iFrame. }
@@ -245,7 +245,7 @@ Section arc.
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ C)%I
           with "[Hpbown]") as "#Hinv"; first by iLeft.
     iIntros "!> !# * % Htok".
-    iMod (inv_open with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
+    iMod (inv_acc with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iAssert (&{κ} _)%I with "[Hbtok]" as "Hb".
       { rewrite bor_unfold_idx. iExists _. by iFrame. }

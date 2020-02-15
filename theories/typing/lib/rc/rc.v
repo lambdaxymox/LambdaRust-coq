@@ -142,7 +142,7 @@ Section rc.
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ C)%I
           with "[Hpbown]") as "#Hinv"; first by iLeft.
     iIntros "!> !# * % Htok".
-    iMod (inv_open with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
+    iMod (inv_acc with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iAssert (&{κ} _)%I with "[Hbtok]" as "Hb".
       { rewrite bor_unfold_idx. iExists _. by iFrame. }
@@ -279,7 +279,7 @@ Section code.
         auto 10 with iFrame.
     - iDestruct "Hown" as (γ ν q) "(#Hpersist & Htok & Hν1)".
       iPoseProof "Hpersist" as (ty') "(Hincl & Hinv & _ & #Hνend)".
-      iMod (na_inv_open with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
+      iMod (na_inv_acc with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
       iDestruct "Hproto" as ([st weak]) "[>Hst Hproto]".
       iDestruct (own_valid_2 with "Hst Htok") as %[[[[=]|(?&st'&[=<-]&EQst'&Hincl)]
         %option_included _]%prod_included [Hval _]]%auth_both_valid.
@@ -334,7 +334,7 @@ Section code.
           rewrite Hincls. iFrame. iSplitL "Hty".
           { iDestruct "Hty" as (vl) "[??]". iExists _. iFrame. by iApply "Hinclo". }
           iIntros "!> Hna". iClear "Hνend". clear q' Hqq' weak Hval.
-          iMod (na_inv_open with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
+          iMod (na_inv_acc with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
           iDestruct "Hproto" as ([st weak]) "[>Hst Hproto]".
           iDestruct (own_valid_2 with "Hst Htok") as %[[[[=]|(?&st'&[=<-]&EQst'&Hincl)]
             %option_included _]%prod_included [Hval _]]%auth_both_valid.
@@ -404,7 +404,7 @@ Section code.
     iModIntro. wp_let. wp_op. rewrite shift_loc_0.
     (* Finally, finally... opening the thread-local Rc protocol. *)
     iPoseProof "Hpersist" as (ty') "(_ & Hinv & _ & _)".
-    iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
@@ -463,7 +463,7 @@ Section code.
     iModIntro. wp_let. wp_op.
     (* Finally, finally... opening the thread-local Rc protocol. *)
     iPoseProof "Hpersist" as (ty') "(_ & Hinv & _ & _)".
-    iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
@@ -568,7 +568,7 @@ Section code.
     iModIntro. wp_let. wp_op. rewrite shift_loc_0.
     (* Finally, finally... opening the thread-local Rc protocol. *)
     iPoseProof "Hpersist" as (ty') "(_ & Hinv & _ & _)".
-    iMod (na_inv_open with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
+    iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose2)"; [solve_ndisj..|].
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
