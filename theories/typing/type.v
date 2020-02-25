@@ -678,7 +678,7 @@ Section type_util.
     iSplit.
     - iIntros "H". iDestruct "H" as (vl) "[Hl Hown]".
       iDestruct (ty_size_eq with "Hown") as %<-.
-      iExists (list_to_vec vl). rewrite vec_to_list_of_list. iFrame.
+      iExists (list_to_vec vl). rewrite vec_to_list_to_vec. iFrame.
     - iIntros "H". iDestruct "H" as (vl) "[Hl Hown]". eauto with iFrame.
   Qed.
 

@@ -369,7 +369,7 @@ Lemma wp_app (Ql : list (val → iProp Σ)) E f el Φ :
              WP App f (of_val <$> (vl : list val)) @ E {{ Φ }}) -∗
     WP App f el @ E {{ Φ }}.
 Proof.
-  iIntros (Hlen Hf) "Hel HΦ". rewrite -(vec_to_list_of_list Ql).
+  iIntros (Hlen Hf) "Hel HΦ". rewrite -(vec_to_list_to_vec Ql).
   generalize (list_to_vec Ql). rewrite Hlen. clear Hlen Ql=>Ql.
   iApply (wp_app_vec with "Hel"). iIntros (vl) "Hvl".
   iApply ("HΦ" with "[%] Hvl"). by rewrite vec_to_list_length.

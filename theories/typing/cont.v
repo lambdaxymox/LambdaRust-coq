@@ -21,7 +21,7 @@ Section typing.
     iSpecialize ("HC" with "[]"); first done.
     assert (args = of_val <$> argsv) as ->.
     { clear -Hargs. induction Hargs as [|a av ?? [<-%of_to_val| ->] _ ->]=>//=. }
-    rewrite -{3}(vec_to_list_of_list argsv). iApply ("HC" with "Hna HL HT").
+    rewrite -{3}(vec_to_list_to_vec argsv). iApply ("HC" with "Hna HL HT").
   Qed.
 
   Lemma type_cont argsb L1 (T' : vec val (length argsb) → _) E L2 C T econt e2 kb :
