@@ -695,7 +695,7 @@ Section code.
     - subst strong. wp_op. wp_if. wp_op.
       rewrite shift_loc_0. wp_write. wp_bind (#☠;;#☠)%E.
       iApply (wp_step_fupd with "[Hproto Hrc]");
-        [| |by iApply ("Hproto" with "Hrc")|];
+        [|by iApply ("Hproto" with "Hrc")|];
         [done..|wp_seq; iIntros "(Hty&H†&Hna&Hproto) !>"].
       rewrite <-freeable_sz_full_S, <-(freeable_sz_split _ 2 ty.(ty_size)).
       iDestruct "H†" as "[H†1 H†2]". wp_seq. wp_bind (_<-_;;_)%E.
@@ -790,7 +790,7 @@ Section code.
     iDestruct "Hc" as "[[% [_ Hproto]]|[% [_ Hproto]]]".
     - subst strong. wp_bind (#1 = #1)%E.
       iApply (wp_step_fupd with "[Hproto Hrc]");
-        [| |by iApply ("Hproto" with "Hrc")|];
+        [|by iApply ("Hproto" with "Hrc")|];
         [done..|wp_op; iIntros "(Hty&H†&Hna&Hproto) !>"; wp_if].
       rewrite <-freeable_sz_full_S, <-(freeable_sz_split _ 2 ty.(ty_size)).
       iDestruct "H†" as "[H†1 H†2]". wp_bind (_<-_;;_)%E.

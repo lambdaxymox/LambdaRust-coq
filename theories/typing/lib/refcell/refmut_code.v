@@ -36,7 +36,7 @@ Section refmut_functions.
       [solve_typing..|].
     iDestruct (lft_intersect_acc with "Hβ Hα2") as (qβα) "[Hα2β Hcloseβα2]".
     wp_bind (!#lx')%E. iApply (wp_step_fupd with "[Hα2β]");
-         [done| |by iApply ("Hshr" with "[] Hα2β")|]; first done.
+         [|by iApply ("Hshr" with "[] Hα2β")|]; first done.
     iMod "H↦" as "[H↦1 H↦2]". wp_read. iIntros "[#Hshr' Hα2β] !>". wp_let.
     iDestruct ("Hcloseβα2" with "Hα2β") as "[Hβ Hα2]".
     iMod ("Hcloseα1" with "[$H↦1 $H↦2]") as "Hα1".
@@ -152,7 +152,7 @@ Section refmut_functions.
         iDestruct "Hq" as (q' ?) "?". iExists (q+q')%Qp. iFrame.
         rewrite assoc (comm _ q'' q) //. }
     wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN)); first done.
-    iApply (wp_step_fupd with "INV"); [done|set_solver|]. wp_seq. iIntros "{Hb} Hb !>".
+    iApply (wp_step_fupd with "INV"); [set_solver|]. wp_seq. iIntros "{Hb} Hb !>".
     iMod ("Hcloseβ" with "Hb Hna") as "[Hβ Hna]".
     iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL". wp_seq.
     iApply (type_type _ _ _ [ #lx ◁ box (uninit 2)]

@@ -252,7 +252,7 @@ Section code.
       [solve_typing..|].
     iDestruct (lft_intersect_acc with "Hβ Hα2") as (qβα) "[Hα2β Hclose4]".
     wp_bind (!_)%E. iApply (wp_step_fupd with "[Hshr Hα2β]");
-         [done| |by iApply ("Hshr" with "[] Hα2β")|]; first done.
+         [|by iApply ("Hshr" with "[] Hα2β")|]; first done.
     wp_read. iIntros "[#Hshr Hα2β] !>". wp_let.
     iDestruct ("Hclose4" with "Hα2β") as "[Hβ Hα2]".
     iMod ("Hclose3" with "Hβ HL") as "HL".

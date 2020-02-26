@@ -119,7 +119,7 @@ Section rwlockreadguard_functions.
           { rewrite pos_op_plus -Pplus_one_succ_l Pos.succ_pred // =>?. by subst. }
           rewrite {1}EQn -{1}(agree_idemp (to_agree _)) 2!pair_op Cinr_op Some_op.
           apply (cancel_local_update_unit (reading_st q ν)) , _. }
-      iApply (wp_step_fupd with "INV"). done. set_solver.
+      iApply (wp_step_fupd with "INV"). set_solver.
       iApply (wp_cas_int_suc with "Hlx"); try done. iNext. iIntros "Hlx INV !>".
       iMod ("INV" with "Hlx") as "INV". iMod ("Hcloseβ" with "[$INV]") as "Hβ".
       iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
