@@ -68,7 +68,7 @@ Proof.
   clear dependent Iinv I.
   iNext. rewrite lft_vs_unfold. iExists (S n). iFrame "Hn●".
   iIntros (I) "Hinv [HP HPb] #Hκ†".
-  rewrite {1}lft_vs_inv_unfold; iDestruct "Hinv" as "(Hκdead' & HI & Hinv)".
+  rewrite {1}lft_vs_inv_unfold; iDestruct "Hinv" as "(HI & Hinv)".
   iDestruct (own_bor_auth with "HI Hi") as %?%(elem_of_dom (D:=gset lft)).
   iDestruct (@big_sepS_delete with "Hinv") as "[Hκalive Hinv]"; first done.
   rewrite lft_inv_alive_unfold.
@@ -85,9 +85,9 @@ Proof.
   { by rewrite lookup_fmap HB. }
   iDestruct (@big_sepM_delete with "HB") as "[Hcnt HB]"; first done.
   rewrite /=. iDestruct "Hcnt" as "[% H1◯]".
-  iMod ("Hvs" $! I with "[Hκdead' HI Hinv Hvs' Hinh HB● Hbox HB]
+  iMod ("Hvs" $! I with "[HI Hinv Hvs' Hinh HB● Hbox HB]
                          [$HPb $Hi] Hκ†") as "($ & $ & Hcnt')".
-  { rewrite lft_vs_inv_unfold. iFrame "Hκdead' HI".
+  { rewrite lft_vs_inv_unfold. iFrame "HI".
     iApply (big_sepS_delete _ (dom (gset lft) I) with "[- $Hinv]"); first done.
     iIntros (_). rewrite lft_inv_alive_unfold.
     iExists Pb', Pi'. iFrame "Hvs' Hinh". rewrite /lft_bor_alive.
@@ -135,7 +135,7 @@ Proof.
   { rewrite /lft_bor_alive (big_sepM_delete _ B i') //. iDestruct "HB" as "[_ HB]".
     iExists (delete i' B). rewrite -fmap_delete. iFrame.
     rewrite fmap_delete -insert_delete delete_insert ?lookup_delete //=. }
-  { iNext. iApply (lft_vs_cons with "[] Hvs"). iIntros "$ [??] _ !>". iNext.
+  { iNext. iApply (lft_vs_cons with "[] Hvs"). iIntros "[??] _ !>". iNext.
     iRewrite "HeqPb'". iFrame. by iApply "HP'". }
   iDestruct "HH" as "([HI Hinvκ] & $ & Halive & Hvs)".
   iApply "Hclose". iExists _, _. iFrame.

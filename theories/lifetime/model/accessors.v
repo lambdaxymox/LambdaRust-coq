@@ -59,7 +59,7 @@ Lemma add_vs Pb Pb' P Q Pi κ :
   lft_vs κ (Q ∗ Pb') Pi.
 Proof.
   iIntros "#HEQ Hvs HvsQ". iApply (lft_vs_cons with "[-Hvs] Hvs").
-  iIntros "$ [HQ HPb'] #H†".
+  iIntros "[HQ HPb'] #H†".
   iApply fupd_mask_mono; last iMod ("HvsQ" with "HQ H†") as "HP". set_solver.
   iModIntro. iNext. iRewrite "HEQ". iFrame.
 Qed.

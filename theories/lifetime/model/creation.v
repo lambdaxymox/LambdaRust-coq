@@ -40,18 +40,19 @@ Proof.
     as "[Halive Halive']".
   { intros κ'. rewrite elem_of_dom. eauto. }
   iApply fupd_trans. iApply fupd_mask_mono; first by apply union_subseteq_l.
-  iMod ("Hvs" $! I with "[HI Halive Hbox Hbor] HP Hκ") as "(Hinv & HQ & Hcnt')".
-  { rewrite lft_vs_inv_unfold. iFrame. rewrite /lft_bor_dead.
-    iExists (dom _ B), P. rewrite !gset_to_gmap_dom -map_fmap_compose.
-    rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last naive_solver.
-    iFrame. }
-  rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(?&HI&Halive)".
+  iMod ("Hvs" $! I with "[HI Halive] HP Hκ") as "(Hinv & HQ & Hcnt')".
+  { rewrite lft_vs_inv_unfold. iFrame. }
+  rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(HI&Halive)".
   iSpecialize ("Halive'" with "Halive").
   iMod (own_cnt_update_2 with "Hcnt Hcnt'") as "?".
   { apply auth_update_dealloc, (nat_local_update _ _ 0 0); lia. }
   rewrite /Iinv. iFrame "Hdead Halive' HI".
   iModIntro. iMod (lft_inh_kill with "[$Hinh $HQ]"); first set_solver+.
-  iModIntro. rewrite /lft_inv_dead. iExists Q. by iFrame.
+  iModIntro. rewrite /lft_inv_dead. iExists Q. iFrame.
+  rewrite /lft_bor_dead. iExists (dom _ B), P.
+  rewrite !gset_to_gmap_dom -map_fmap_compose.
+  rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last naive_solver.
+  iFrame.
 Qed.
 
 Lemma lfts_kill (A : gmap atomic_lft _) (I : gmap lft lft_names) (K K' : gset lft) :

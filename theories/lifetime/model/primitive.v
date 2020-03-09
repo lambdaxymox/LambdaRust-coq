@@ -490,15 +490,15 @@ Proof.
 Qed.
 
 Lemma lft_vs_cons κ Pb Pb' Pi :
-  (lft_bor_dead κ -∗ ▷ Pb'-∗ [†κ] ={↑borN}=∗ lft_bor_dead κ ∗ ▷ Pb) -∗
+  (▷ Pb'-∗ [†κ] ={↑borN}=∗ ▷ Pb) -∗
   lft_vs κ Pb Pi -∗ lft_vs κ Pb' Pi.
 Proof.
   iIntros "Hcons Hvs". rewrite !lft_vs_unfold.
   iDestruct "Hvs" as (n) "[Hn● Hvs]". iExists n. iFrame "Hn●".
   iIntros (I). rewrite {1}lft_vs_inv_unfold.
-  iIntros "(Hdead & Hinv & Hκs) HPb #Hκ†".
-  iMod ("Hcons" with "Hdead HPb Hκ†") as "[Hdead HPb]".
-  iApply ("Hvs" $! I with "[Hdead Hinv Hκs] HPb Hκ†").
+  iIntros "(Hinv & Hκs) HPb #Hκ†".
+  iMod ("Hcons" with "HPb Hκ†") as "HPb".
+  iApply ("Hvs" $! I with "[Hinv Hκs] HPb Hκ†").
   rewrite lft_vs_inv_unfold. by iFrame.
 Qed.
 End primitive.

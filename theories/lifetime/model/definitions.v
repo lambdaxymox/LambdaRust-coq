@@ -131,8 +131,7 @@ Section defs.
 
    Definition lft_vs_inv_go (κ : lft) (lft_inv_alive : ∀ κ', κ' ⊂ κ → iProp Σ)
        (I : gmap lft lft_names) : iProp Σ :=
-     (lft_bor_dead κ ∗
-       own_ilft_auth I ∗
+     (own_ilft_auth I ∗
        [∗ set] κ' ∈ dom _ I, ∀ Hκ : κ' ⊂ κ, lft_inv_alive κ' Hκ)%I.
 
    Definition lft_vs_go (κ : lft) (lft_inv_alive : ∀ κ', κ' ⊂ κ → iProp Σ)
@@ -230,7 +229,7 @@ Lemma lft_vs_inv_go_ne κ (f f' : ∀ κ', κ' ⊂ κ → iProp Σ) I n :
   (∀ κ' (Hκ : κ' ⊂ κ), f κ' Hκ ≡{n}≡ f' κ' Hκ) →
   lft_vs_inv_go κ f I ≡{n}≡ lft_vs_inv_go κ f' I.
 Proof.
-  intros Hf. apply sep_ne, sep_ne, big_opS_ne=> // κ' _.
+  intros Hf. apply sep_ne, big_opS_ne=> // κ' _.
   by apply forall_ne=> Hκ.
 Qed.
 
@@ -259,7 +258,7 @@ Proof.
   apply (Fix_F_proper _ (λ _, dist n)); auto using lft_inv_alive_go_ne.
 Qed.
 Lemma lft_vs_inv_unfold κ (I : gmap lft lft_names) :
-  lft_vs_inv κ I ⊣⊢ lft_bor_dead κ ∗
+  lft_vs_inv κ I ⊣⊢
     own_ilft_auth I ∗
     [∗ set] κ' ∈ dom _ I, ⌜κ' ⊂ κ⌝ → lft_inv_alive κ'.
 Proof.

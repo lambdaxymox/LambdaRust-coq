@@ -30,7 +30,7 @@ Proof.
       as (s' Pb') "(% & #HPbPb' & Hslice & Hbox)"; first solve_ndisj.
     { by rewrite lookup_fmap EQB. }
     iAssert (▷ lft_vs κ' Pb' Pi)%I with "[Hvs]" as "Hvs".
-    { iNext. iApply (lft_vs_cons with "[] Hvs"). iIntros "$ ? _ !>".
+    { iNext. iApply (lft_vs_cons with "[] Hvs"). iIntros "? _ !>".
       by iApply "HPbPb'". }
     iMod (slice_split _ _ true with "Hslice Hbox")
       as (γ1 γ2) "(Hγ1 & Hγ2 & % & Hs1 & Hs2 & Hbox)"; first solve_ndisj.
