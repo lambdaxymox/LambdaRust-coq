@@ -75,7 +75,7 @@ Lemma next_access_head_reductible_ctx e σ σ' a l K :
   next_access_head e σ' a l → reducible (fill K e) σ → head_reducible e σ.
 Proof.
   intros Hhead Hred. apply prim_head_reducible.
-  - eapply (reducible_fill (K:=ectx_language.fill K)), Hred. destruct Hhead; eauto.
+  - eapply (reducible_fill_inv (K:=ectx_language.fill K)), Hred. destruct Hhead; eauto.
   - apply ectxi_language_sub_redexes_are_values. intros [] ? ->; inversion Hhead; eauto.
 Qed.
 
