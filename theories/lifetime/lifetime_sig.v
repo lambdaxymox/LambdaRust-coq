@@ -99,7 +99,6 @@ Module Type lifetime_sig.
   Parameter bor_fake : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ [†κ] ={E}=∗ &{κ}P.
 
-  Parameter bor_iff : ∀ κ P P', ▷ □ (P ↔ P') -∗ &{κ}P -∗ &{κ}P'.
   Parameter bor_shorten : ∀ κ κ' P, κ ⊑ κ' -∗ &{κ'}P -∗ &{κ}P.
 
   Parameter bor_sep : ∀ E κ P Q,

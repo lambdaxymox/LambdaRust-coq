@@ -93,6 +93,13 @@ Proof.
   iMod (bor_exists (A:=bool) with "LFT H") as ([]) "H"; auto.
 Qed.
 
+Lemma bor_iff κ P P' : ▷ □ (P ↔ P') -∗ &{κ}P -∗ &{κ}P'.
+Proof.
+  rewrite !bor_unfold_idx. iIntros "#HP Hbor".
+  iDestruct "Hbor" as (i) "[Hbor Htok]". iExists i. iFrame "Htok".
+  iApply idx_bor_iff; done.
+Qed.
+
 Lemma bor_iff_proper κ P P': ▷ □ (P ↔ P') -∗ □ (&{κ}P ↔ &{κ}P').
 Proof.
   iIntros "#HP !#". iSplit; iIntros "?"; iApply bor_iff; try done.
