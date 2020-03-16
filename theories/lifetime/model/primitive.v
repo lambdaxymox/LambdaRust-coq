@@ -326,7 +326,7 @@ Lemma lft_incl_intro κ κ' :
       ([†κ'] ={↑lftN}=∗ [†κ])) -∗ κ ⊑ κ'.
 Proof. reflexivity. Qed.
 
-Lemma lft_intersect_incl_l κ κ': ⊢ κ ⊓ κ' ⊑ κ.
+Lemma lft_intersect_incl_l κ κ' : ⊢ κ ⊓ κ' ⊑ κ.
 Proof.
   unfold lft_incl. iIntros "!#". iSplitR.
   - iIntros (q). rewrite <-lft_tok_sep. iIntros "[H Hf]". iExists q. iFrame.
@@ -334,13 +334,13 @@ Proof.
   - iIntros "? !>". iApply lft_dead_or. auto.
 Qed.
 
-Lemma lft_intersect_incl_r κ κ': ⊢ κ ⊓ κ' ⊑ κ'.
+Lemma lft_intersect_incl_r κ κ' : ⊢ κ ⊓ κ' ⊑ κ'.
 Proof. rewrite comm. apply lft_intersect_incl_l. Qed.
 
 Lemma lft_incl_refl κ : ⊢ κ ⊑ κ.
 Proof. unfold lft_incl. iIntros "!#"; iSplitR; auto 10 with iFrame. Qed.
 
-Lemma lft_incl_trans κ κ' κ'': κ ⊑ κ' -∗ κ' ⊑ κ'' -∗ κ ⊑ κ''.
+Lemma lft_incl_trans κ κ' κ'' : κ ⊑ κ' -∗ κ' ⊑ κ'' -∗ κ ⊑ κ''.
 Proof.
   rewrite /lft_incl. iIntros "#[H1 H1†] #[H2 H2†] !#". iSplitR.
   - iIntros (q) "Hκ".
