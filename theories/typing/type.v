@@ -546,7 +546,7 @@ Section subtyping.
 
   Global Instance type_incl_persistent ty1 ty2 : Persistent (type_incl ty1 ty2) := _.
 
-  Lemma type_incl_refl ty : type_incl ty ty.
+  Lemma type_incl_refl ty : ⊢ type_incl ty ty.
   Proof. iSplit; first done. iSplit; iAlways; iIntros; done. Qed.
 
   Lemma type_incl_trans ty1 ty2 ty3 :

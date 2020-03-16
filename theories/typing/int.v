@@ -37,7 +37,7 @@ Section typing.
   Proof. iIntros. iApply type_let; [apply type_int_instr|solve_typing|done]. Qed.
 
   Lemma type_plus_instr E L p1 p2 :
-    typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 + p2) int.
+    ⊢ typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 + p2) int.
   Proof.
     iIntros (tid) "_ _ $ $ [Hp1 [Hp2 _]]".
     wp_apply (wp_hasty with "Hp1"). iIntros ([[]|]) "_ H1"; try done.
@@ -53,7 +53,7 @@ Section typing.
   Proof. iIntros. iApply type_let; [iApply type_plus_instr|solve_typing|done]. Qed.
 
   Lemma type_minus_instr E L p1 p2 :
-    typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 - p2) int.
+    ⊢ typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 - p2) int.
   Proof.
     iIntros (tid) "_ _ $ $ [Hp1 [Hp2 _]]".
     wp_apply (wp_hasty with "Hp1"). iIntros ([[]|]) "_ H1"; try done.
@@ -69,7 +69,7 @@ Section typing.
   Proof. iIntros. iApply type_let; [apply type_minus_instr|solve_typing|done]. Qed.
 
   Lemma type_le_instr E L p1 p2 :
-    typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 ≤ p2) bool.
+    ⊢ typed_instruction_ty E L [p1 ◁ int; p2 ◁ int] (p1 ≤ p2) bool.
   Proof.
     iIntros (tid) "_ _ $ $ [Hp1 [Hp2 _]]".
     wp_apply (wp_hasty with "Hp1"). iIntros ([[]|]) "_ H1"; try done.

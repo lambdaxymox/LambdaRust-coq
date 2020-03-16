@@ -219,7 +219,7 @@ Section typing.
 
   (** Typing *)
   Lemma write_own {E L} ty ty' n :
-    ty.(ty_size) = ty'.(ty_size) → typed_write E L (own_ptr n ty') ty (own_ptr n ty).
+    ty.(ty_size) = ty'.(ty_size) → ⊢ typed_write E L (own_ptr n ty') ty (own_ptr n ty).
   Proof.
     iIntros (Hsz) "!#". iIntros ([[]|] tid F qL ?) "_ _ $ Hown"; try done.
     rewrite /= Hsz. iDestruct "Hown" as "[H↦ $]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
@@ -227,7 +227,7 @@ Section typing.
   Qed.
 
   Lemma read_own_copy E L ty n :
-    Copy ty → typed_read E L (own_ptr n ty) ty (own_ptr n ty).
+    Copy ty → ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n ty).
   Proof.
     iIntros (Hsz) "!#". iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ #Hown]".
@@ -236,7 +236,7 @@ Section typing.
   Qed.
 
   Lemma read_own_move E L ty n :
-    typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
+    ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
   Proof.
     iAlways. iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
@@ -247,8 +247,8 @@ Section typing.
 
   Lemma type_new_instr {E L} (n : Z) :
     0 ≤ n →
-    let n' := Z.to_nat n in
-    typed_instruction_ty E L [] (new [ #n ]%E) (own_ptr n' (uninit n')).
+    ⊢ let n' := Z.to_nat n in
+      typed_instruction_ty E L [] (new [ #n ]%E) (own_ptr n' (uninit n')).
   Proof.
     iIntros (? tid) "#LFT #HE $ $ _".
     iApply wp_new; try done. iModIntro.
@@ -281,7 +281,7 @@ Section typing.
 
   Lemma type_delete_instr {E L} ty (n : Z) p :
     Z.of_nat (ty.(ty_size)) = n →
-    typed_instruction E L [p ◁ own_ptr ty.(ty_size) ty] (delete [ #n; p])%E (λ _, []).
+    ⊢ typed_instruction E L [p ◁ own_ptr ty.(ty_size) ty] (delete [ #n; p])%E (λ _, []).
   Proof.
     iIntros (<- tid) "#LFT #HE $ $ Hp". rewrite tctx_interp_singleton.
     wp_bind p. iApply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hown"; try done.
@@ -328,7 +328,7 @@ Section typing.
   Lemma type_letalloc_n {E L} ty ty1 ty2 C T T' (x : string) p e :
     Closed [] p → Closed (x :b: []) e →
     tctx_extract_hasty E L p ty1 T T' →
-    typed_read E L ty1 ty ty2 →
+    (⊢ typed_read E L ty1 ty ty2) →
     (∀ (v : val),
         typed_body E L C ((v ◁ own_ptr (ty.(ty_size)) ty)::(p ◁ ty2)::T') (subst x v e)) -∗
     typed_body E L C T (letalloc: x <-{ty.(ty_size)} !p in e).

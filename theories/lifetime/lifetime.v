@@ -186,7 +186,7 @@ Proof.
   - iApply (bor_fake with "LFT"); [done|]. rewrite -lft_dead_or. auto.
 Qed.
 
-Lemma lft_incl_static κ : (κ ⊑ static)%I.
+Lemma lft_incl_static κ : ⊢ κ ⊑ static.
 Proof.
   iApply lft_incl_intro. iIntros "!#". iSplitR.
   - iIntros (q) "?". iExists 1%Qp. iSplitR. by iApply lft_tok_static. auto.
@@ -194,7 +194,7 @@ Proof.
 Qed.
 
 Lemma lft_intersect_list_elem_of_incl κs κ :
-  κ ∈ κs → (lft_intersect_list κs ⊑ κ)%I.
+  κ ∈ κs → ⊢ lft_intersect_list κs ⊑ κ.
 Proof.
   induction 1 as [|???? IH].
   - iApply lft_intersect_incl_l.

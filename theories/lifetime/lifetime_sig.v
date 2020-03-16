@@ -89,7 +89,7 @@ Module Type lifetime_sig.
   Parameter lft_tok_sep : ∀ q κ1 κ2, q.[κ1] ∗ q.[κ2] ⊣⊢ q.[κ1 ⊓ κ2].
   Parameter lft_dead_or : ∀ κ1 κ2, [†κ1] ∨ [†κ2] ⊣⊢ [† κ1 ⊓ κ2].
   Parameter lft_tok_dead : ∀ q κ, q.[κ] -∗ [† κ] -∗ False.
-  Parameter lft_tok_static : ∀ q, q.[static]%I.
+  Parameter lft_tok_static : ∀ q, ⊢ q.[static].
   Parameter lft_dead_static : [† static] -∗ False.
 
   Parameter lft_create : ∀ E, ↑lftN ⊆ E →
@@ -134,9 +134,9 @@ Module Type lifetime_sig.
      unless we want to prove them twice (both here and in model.primitive) *)
   Parameter lft_intersect_acc : ∀ κ κ' q q', q.[κ] -∗ q'.[κ'] -∗
     ∃ q'', q''.[κ ⊓ κ'] ∗ (q''.[κ ⊓ κ'] -∗ q.[κ] ∗ q'.[κ']).
-  Parameter lft_intersect_incl_l : ∀ κ κ', (κ ⊓ κ' ⊑ κ)%I.
-  Parameter lft_intersect_incl_r : ∀ κ κ', (κ ⊓ κ' ⊑ κ')%I.
-  Parameter lft_incl_refl : ∀ κ, (κ ⊑ κ)%I.
+  Parameter lft_intersect_incl_l : ∀ κ κ', ⊢ κ ⊓ κ' ⊑ κ.
+  Parameter lft_intersect_incl_r : ∀ κ κ', ⊢ κ ⊓ κ' ⊑ κ'.
+  Parameter lft_incl_refl : ∀ κ, ⊢ κ ⊑ κ.
   Parameter lft_incl_trans : ∀ κ κ' κ'', κ ⊑ κ' -∗ κ' ⊑ κ'' -∗ κ ⊑ κ''.
   Parameter lft_incl_glb : ∀ κ κ' κ'', κ ⊑ κ' -∗ κ ⊑ κ'' -∗ κ ⊑ κ' ⊓ κ''.
   Parameter lft_intersect_mono : ∀ κ1 κ1' κ2 κ2',
@@ -154,5 +154,5 @@ Module Type lifetime_sig.
   Global Declare Instance subG_lftPreG Σ : subG lftΣ Σ → lftPreG Σ.
 
   Parameter lft_init : ∀ `{!invG Σ, !lftPreG Σ} E, ↑lftN ⊆ E →
-    (|={E}=> ∃ _ : lftG Σ, lft_ctx)%I.
+    ⊢ |={E}=> ∃ _ : lftG Σ, lft_ctx.
 End lifetime_sig.

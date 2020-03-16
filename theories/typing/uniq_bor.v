@@ -129,7 +129,7 @@ Section typing.
   Qed.
 
   Lemma read_uniq E L κ ty :
-    Copy ty → lctx_lft_alive E L κ → typed_read E L (&uniq{κ}ty) ty (&uniq{κ}ty).
+    Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
     iIntros (Hcopy Halive) "!#".
     iIntros ([[]|] tid F qL ?) "#LFT #HE Htl HL Hown"; try done.
@@ -143,7 +143,7 @@ Section typing.
   Qed.
 
   Lemma write_uniq E L κ ty :
-    lctx_lft_alive E L κ → typed_write E L (&uniq{κ}ty) ty (&uniq{κ}ty).
+    lctx_lft_alive E L κ → ⊢ typed_write E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
     iIntros (Halive) "!#".
     iIntros ([[]|] tid F qL ?) "#LFT HE HL Hown"; try done.

@@ -36,7 +36,7 @@ Section type_context.
   Proof. destruct v. done. simpl. rewrite (decide_left _). done. Qed.
 
   Lemma wp_eval_path E p v :
-    eval_path p = Some v → (WP p @ E {{ v', ⌜v' = v⌝ }})%I.
+    eval_path p = Some v → ⊢ WP p @ E {{ v', ⌜v' = v⌝ }}.
   Proof.
     revert v; induction p; intros v; try done.
     { intros [=]. by iApply wp_value. }
@@ -119,18 +119,18 @@ Section type_context.
   Proof. intros ???. by apply big_opL_permutation. Qed.
 
   Lemma tctx_interp_cons tid x T :
-    tctx_interp tid (x :: T) ≡ (tctx_elt_interp tid x ∗ tctx_interp tid T)%I.
+    tctx_interp tid (x :: T) ⊣⊢ (tctx_elt_interp tid x ∗ tctx_interp tid T).
   Proof. done. Qed.
 
   Lemma tctx_interp_app tid T1 T2 :
-    tctx_interp tid (T1 ++ T2) ≡ (tctx_interp tid T1 ∗ tctx_interp tid T2)%I.
+    tctx_interp tid (T1 ++ T2) ⊣⊢ (tctx_interp tid T1 ∗ tctx_interp tid T2).
   Proof. rewrite /tctx_interp big_sepL_app //. Qed.
 
   Definition tctx_interp_nil tid :
     tctx_interp tid [] = True%I := eq_refl _.
 
   Lemma tctx_interp_singleton tid x :
-    tctx_interp tid [x] ≡ tctx_elt_interp tid x.
+    tctx_interp tid [x] ⊣⊢ tctx_elt_interp tid x.
   Proof. rewrite /tctx_interp /= right_id //. Qed.
 
   (** Copy typing contexts *)

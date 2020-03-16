@@ -19,7 +19,7 @@ Proof.
 Qed.
 
 Lemma lft_init `{!lftPreG Σ} E :
-  ↑lftN ⊆ E → (|={E}=> ∃ _ : lftG Σ, lft_ctx)%I.
+  ↑lftN ⊆ E → ⊢ |={E}=> ∃ _ : lftG Σ, lft_ctx.
 Proof.
   iIntros (?). rewrite /lft_ctx.
   iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first by apply auth_auth_valid.
@@ -280,7 +280,7 @@ Proof.
   move: Hvalid=> /auth_frag_valid /=; by rewrite op_singleton singleton_valid.
 Qed.
 
-Lemma lft_tok_static q : q.[static]%I.
+Lemma lft_tok_static q : ⊢ q.[static].
 Proof. by rewrite /lft_tok big_sepMS_empty. Qed.
 
 Lemma lft_dead_static : [† static] -∗ False.
@@ -326,7 +326,7 @@ Lemma lft_incl_intro κ κ' :
       ([†κ'] ={↑lftN}=∗ [†κ])) -∗ κ ⊑ κ'.
 Proof. reflexivity. Qed.
 
-Lemma lft_intersect_incl_l κ κ': (κ ⊓ κ' ⊑ κ)%I.
+Lemma lft_intersect_incl_l κ κ': ⊢ κ ⊓ κ' ⊑ κ.
 Proof.
   unfold lft_incl. iIntros "!#". iSplitR.
   - iIntros (q). rewrite <-lft_tok_sep. iIntros "[H Hf]". iExists q. iFrame.
@@ -334,10 +334,10 @@ Proof.
   - iIntros "? !>". iApply lft_dead_or. auto.
 Qed.
 
-Lemma lft_intersect_incl_r κ κ': (κ ⊓ κ' ⊑ κ')%I.
+Lemma lft_intersect_incl_r κ κ': ⊢ κ ⊓ κ' ⊑ κ'.
 Proof. rewrite comm. apply lft_intersect_incl_l. Qed.
 
-Lemma lft_incl_refl κ : (κ ⊑ κ)%I.
+Lemma lft_incl_refl κ : ⊢ κ ⊑ κ.
 Proof. unfold lft_incl. iIntros "!#"; iSplitR; auto 10 with iFrame. Qed.
 
 Lemma lft_incl_trans κ κ' κ'': κ ⊑ κ' -∗ κ' ⊑ κ'' -∗ κ ⊑ κ''.

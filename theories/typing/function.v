@@ -318,7 +318,7 @@ Section typing.
                    {A} (fp : A → fn_params (length ps)) (k : val) x :
     Forall (lctx_lft_alive E L) κs →
     (∀ ϝ, elctx_sat (((λ κ, ϝ ⊑ₑ κ) <$> κs) ++ E) L ((fp x).(fp_E) ϝ)) →
-    typed_body E L [k ◁cont(L, λ v : vec _ 1, ((v!!!0%fin:val) ◁ box (fp x).(fp_ty)) :: T)]
+    ⊢ typed_body E L [k ◁cont(L, λ v : vec _ 1, ((v!!!0%fin:val) ◁ box (fp x).(fp_ty)) :: T)]
                ((p ◁ fn fp) ::
                 zip_with TCtx_hasty ps (box <$> vec_to_list (fp x).(fp_tys)) ++
                 T)
@@ -344,7 +344,7 @@ Section typing.
                                    (box <$> vec_to_list (fp x).(fp_tys))) T T' →
     k ◁cont(L, T'') ∈ C →
     (∀ ret : val, tctx_incl E L ((ret ◁ box (fp x).(fp_ty))::T') (T'' [# ret])) →
-    typed_body E L C T (call: p ps → k).
+    ⊢ typed_body E L C T (call: p ps → k).
   Proof.
     intros Hfn HL HE HTT' HC HT'T''.
     rewrite -typed_body_mono /flip; last done; first by eapply type_call'.
