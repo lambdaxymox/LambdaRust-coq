@@ -221,7 +221,8 @@ Section typing.
   Lemma write_own {E L} ty ty' n :
     ty.(ty_size) = ty'.(ty_size) → ⊢ typed_write E L (own_ptr n ty') ty (own_ptr n ty).
   Proof.
-    iIntros (Hsz) "!#". iIntros ([[]|] tid F qL ?) "_ _ $ Hown"; try done.
+    rewrite typed_write_eq. iIntros (Hsz) "!#".
+    iIntros ([[]|] tid F qL ?) "_ _ $ Hown"; try done.
     rewrite /= Hsz. iDestruct "Hown" as "[H↦ $]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%". iExists _, _. iFrame "H↦". auto.
   Qed.
@@ -229,7 +230,8 @@ Section typing.
   Lemma read_own_copy E L ty n :
     Copy ty → ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n ty).
   Proof.
-    iIntros (Hsz) "!#". iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
+    rewrite typed_read_eq. iIntros (Hsz) "!#".
+    iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ #Hown]".
     iExists l, _, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !>".
     iExists _. auto.
@@ -238,7 +240,8 @@ Section typing.
   Lemma read_own_move E L ty n :
     ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
   Proof.
-    iAlways. iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
+    rewrite typed_read_eq. iAlways.
+    iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%".
     iExists l, vl, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !> !>".

@@ -153,6 +153,7 @@ Section case.
     iDestruct "Hp" as "[Hp1 Hp2]". iDestruct (closed_hasty with "Hp1") as "%".
     iDestruct (closed_hasty with "Hp2") as "%". wp_bind p1.
     iApply (wp_hasty with "Hp1"). iIntros (v1 Hv1) "Hty1".
+    rewrite typed_write_eq in Hw.
     iMod (Hw with "[] LFT HE HL Hty1") as (l vl) "(H & H↦ & Hw)"=>//=.
     destruct vl as [|? vl]; iDestruct "H" as %[[= Hlen] ->].
     rewrite heap_mapsto_vec_cons. iDestruct "H↦" as "[H↦0 H↦vl]".
@@ -190,7 +191,8 @@ Section case.
   Proof.
     iIntros (Hty Hw tid) "#LFT #HE $ HL Hp". rewrite tctx_interp_singleton.
     wp_bind p. iApply (wp_hasty with "Hp"). iIntros (v Hv) "Hty".
-    iMod (Hw with "[] LFT HE HL Hty") as (l vl) "(H & H↦ & Hw)". done.
+    rewrite typed_write_eq in Hw.
+    iMod (Hw with "[] LFT HE HL Hty") as (l vl) "(H & H↦ & Hw)"; first done.
     simpl. destruct vl as [|? vl]; iDestruct "H" as %[[= Hlen] ->].
     rewrite heap_mapsto_vec_cons -wp_fupd. iDestruct "H↦" as "[H↦0 H↦vl]".
     wp_write. rewrite tctx_interp_singleton tctx_hasty_val' //.
@@ -224,13 +226,15 @@ Section case.
     iDestruct "Hp" as "[Hp1 Hp2]". iDestruct (closed_hasty with "Hp1") as "%".
     iDestruct (closed_hasty with "Hp2") as "%". wp_bind p1.
     iApply (wp_hasty with "Hp1"). iIntros (v1 Hv1) "Hty1".
+    rewrite typed_write_eq in Hw.
     iMod (Hw with "[] LFT HE HL1 Hty1") as (l1 vl1) "(H & H↦ & Hw)"=>//=.
-    destruct vl1 as [|? vl1]; iDestruct "H" as %[[= Hlen] ->].
+    clear Hw. destruct vl1 as [|? vl1]; iDestruct "H" as %[[= Hlen] ->].
     rewrite heap_mapsto_vec_cons -wp_fupd. iDestruct "H↦" as "[H↦0 H↦vl1]". wp_write.
     wp_bind p1. iApply (wp_wand with "[]"); first by iApply (wp_eval_path). iIntros (? ->).
     wp_op. wp_bind p2. iApply (wp_hasty with "Hp2"). iIntros (v2 Hv2) "Hty2".
+    rewrite typed_read_eq in Hr.
     iMod (Hr with "[] LFT HE Htl HL2 Hty2") as (l2 vl2 q) "(% & H↦2 & Hty & Hr)"=>//=.
-    subst. assert (ty.(ty_size) ≤ length vl1).
+    clear Hr. subst. assert (ty.(ty_size) ≤ length vl1).
     { revert i Hty. rewrite Hlen. clear. induction tyl=>//= -[|i] /=.
       - intros [= ->]. lia.
       - specialize (IHtyl i). intuition lia. }

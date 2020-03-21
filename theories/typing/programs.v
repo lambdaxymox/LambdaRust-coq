@@ -54,27 +54,41 @@ Section typing.
   Global Arguments typed_instruction _ _ _ _%E _.
 
   (** Writing and Reading **)
-  Definition typed_write (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
+  Definition typed_write_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
     (□ ∀ v tid F qL, ⌜lftE ∪ (↑lrustN) ⊆ F⌝ →
       lft_ctx -∗ elctx_interp E -∗ llctx_interp L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl, ⌜length vl = ty.(ty_size) ∧ v = #l⌝ ∗ l ↦∗ vl ∗
           (▷ l ↦∗: ty.(ty_own) tid ={F}=∗
             llctx_interp L qL ∗ ty2.(ty_own) tid [v]))%I.
+  Definition typed_write_aux : seal (@typed_write_def). by eexists. Qed.
+  Definition typed_write := typed_write_aux.(unseal).
+  Definition typed_write_eq : @typed_write = @typed_write_def := typed_write_aux.(seal_eq).
   Global Arguments typed_write _ _ _%T _%T _%T.
+
+  Global Instance typed_write_persistent (E : elctx) (L : llctx) (ty1 ty ty2 : type) :
+    Persistent (typed_write E L ty1 ty ty2).
+  Proof. rewrite typed_write_eq. apply _. Qed.
 
   (* Technically speaking, we could remvoe the vl quantifiaction here and use
      mapsto_pred instead (i.e., l ↦∗: ty.(ty_own) tid). However, that would
      make work for some of the provers way harder, since they'd have to show
      that nobody could possibly have changed the vl (because only half the
      fraction was given). So we go with the definition that is easier to prove. *)
-  Definition typed_read (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
+  Definition typed_read_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
     (□ ∀ v tid F qL, ⌜lftE ∪ ↑lrustN ⊆ F⌝ →
       lft_ctx -∗ elctx_interp E -∗ na_own tid F -∗
       llctx_interp L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl q, ⌜v = #l⌝ ∗ l ↦∗{q} vl ∗ ▷ ty.(ty_own) tid vl ∗
               (l ↦∗{q} vl ={F}=∗ na_own tid F ∗
                               llctx_interp L qL ∗ ty2.(ty_own) tid [v]))%I.
+  Definition typed_read_aux : seal (@typed_read_def). by eexists. Qed.
+  Definition typed_read := typed_read_aux.(unseal).
+  Definition typed_read_eq : @typed_read = @typed_read_def := typed_read_aux.(seal_eq).
   Global Arguments typed_read _ _ _%T _%T _%T.
+
+  Global Instance typed_read_persistent (E : elctx) (L : llctx) (ty1 ty ty2 : type) :
+    Persistent (typed_read E L ty1 ty ty2).
+  Proof. rewrite typed_read_eq. apply _. Qed.
 End typing.
 
 Definition typed_instruction_ty `{!typeG Σ} (E : elctx) (L : llctx) (T : tctx)
@@ -196,6 +210,7 @@ Section typing_rules.
     rewrite tctx_interp_cons tctx_interp_singleton. iIntros "[Hp1 Hp2]".
     wp_bind p1. iApply (wp_hasty with "Hp1"). iIntros (v1) "% Hown1".
     wp_bind p2. iApply (wp_hasty with "Hp2"). iIntros (v2) "_ Hown2".
+    rewrite typed_write_eq in Hwrt.
     iMod (Hwrt with "[] LFT HE HL Hown1") as (l vl) "([% %] & Hl & Hclose)"; first done.
     subst v1. iDestruct (ty_size_eq with "Hown2") as "#Hsz". iDestruct "Hsz" as %Hsz.
     rewrite <-Hsz in *. destruct vl as [|v[|]]; try done.
@@ -221,6 +236,7 @@ Section typing_rules.
     iIntros (Hsz Hread tid) "#LFT #HE Htl HL Hp".
     rewrite tctx_interp_singleton. wp_bind p. iApply (wp_hasty with "Hp").
     iIntros (v) "% Hown".
+    rewrite typed_read_eq in Hread.
     iMod (Hread with "[] LFT HE Htl HL Hown") as
         (l vl q) "(% & Hl & Hown & Hclose)"; first done.
     subst v. iDestruct (ty_size_eq with "Hown") as "#>%". rewrite ->Hsz in *.
@@ -253,6 +269,7 @@ Section typing_rules.
     iIntros (Φ) "(#LFT & #HE & Htl & [HL1 HL2] & [Hp1 Hp2]) HΦ".
     wp_bind p1. iApply (wp_hasty with "Hp1"). iIntros (v1) "% Hown1".
     wp_bind p2. iApply (wp_hasty with "Hp2"). iIntros (v2) "% Hown2".
+    rewrite typed_write_eq typed_read_eq.
     iMod ("Hwrt" with "[] LFT HE HL1 Hown1")
       as (l1 vl1) "([% %] & Hl1 & Hcl1)"; first done.
     iMod ("Hread" with "[] LFT HE Htl HL2 Hown2")
@@ -274,8 +291,6 @@ Section typing_rules.
   Proof.
     iIntros (Hsz Hwrt Hread tid) "#LFT #HE Htl HL HT".
     iApply (type_memcpy_iris with "[] [] [$LFT $Htl $HE $HL HT]"); try done.
-    { iApply Hwrt. }
-    { iApply Hread. }
     { by rewrite tctx_interp_cons tctx_interp_singleton. }
     rewrite tctx_interp_cons tctx_interp_singleton. auto.
   Qed.
@@ -290,5 +305,3 @@ Section typing_rules.
     typed_body E L C T (p1 <-{n} !p2;; e).
   Proof. iIntros. by iApply type_seq; first eapply (type_memcpy_instr ty ty1 ty1'). Qed.
 End typing_rules.
-
-Hint Opaque typed_read typed_write : lrust_typing.

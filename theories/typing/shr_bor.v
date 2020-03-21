@@ -84,7 +84,7 @@ Section typing.
   Lemma read_shr E L κ ty :
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&shr{κ}ty) ty (&shr{κ}ty).
   Proof.
-    iIntros (Hcopy Halive) "!#".
+    rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
     iIntros ([[]|] tid F qL ?) "#LFT #HE Htl HL #Hshr"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (copy_shr_acc with "LFT Hshr Htl Hκ") as (q') "(Htl & H↦ & Hcl)"; first solve_ndisj.

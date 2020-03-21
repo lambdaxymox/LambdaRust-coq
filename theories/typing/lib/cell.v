@@ -168,7 +168,9 @@ Section typing.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iApply type_letalloc_n; [solve_typing| |iIntros (r); simpl_subst].
-    { apply (read_shr _ _ _ (cell ty)); solve_typing. }
+    { rewrite typed_read_eq.
+      have Hrd := (read_shr _ _ _ (cell ty)). rewrite typed_read_eq in Hrd.
+      apply Hrd; solve_typing. }
     iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
   Qed.

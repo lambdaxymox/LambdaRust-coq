@@ -131,7 +131,7 @@ Section typing.
   Lemma read_uniq E L κ ty :
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
-    iIntros (Hcopy Halive) "!#".
+    rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
     iIntros ([[]|] tid F qL ?) "#LFT #HE Htl HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Hκ") as "[H↦ Hclose']"; first solve_ndisj.
@@ -145,7 +145,7 @@ Section typing.
   Lemma write_uniq E L κ ty :
     lctx_lft_alive E L κ → ⊢ typed_write E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
-    iIntros (Halive) "!#".
+    rewrite typed_write_eq. iIntros (Halive) "!#".
     iIntros ([[]|] tid F qL ?) "#LFT HE HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Htok") as "[H↦ Hclose']"; first solve_ndisj.
