@@ -39,7 +39,7 @@ Section rwlock_inv.
       | Some (Cinr (agν, q, n)) =>
         (* Locked for read. *)
         ∃ (ν : lft) q', agν ≡ to_agree ν ∗
-                □ (1.[ν] ={↑lftN,∅}▷=∗ [†ν]) ∗
+                □ (1.[ν] ={↑lftN,↑lft_userN}▷=∗ [†ν]) ∗
                 ([†ν] ={↑lftN}=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
                 ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1) ∗
                 ⌜(q + q')%Qp = 1%Qp⌝ ∗ q'.[ν]

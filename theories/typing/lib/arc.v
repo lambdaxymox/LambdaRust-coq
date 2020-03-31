@@ -27,7 +27,7 @@ Section arc.
      (*    because [weak_new] cannot prove ty_shr, even for a dead *)
      (*    lifetime. *)
      (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-     □ (1.[ν] ={↑lftN ∪ ↑arc_endN,∅}▷=∗
+     □ (1.[ν] ={↑lftN ∪ ↑arc_endN,↑lft_userN}▷=∗
           [†ν] ∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ † l…(2 + ty.(ty_size))))%I.
 
   Global Instance arc_persist_ne tid ν γ l n :
@@ -767,7 +767,9 @@ Section arc.
       rewrite heap_mapsto_vec_cons. iDestruct "H↦" as "[H↦0 H↦1]".
       iDestruct "Hpersist" as "(? & ? & H†)". wp_bind (_ <- _)%E.
       iDestruct "Hdrop" as "[Hν Hdrop]". iSpecialize ("H†" with "Hν").
-      iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); try solve_ndisj.
+      iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); first done.
+      { (* FIXME [solve_ndisj] fails *)
+        etrans; last exact: union_subseteq_l. solve_ndisj. }
       iDestruct "Hown" as (???) "(_ & Hlen & _)". wp_write. iIntros "(#Hν & Hown & H†)!>".
       wp_seq. wp_op. wp_op. iDestruct "Hown" as (?) "[H↦ Hown]".
       iDestruct (ty_size_eq with "Hown") as %?. rewrite Max.max_0_r.
@@ -870,7 +872,9 @@ Section arc.
       rewrite heap_mapsto_vec_cons. iDestruct "Hr" as "[Hr0 Hr1]".
       iDestruct "Hpersist" as "(Ha & _ & H†)". wp_bind (_ <- _)%E.
       iSpecialize ("H†" with "Hν").
-      iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); try solve_ndisj.
+      iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); first done.
+      { (* FIXME [solve_ndisj] fails *)
+        etrans; last exact: union_subseteq_l. solve_ndisj. }
       wp_write. iIntros "(#Hν & Hown & H†) !>". wp_seq. wp_op. wp_op.
       rewrite -(firstn_skipn ty.(ty_size) vl0) heap_mapsto_vec_app.
       iDestruct "Hr1" as "[Hr1 Hr2]". iDestruct "Hown" as (vl) "[Hrc' Hown]".
@@ -944,7 +948,9 @@ Section arc.
     iDestruct "Hrc" as (γ ν q') "[#(Hi & Hs & #Hc) Htoks]".
     wp_apply (is_unique_spec with "Hi Htoks"). iIntros ([]) "H"; wp_if.
     - iDestruct "H" as "(Hrc & Hrc1 & Hν)". iSpecialize ("Hc" with "Hν"). wp_bind Skip.
-      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); try solve_ndisj.
+      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
+      { (* FIXME [solve_ndisj] fails *)
+        etrans; last exact: union_subseteq_l. solve_ndisj. }
       wp_seq. iIntros "(#Hν & Hown & H†) !>". wp_seq.
       iMod ("Hclose2" with "[Hrc Hrc1 H†] Hown") as "[Hb Hα]".
       { iIntros "!> Hown !>". iLeft. iFrame. }
@@ -1029,7 +1035,9 @@ Section arc.
     pose proof (fin_to_nat_lt x). destruct (fin_to_nat x) as [|[|[]]]; last lia.
     - iIntros "(Hrc0 & Hrc1 & HP1)". wp_case. wp_bind (_ +ₗ _)%E.
       iSpecialize ("Hc" with "HP1").
-      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); [solve_ndisj..|].
+      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
+      { (* FIXME [solve_ndisj] fails *)
+        etrans; last exact: union_subseteq_l. solve_ndisj. }
       wp_op. iIntros "(#Hν & Hrc2 & H†)". iModIntro.
       iMod ("Hclose2" with "[Hrc'↦ Hrc0 Hrc1 H†] Hrc2") as "[Hb Hα1]".
       { iIntros "!> Hrc2". iExists [_]. rewrite heap_mapsto_vec_singleton.
@@ -1044,7 +1052,9 @@ Section arc.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing.
     - iIntros "[Hν Hweak]". wp_case. iSpecialize ("Hc" with "Hν"). wp_bind (new _). 
-      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); [solve_ndisj..|].
+      iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
+      { (* FIXME [solve_ndisj] fails *)
+        etrans; last exact: union_subseteq_l. solve_ndisj. }
       wp_apply wp_new=>//. lia. iIntros (l) "(H† & Hlvl) (#Hν & Hown & H†') !>".
       rewrite -!lock Nat2Z.id.
       wp_let. wp_op. rewrite !heap_mapsto_vec_cons shift_loc_assoc shift_loc_0.

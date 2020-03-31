@@ -6,6 +6,9 @@ From iris.bi Require Import fractional.
 Set Default Proof Using "Type".
 
 Definition lftN : namespace := nroot .@ "lft".
+(** A mask inside the lifetime logic namespace that users may use.
+This is still available in the "consequence" view shift of borrow accessors. *)
+Definition lft_userN : namespace := nroot .@ "lft" .@ "usr".
 
 Module Type lifetime_sig.
   (** CMRAs needed by the lifetime logic  *)
@@ -93,7 +96,7 @@ Module Type lifetime_sig.
   Parameter lft_dead_static : [† static] -∗ False.
 
   Parameter lft_create : ∀ E, ↑lftN ⊆ E →
-    lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN,∅}▷=∗ [†κ]).
+    lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN,↑lft_userN}▷=∗ [†κ]).
   Parameter bor_create : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ ▷ P ={E}=∗ &{κ} P ∗ ([†κ] ={E}=∗ ▷ P).
   Parameter bor_fake : ∀ E κ P,
@@ -123,11 +126,11 @@ Module Type lifetime_sig.
                 ([†κ] ∗ |={E∖↑lftN,E}=> idx_bor_own q i).
   Parameter bor_acc_strong : ∀ E q κ P, ↑lftN ⊆ E →
     lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={∅}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
+      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
   Parameter bor_acc_atomic_strong : ∀ E κ P, ↑lftN ⊆ E →
     lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗
       (∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-         ∀ Q, ▷ (▷ Q -∗ [†κ'] ={∅}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
+         ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
            ([†κ] ∗ |={E∖↑lftN,E}=> True).
 
   (* Because Coq's module system is horrible, we have to repeat properties of lft_incl here

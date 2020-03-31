@@ -183,7 +183,7 @@ Section rwlock_functions.
         iAssert (∃ qν ν, (qβ / 2).[β] ∗ (qν).[ν] ∗
                          ty_shr ty (β ⊓ ν) tid (lx +ₗ 1) ∗
                          own γ (◯ reading_st qν ν) ∗ rwlock_inv tid lx γ β ty ∗
-                         ((1).[ν] ={↑lftN,∅}▷=∗ [†ν]))%I
+                         ((1).[ν] ={↑lftN,↑lft_userN}▷=∗ [†ν]))%I
           with "[> Hlx Hownst Hst Hβtok2]"
           as (q' ν) "(Hβtok2 & Hν & Hshr & Hreading & INV & H†)".
         { destruct st' as [[|[[agν q] n]|]|]; try done.

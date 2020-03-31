@@ -29,7 +29,7 @@ Implicit Types κ : lft.
 Lemma bor_acc_atomic_cons E κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗
-    (▷ P ∗ ∀ Q, ▷ (▷ Q ={∅}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ} Q) ∨
+    (▷ P ∗ ∀ Q, ▷ (▷ Q ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ} Q) ∨
     ([†κ] ∗ |={E∖↑lftN,E}=> True).
 Proof.
   iIntros (?) "#LFT HP".
@@ -55,7 +55,7 @@ Qed.
 Lemma bor_acc_cons E q κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ▷ P ∗
-    ∀ Q, ▷ (▷ Q ={∅}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ} Q ∗ q.[κ].
+    ∀ Q, ▷ (▷ Q ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ} Q ∗ q.[κ].
 Proof.
   iIntros (?) "#LFT HP Htok".
   iMod (bor_acc_strong with "LFT HP Htok") as (κ') "(#Hκκ' & $ & Hclose)"; first done.

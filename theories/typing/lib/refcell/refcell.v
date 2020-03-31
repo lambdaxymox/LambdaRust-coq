@@ -49,7 +49,7 @@ Section refcell_inv.
         (* Not borrowed. *)
         &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)
       | Some (ν, rw, q, _) =>
-        (1.[ν] ={↑lftN,∅}▷=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
+        (1.[ν] ={↑lftN,↑lft_userN}▷=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
         (∃ q', ⌜(q + q')%Qp = 1%Qp⌝ ∗ q'.[ν]) ∗
         if rw then (* Mutably borrowed. *) True
         else       (* Immutably borrowed. *) ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1)
@@ -155,7 +155,7 @@ Section refcell.
     - iMod (own_alloc (● (refcell_st_to_R $ Some (static, true, (1/2)%Qp, n)))) as (γ) "Hst".
       { by apply auth_auth_valid. }
       iFrame "Htok'". iExists γ, _. iFrame. iSplitR.
-      { rewrite -step_fupd_intro. auto. set_solver+. }
+      { rewrite -step_fupd_intro. auto. solve_ndisj. }
       iSplitR; [|done]. iExists (1/2)%Qp. rewrite Qp_div_2. iSplitR; [done|].
       iApply lft_tok_static.
   Qed.

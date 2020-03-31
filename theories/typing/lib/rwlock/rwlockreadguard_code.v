@@ -95,8 +95,9 @@ Section rwlockreadguard_functions.
           rewrite -EQ. iDestruct "EQν" as %<-%(inj to_agree)%leibniz_equiv.
           iCombine "Hν" "Hν'" as "Hν". iDestruct "Hq" as %->.
           iApply (step_fupd_mask_mono (↑lftN ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN)));
-            last iApply (step_fupd_mask_frame_r _ ∅); [try set_solver..|];
-            [apply union_least; solve_ndisj|].
+            last iApply (step_fupd_mask_frame_r _ (↑lft_userN)); [set_solver+ || solve_ndisj..| |].
+          { (* FIXME [solve_ndisj] fails. *)
+            apply: disjoint_difference_r1. solve_ndisj. }
           iMod ("H†" with "Hν") as "H†". iModIntro. iNext. iMod "H†".
           iMod ("Hh" with "H†") as "Hb". iIntros "!> Hlx". iExists None. iFrame.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.
