@@ -407,7 +407,7 @@ Section heap.
     iDestruct 1 as (hF) "(Hvalσ & HhF & REL)"; iDestruct "REL" as %REL.
     iIntros "Hmt Hf". rewrite heap_freeable_eq /heap_freeable_def.
     iDestruct (own_valid_2 with "HhF Hf") as % [Hl Hv]%auth_both_valid.
-    move: Hl=> /singleton_included [[q qs] [/leibniz_equiv_iff Hl Hq]].
+    move: Hl=> /singleton_included_l [[q qs] [/leibniz_equiv_iff Hl Hq]].
     apply (Some_included_exclusive _ _) in Hq as [=<-<-]%leibniz_equiv; last first.
     { move: (Hv (l.1)). rewrite Hl. by intros [??]. }
     assert (vl ≠ []).
@@ -430,7 +430,7 @@ Section heap.
   Proof.
     iIntros "H● H◯".
     iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_both_valid.
-    iPureIntro. move: Hl=> /singleton_included [[[q' ls'] dv]].
+    iPureIntro. move: Hl=> /singleton_included_l [[[q' ls'] dv]].
     rewrite /to_heap lookup_fmap fmap_Some_equiv.
     move=> [[[ls'' v'] [?[[/=??]->]]]]; simplify_eq.
     move=> /Some_pair_included_total_2
@@ -447,7 +447,7 @@ Section heap.
   Proof.
     iIntros "H● H◯".
     iDestruct (own_valid_2 with "H● H◯") as %[Hl?]%auth_both_valid.
-    iPureIntro. move: Hl=> /singleton_included [[[q' ls'] dv]].
+    iPureIntro. move: Hl=> /singleton_included_l [[[q' ls'] dv]].
     rewrite /to_heap lookup_fmap fmap_Some_equiv.
     move=> [[[ls'' v'] [?[[/=??]->]]] Hincl]; simplify_eq.
     apply (Some_included_exclusive _ _) in Hincl as [? Hval]; last by destruct ls''.

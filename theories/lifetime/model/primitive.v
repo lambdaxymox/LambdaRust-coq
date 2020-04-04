@@ -13,7 +13,7 @@ Implicit Types κ : lft.
 Lemma to_borUR_included (B : gmap slice_name bor_state) i s q :
   {[i := (q%Qp, to_agree s)]} ≼ to_borUR B → B !! i = Some s.
 Proof.
-  rewrite singleton_included=> -[qs []]. unfold_leibniz.
+  rewrite singleton_included_l=> -[qs []]. unfold_leibniz.
   rewrite lookup_fmap fmap_Some_equiv=> -[s' [-> ->]].
   by move=> /Some_pair_included [_] /Some_included_total /to_agree_included=>->.
 Qed.
@@ -37,7 +37,7 @@ Lemma own_ilft_auth_agree (I : gmap lft lft_names) κ γs :
     own ilft_name (◯ {[κ := to_agree γs]}) -∗ ⌜is_Some (I !! κ)⌝.
 Proof.
   iIntros "HI Hκ". iDestruct (own_valid_2 with "HI Hκ")
-    as %[[? [Hl ?]]%singleton_included _]%auth_both_valid.
+    as %[[? [Hl ?]]%singleton_included_l _]%auth_both_valid.
   unfold to_ilftUR in *. simplify_map_eq.
   destruct (fmap_Some_equiv_1 _ _ _ Hl) as (?&?&?). eauto.
 Qed.
@@ -48,7 +48,7 @@ Lemma own_alft_auth_agree (A : gmap atomic_lft bool) Λ b :
 Proof.
   iIntros "HA HΛ".
   iDestruct (own_valid_2 with "HA HΛ") as %[HA _]%auth_both_valid.
-  iPureIntro. move: HA=> /singleton_included [qs [/leibniz_equiv_iff]].
+  iPureIntro. move: HA=> /singleton_included_l [qs [/leibniz_equiv_iff]].
   rewrite lookup_fmap fmap_Some=> -[b' [? ->]] /Some_included.
   move=> [/leibniz_equiv_iff|/csum_included]; destruct b, b'; naive_solver.
 Qed.

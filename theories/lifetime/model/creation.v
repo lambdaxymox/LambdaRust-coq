@@ -132,7 +132,7 @@ Proof.
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   rewrite /lft_tok big_sepMS_singleton.
   iDestruct (own_valid_2 with "HA HΛ")
-    as %[[s [?%leibniz_equiv ?]]%singleton_included _]%auth_both_valid.
+    as %[[s [?%leibniz_equiv ?]]%singleton_included_l _]%auth_both_valid.
   iMod (own_update_2 with "HA HΛ") as "[HA HΛ]".
   { by eapply auth_update, singleton_local_update,
       (exclusive_local_update _ (Cinr ())). }
