@@ -9,7 +9,7 @@ dev-repo: "git+https://gitlab.mpi-sws.org/iris/lambda-rust.git"
 
 synopsis: "LambdaRust Coq formalization"
 description: """
-A formal model of a Rust core langauge and type system, a logical relation for
+A formal model of a Rust core language and type system, a logical relation for
 the type system, and safety proof for some Rust libraries.
 """
 
