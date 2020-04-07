@@ -99,7 +99,7 @@ Proof.
     iAssert ⌜j1 ≠ j2⌝%I with "[#]" as %Hj1j2.
     { iDestruct (own_bor_valid_2 with "Hbor1 Hbor2") as %Hj1j2%auth_valid_discrete.
       iPureIntro. iIntros (->). (* FIXME this used to work without iPureIntro. *)
-      exfalso. revert Hj1j2. rewrite /= op_singleton singleton_valid.
+      exfalso. revert Hj1j2. rewrite /= singleton_op singleton_valid.
       by intros [[]]. }
     iMod (slice_combine _ _ true with "Hslice1 Hslice2 Hbox")
       as (γ) "(% & Hslice & Hbox)"; first solve_ndisj.

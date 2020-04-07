@@ -66,7 +66,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move : Hγs.
-  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL' <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL' <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_bor_into_op κ x x1 x2 :
@@ -100,7 +100,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
-  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL'=> <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL'=> <-.
   iExists γs. iSplit; first done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_cnt_into_op κ x x1 x2 :
@@ -134,7 +134,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
-  rewrite -auth_frag_op auth_frag_valid op_singleton singleton_valid=> /agree_op_invL'=> <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL'=> <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_inh_into_op κ x x1 x2 :
@@ -277,7 +277,7 @@ Proof.
   rewrite /lft_tok /lft_dead. iIntros "H"; iDestruct 1 as (Λ') "[% H']".
   iDestruct (@big_sepMS_elem_of _ _ _ _ _ _ Λ' with "H") as "H"=> //.
   iDestruct (own_valid_2 with "H H'") as %Hvalid.
-  move: Hvalid=> /auth_frag_valid /=; by rewrite op_singleton singleton_valid.
+  move: Hvalid=> /auth_frag_valid /=; by rewrite singleton_op singleton_valid.
 Qed.
 
 Lemma lft_tok_static q : ⊢ q.[static].
@@ -290,7 +290,7 @@ Proof. rewrite /lft_dead. iDestruct 1 as (Λ) "[% H']". set_solver. Qed.
 Global Instance lft_tok_fractional κ : Fractional (λ q, q.[κ])%I.
 Proof.
   intros p q. rewrite /lft_tok -big_sepMS_sep. apply big_sepMS_proper.
-  intros Λ ?. rewrite Cinl_op -op_singleton auth_frag_op own_op //.
+  intros Λ ?. rewrite Cinl_op -singleton_op auth_frag_op own_op //.
 Qed.
 Global Instance lft_tok_as_fractional κ q :
   AsFractional q.[κ] (λ q, q.[κ])%I q.
@@ -298,7 +298,7 @@ Proof. split. done. apply _. Qed.
 Global Instance idx_bor_own_fractional i : Fractional (λ q, idx_bor_own q i)%I.
 Proof.
   intros p q. rewrite /idx_bor_own -own_bor_op /own_bor. f_equiv=>?.
-  rewrite -auth_frag_op op_singleton -pair_op agree_idemp. done.
+  rewrite -auth_frag_op singleton_op -pair_op agree_idemp. done.
 Qed.
 Global Instance idx_bor_own_as_fractional i q :
   AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
