@@ -172,10 +172,10 @@ Section typing.
     iDestruct ("Hcons" with "[$]") as "#(HE & Htys & Hty)".
     iApply ("Hf" with "LFT HE Htl HL [HC] [HT]").
     - unfold cctx_interp. iIntros (elt) "Helt".
-      iDestruct "Helt" as %->%elem_of_list_singleton. iIntros (ret) "Htl HL HT".
+      iDestruct "Helt" as %->%stdpp.list.elem_of_list_singleton. iIntros (ret) "Htl HL HT".
       unfold cctx_elt_interp.
       iApply ("HC" $! (_ ◁cont(_, _)) with "[%] Htl HL [> -]").
-      { by apply elem_of_list_singleton. }
+      { by apply stdpp.list.elem_of_list_singleton. }
       rewrite /tctx_interp !big_sepL_singleton /=.
       iDestruct "HT" as (v) "[HP Hown]". iExists v. iFrame "HP".
       iDestruct (box_type_incl with "[$Hty]") as "(_ & #Hincl & _)".
@@ -280,7 +280,7 @@ Section typing.
         iApply lft_intersect_incl_r.
       + iSplitL; last done. iExists ϝ. iSplit; first by rewrite /= left_id.
         iFrame "#∗".
-      + iIntros (y) "IN". iDestruct "IN" as %->%elem_of_list_singleton.
+      + iIntros (y) "IN". iDestruct "IN" as %->%stdpp.list.elem_of_list_singleton.
         iIntros (args) "Htl [Hϝ _] [Hret _]". inv_vec args=>r.
         iDestruct "Hϝ" as  (κ') "(EQ & Htk & _)". iDestruct "EQ" as %EQ.
         rewrite /= left_id in EQ. subst κ'. simpl. wp_rec. wp_bind Endlft.
@@ -328,7 +328,7 @@ Section typing.
     iMod (lctx_lft_alive_tok_list _ _ κs with "HE HL") as (q) "(Hκs & HL & Hclose)"; [done..|].
     iApply (type_call_iris' with "LFT HE Htl HL Hκs Hf Hargs"); [done|].
     iIntros (r) "Htl HL Hκs Hret". iMod ("Hclose" with "Hκs HL") as "HL".
-    iSpecialize ("HC" with "[]"); first by (iPureIntro; apply elem_of_list_singleton).
+    iSpecialize ("HC" with "[]"); first by (iPureIntro; apply stdpp.list.elem_of_list_singleton).
     iApply ("HC" $! [#r] with "Htl HL").
     rewrite tctx_interp_cons tctx_hasty_val. iFrame.
   Qed.
@@ -348,7 +348,7 @@ Section typing.
   Proof.
     intros Hfn HL HE HTT' HC HT'T''.
     rewrite -typed_body_mono /flip; last done; first by eapply type_call'.
-    - etrans. eapply (incl_cctx_incl _ [_]); first by intros ? ->%elem_of_list_singleton.
+    - etrans. eapply (incl_cctx_incl _ [_]); first by intros ? ->%stdpp.list.elem_of_list_singleton.
       apply cctx_incl_cons_match; first done. intros args. by inv_vec args.
     - etrans; last by apply (tctx_incl_frame_l [_]).
       apply copy_elem_of_tctx_incl; last done. apply _.
