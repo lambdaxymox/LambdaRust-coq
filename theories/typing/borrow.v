@@ -184,13 +184,13 @@ Section borrow.
     { iApply (lft_incl_glb with "Hincl []"). iApply lft_incl_refl. }
     iMod (lft_incl_acc with "Hincl' Htok2") as (q2) "[Htok2 Hclose'']"; first solve_ndisj.
     iApply (wp_step_fupd _ _ (_∖_) with "[Hown Htok2]"); try done.
-    - iApply ("Hown" with "[%] Htok2"); first solve_ndisj.
-    - iApply wp_fupd. wp_read. iIntros "!>[#Hshr Htok2]".
-      iMod ("Hclose''" with "Htok2") as "Htok2".
-      iMod ("Hclose'" with "[H↦]") as "Htok1"; first by auto.
-      iMod ("Hclose" with "[Htok1 Htok2]") as "($ & $)"; first by iFrame.
-      rewrite tctx_interp_singleton tctx_hasty_val' //.
-      by iApply (ty_shr_mono with "Hincl' Hshr").
+    { iApply ("Hown" with "[%] Htok2"); first solve_ndisj. }
+    iApply wp_fupd. wp_read. iIntros "!>[#Hshr Htok2]".
+    iMod ("Hclose''" with "Htok2") as "Htok2".
+    iMod ("Hclose'" with "[H↦]") as "Htok1"; first by auto.
+    iMod ("Hclose" with "[Htok1 Htok2]") as "($ & $)"; first by iFrame.
+    rewrite tctx_interp_singleton tctx_hasty_val' //.
+    by iApply (ty_shr_mono with "Hincl' Hshr").
   Qed.
 
   Lemma type_deref_shr_uniq {E L} κ κ' x p e ty C T T' :
