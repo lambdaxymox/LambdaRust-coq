@@ -349,7 +349,7 @@ Section typing.
     intros Hfn HL HE HTT' HC HT'T''.
     rewrite -typed_body_mono /flip; last done; first by eapply type_call'.
     - etrans. eapply (incl_cctx_incl _ [_]); first by intros ? ->%stdpp.list.elem_of_list_singleton.
-      apply cctx_incl_cons_match; first done. intros args. by inv_vec args.
+      apply cctx_incl_cons; first done. intros args. by inv_vec args.
     - etrans; last by apply (tctx_incl_frame_l [_]).
       apply copy_elem_of_tctx_incl; last done. apply _.
   Qed.
