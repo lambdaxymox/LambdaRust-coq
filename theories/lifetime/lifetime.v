@@ -26,6 +26,14 @@ Section derived.
 Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
 
+(* Deriving this just to prove that it can be derived.
+(It is in the signature only for code sharing reasons.*)
+Lemma bor_shorten_ κ κ' P : κ ⊑ κ' -∗ &{κ'}P -∗ &{κ}P.
+Proof.
+  iIntros "#Hκκ'". rewrite !bor_unfold_idx. iDestruct 1 as (i) "[#? ?]".
+  iExists i. iFrame. by iApply idx_bor_shorten.
+Qed.
+
 Lemma bor_acc_atomic_cons E κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗

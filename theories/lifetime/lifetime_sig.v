@@ -102,6 +102,8 @@ Module Type lifetime_sig.
   Parameter bor_fake : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ [†κ] ={E}=∗ &{κ}P.
 
+  (* This is in the signature only to share the derived proof between the
+     model and the outside. *)
   Parameter bor_shorten : ∀ κ κ' P, κ ⊑ κ' -∗ &{κ'}P -∗ &{κ}P.
 
   Parameter bor_sep : ∀ E κ P Q,
