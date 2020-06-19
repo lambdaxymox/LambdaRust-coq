@@ -1,6 +1,6 @@
 From lrust.lifetime Require Export primitive.
 From lrust.lifetime Require Import faking.
-From iris.algebra Require Import csum auth frac gmap agree gset.
+From iris.algebra Require Import csum auth frac gmap agree gset numbers.
 From iris.base_logic.lib Require Import boxes.
 From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".

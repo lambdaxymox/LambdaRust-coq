@@ -1,3 +1,4 @@
+From iris.algebra Require Import numbers.
 From iris.base_logic.lib Require Export na_invariants.
 From lrust.lang Require Export proofmode notation.
 From lrust.lifetime Require Export frac_borrow.

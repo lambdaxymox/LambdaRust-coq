@@ -1,5 +1,5 @@
 From iris.proofmode Require Import tactics.
-From iris.algebra Require Import auth csum frac agree excl.
+From iris.algebra Require Import auth csum frac agree excl numbers.
 From iris.bi Require Import fractional.
 From lrust.lifetime Require Import at_borrow.
 From lrust.typing Require Import typing.

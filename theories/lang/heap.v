@@ -1,6 +1,6 @@
 From Coq Require Import Min.
 From stdpp Require Import coPset.
-From iris.algebra Require Import big_op gmap frac agree.
+From iris.algebra Require Import big_op gmap frac agree numbers.
 From iris.algebra Require Import csum excl auth cmra_big_op.
 From iris.bi Require Import fractional.
 From iris.base_logic Require Export lib.own.

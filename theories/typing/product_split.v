@@ -1,4 +1,5 @@
 From Coq Require Import Qcanon.
+From iris.algebra Require Import numbers.
 From iris.proofmode Require Import tactics.
 From lrust.typing Require Export type.
 From lrust.typing Require Import type_context lft_contexts product own uniq_bor shr_bor.
