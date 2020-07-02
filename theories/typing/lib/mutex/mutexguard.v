@@ -40,7 +40,7 @@ Section mguard.
        ty_shr κ tid l :=
          ∃ (l':loc), &frac{κ}(λ q', l ↦{q'} #l') ∗
             □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[α⊓κ]
-                ={F, F∖↑shrN}▷=∗ ty.(ty_shr) (α⊓κ) tid (l' +ₗ 1) ∗ q.[α⊓κ]
+                ={F}[F∖↑shrN]▷=∗ ty.(ty_shr) (α⊓κ) tid (l' +ₗ 1) ∗ q.[α⊓κ]
     |}%I.
   Next Obligation. by iIntros (? ty tid [|[[]|][]]) "H". Qed.
   (* This is to a large extend copy-pasted from RWLock's write guard. *)

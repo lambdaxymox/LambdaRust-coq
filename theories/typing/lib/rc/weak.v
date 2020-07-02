@@ -20,7 +20,7 @@ Section weak.
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
            □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
-             ={F, F∖↑shrN}▷=∗ q.[κ] ∗ ∃ γ ν, rc_persist tid ν γ l' ty ∗
+             ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν, rc_persist tid ν γ l' ty ∗
                 &na{κ, tid, rc_shrN}(own γ weak_tok)
     |}%I.
   Next Obligation. by iIntros (ty tid [|[[]|][]]) "H". Qed.

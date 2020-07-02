@@ -96,7 +96,7 @@ Module Type lifetime_sig.
   Parameter lft_dead_static : [† static] -∗ False.
 
   Parameter lft_create : ∀ E, ↑lftN ⊆ E →
-    lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN,↑lft_userN}▷=∗ [†κ]).
+    lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN}[↑lft_userN]▷=∗ [†κ]).
   Parameter bor_create : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ ▷ P ={E}=∗ &{κ} P ∗ ([†κ] ={E}=∗ ▷ P).
   Parameter bor_fake : ∀ E κ P,

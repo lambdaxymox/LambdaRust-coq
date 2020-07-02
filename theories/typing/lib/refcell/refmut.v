@@ -34,7 +34,7 @@ Section refmut.
          ∃ (lv lrc : loc),
            &frac{κ} (λ q, l↦∗{q} [ #lv; #lrc]) ∗
            □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[α ⊓ κ]
-             ={F, F∖↑shrN}▷=∗ ty.(ty_shr) (α ⊓ κ) tid lv ∗ q.[α ⊓ κ] |}%I.
+             ={F}[F∖↑shrN]▷=∗ ty.(ty_shr) (α ⊓ κ) tid lv ∗ q.[α ⊓ κ] |}%I.
   Next Obligation.
     iIntros (???[|[[]|][|[[]|][]]]); try iIntros "[]". by iIntros "_".
   Qed.

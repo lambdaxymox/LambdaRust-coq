@@ -116,7 +116,7 @@ Qed.
 
 Lemma bor_later E κ P :
   ↑lftN ⊆ E →
-  lft_ctx -∗ &{κ}(▷ P) ={E,E∖↑lftN}▷=∗ &{κ}P.
+  lft_ctx -∗ &{κ}(▷ P) ={E}[E∖↑lftN]▷=∗ &{κ}P.
 Proof.
   iIntros (?) "#LFT Hb".
   iMod (bor_acc_atomic_cons with "LFT Hb") as "[H|[H† Hclose]]"; first done.

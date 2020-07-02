@@ -110,7 +110,7 @@ Proof. by rewrite /kill_set elem_of_filter elem_of_dom. Qed.
 
 Lemma lft_create E :
   ↑lftN ⊆ E →
-  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN,↑lft_userN}▷=∗ [†κ]).
+  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN}[↑lft_userN]▷=∗ [†κ]).
 Proof.
   iIntros (?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
@@ -128,7 +128,7 @@ Proof.
   iModIntro; iExists {[ Λ ]}.
   rewrite {1}/lft_tok big_sepMS_singleton. iFrame "HΛ".
   clear I A HΛ. iIntros "!# HΛ".
-  iApply (step_fupd_mask_mono (↑lftN) _ _ (↑lftN∖↑mgmtN)); [solve_ndisj..|].
+  iApply (step_fupd_mask_mono (↑lftN) _ (↑lftN∖↑mgmtN)); [solve_ndisj..|].
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   rewrite /lft_tok big_sepMS_singleton.
   iDestruct (own_valid_2 with "HA HΛ")

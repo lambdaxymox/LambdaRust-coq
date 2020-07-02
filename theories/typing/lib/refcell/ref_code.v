@@ -15,7 +15,7 @@ Section ref_functions.
     own γ (◯ reading_stR q ν) -∗
     ∃ (q' : Qp) n, l ↦ #(Zpos n) ∗ ⌜(q ≤ q')%Qc⌝ ∗
             own γ (● (refcell_st_to_R $ Some (ν, false, q', n)) ⋅ ◯ reading_stR q ν) ∗
-            ((1).[ν] ={↑lftN,↑lft_userN}▷=∗ &{α}((l +ₗ 1) ↦∗: ty_own ty tid)) ∗
+            ((1).[ν] ={↑lftN}[↑lft_userN]▷=∗ &{α}((l +ₗ 1) ↦∗: ty_own ty tid)) ∗
             (∃ q'', ⌜(q' + q'' = 1)%Qp⌝ ∗ q''.[ν]) ∗
             ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1).
   Proof.
@@ -162,7 +162,7 @@ Section ref_functions.
       as (q' n) "(H↦lrc & >% & H●◯ & H† & Hq' & Hshr)".
     iDestruct "Hq'" as (q'') ">[% Hν']".
     wp_read. wp_let. wp_op. wp_write.
-    iAssert (|={↑lftN,↑lft_userN}▷=> refcell_inv tid lrc γ β ty')%I
+    iAssert (|={↑lftN}[↑lft_userN]▷=> refcell_inv tid lrc γ β ty')%I
       with "[H↦lrc H●◯ Hν Hν' Hshr H†]" as "INV".
     { iDestruct (own_valid with "H●◯") as
           %[[[[_ ?]?]|[[_ [q0 Hq0]]%prod_included [n' Hn']]%prod_included]

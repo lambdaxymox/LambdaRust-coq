@@ -127,7 +127,7 @@ Section refmut_functions.
     iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
     iMod (na_bor_acc with "LFT Hinv Hβ Hna") as "(INV & Hna & Hcloseβ)"; [done..|].
     iDestruct "INV" as (st) "(H↦lrc & H● & INV)". wp_read. wp_let. wp_op. wp_write.
-    iAssert (|={↑lftN,↑lft_userN}▷=> refcell_inv tid lrc γ β ty')%I
+    iAssert (|={↑lftN}[↑lft_userN]▷=> refcell_inv tid lrc γ β ty')%I
       with "[H↦lrc H● H◯ Hν INV]" as "INV".
     { iDestruct (own_valid_2 with "H● H◯") as
         %[[[=]|(? & [[? q'] ?] & [= <-] & Hst & INCL)]%option_included _]

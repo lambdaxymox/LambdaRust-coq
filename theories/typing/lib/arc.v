@@ -27,7 +27,7 @@ Section arc.
      (*    because [weak_new] cannot prove ty_shr, even for a dead *)
      (*    lifetime. *)
      (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-     □ (1.[ν] ={↑lftN ∪ ↑arc_endN,↑lft_userN}▷=∗
+     □ (1.[ν] ={↑lftN ∪ ↑arc_endN}[↑lft_userN]▷=∗
           [†ν] ∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ † l…(2 + ty.(ty_size))))%I.
 
   Global Instance arc_persist_ne tid ν γ l n :
@@ -103,7 +103,7 @@ Section arc.
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
            □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
-             ={F, F∖↑shrN}▷=∗ q.[κ] ∗ ∃ γ ν q', κ ⊑ ν ∗
+             ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν q', κ ⊑ ν ∗
                 arc_persist tid ν γ l' ty ∗
                 &at{κ, arc_shrN}(arc_tok γ q')
     |}%I.
@@ -225,7 +225,7 @@ Section arc.
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
            □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
-             ={F, F∖↑shrN}▷=∗ q.[κ] ∗ ∃ γ ν,
+             ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν,
                 arc_persist tid ν γ l' ty ∗ &at{κ, arc_shrN}(weak_tok γ)
     |}%I.
   Next Obligation. by iIntros (ty tid [|[[]|][]]) "H". Qed.

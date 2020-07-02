@@ -21,15 +21,15 @@ Section util.
   Lemma delay_borrow_step :
     lfeE ⊆ N → (∀ x, Persistent (Post x)) →
     lft_ctx -∗ &{κ} P -∗
-      □ (∀ x, &{κ} P -∗ Pre x -∗ Frame x ={F1 x,F2 x}▷=∗ Post x ∗ Frame x) ={N}=∗ 
-      □ (∀ x, Pre x -∗ Frame x ={F1 x,F2 x}▷=∗ Post x ∗ Frame x).
+      □ (∀ x, &{κ} P -∗ Pre x -∗ Frame x ={F1 x}[F2 x]▷=∗ Post x ∗ Frame x) ={N}=∗ 
+      □ (∀ x, Pre x -∗ Frame x ={F1 x}[F2 x]▷=∗ Post x ∗ Frame x).
    *)
 
   Lemma delay_sharing_later N κ l ty tid :
     lftE ⊆ N →
     lft_ctx -∗ &{κ}(▷ l ↦∗: ty_own ty tid) ={N}=∗
        □ ∀ (F : coPset) (q : Qp),
-       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ] ={F,F ∖ ↑shrN}▷=∗ ty.(ty_shr) κ tid l ∗ (q).[κ].
+       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ tid l ∗ (q).[κ].
   Proof.
     iIntros (?) "#LFT Hbor". rewrite bor_unfold_idx.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".
@@ -51,7 +51,7 @@ Section util.
     lftE ⊆ N →
     lft_ctx -∗ ▷ (κ'' ⊑ κ ⊓ κ') -∗ &{κ'}(&{κ}(l ↦∗: ty_own ty tid)) ={N}=∗
        □ ∀ (F : coPset) (q : Qp),
-       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ''] ={F,F ∖ ↑shrN}▷=∗ ty.(ty_shr) κ'' tid l ∗ (q).[κ''].
+       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ''] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ'' tid l ∗ (q).[κ''].
   Proof.
     iIntros (?) "#LFT #Hincl Hbor". rewrite bor_unfold_idx.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".
