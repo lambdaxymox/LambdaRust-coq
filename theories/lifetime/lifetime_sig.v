@@ -126,6 +126,8 @@ Module Type lifetime_sig.
     lft_ctx -∗ &{κ,i}P -∗ idx_bor_own q i ={E,E∖↑lftN}=∗
       (▷ P ∗ (▷ P ={E∖↑lftN,E}=∗ idx_bor_own q i)) ∨
                 ([†κ] ∗ |={E∖↑lftN,E}=> idx_bor_own q i).
+  (* We have to expose κ' here as without [lftN] in the mask of the Q-to-P view
+     shift, we cannot turn [†κ'] into [†κ]. *)
   Parameter bor_acc_strong : ∀ E q κ P, ↑lftN ⊆ E →
     lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ∃ κ', κ ⊑ κ' ∗ ▷ P ∗
       ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].

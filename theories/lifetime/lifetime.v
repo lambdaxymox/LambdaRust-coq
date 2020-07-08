@@ -27,7 +27,7 @@ Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
 
 (* Deriving this just to prove that it can be derived.
-(It is in the signature only for code sharing reasons.*)
+(It is in the signature only for code sharing reasons.) *)
 Lemma bor_shorten_ κ κ' P : κ ⊑ κ' -∗ &{κ'}P -∗ &{κ}P.
 Proof.
   iIntros "#Hκκ'". rewrite !bor_unfold_idx. iDestruct 1 as (i) "[#? ?]".
