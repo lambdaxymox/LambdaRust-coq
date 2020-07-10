@@ -41,7 +41,7 @@ Section lft_contexts.
   (* Local lifetime contexts. *)
   Definition llctx_elt_interp (x : llctx_elt) (q : Qp) : iProp Σ :=
     let κ' := lft_intersect_list (x.2) in
-    (∃ κ0, ⌜x.1 = κ' ⊓ κ0⌝ ∗ q.[κ0] ∗ □ (1.[κ0] ={↑lftN}[↑lft_userN]▷=∗ [†κ0]))%I.
+    (∃ κ0, ⌜x.1 = κ' ⊓ κ0⌝ ∗ q.[κ0] ∗ □ (1.[κ0] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ0]))%I.
   Global Instance llctx_elt_interp_fractional x :
     Fractional (llctx_elt_interp x).
   Proof.

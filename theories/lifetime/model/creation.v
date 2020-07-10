@@ -16,7 +16,7 @@ Lemma lft_kill (I : gmap lft lft_names) (K K' : gset lft) (κ : lft) :
     ([∗ set] κ' ∈ K', lft_inv_alive κ'))%I in
   (∀ κ', is_Some (I !! κ') → κ ⊂ κ' → κ' ∈ K) →
   (∀ κ', is_Some (I !! κ') → κ' ⊂ κ → κ' ∈ K') →
-  Iinv -∗ lft_inv_alive κ -∗ [†κ] ={↑lft_userN ∪ ↑inhN}=∗ Iinv ∗ lft_inv_dead κ.
+  Iinv -∗ lft_inv_alive κ -∗ [†κ] ={↑lft_userN ∪ ↑borN ∪ ↑inhN}=∗ Iinv ∗ lft_inv_dead κ.
 Proof.
   iIntros (Iinv HK HK') "(HI & Hdead & Halive) Hlalive Hκ".
   rewrite lft_inv_alive_unfold;
@@ -34,15 +34,15 @@ Proof.
     iDestruct (own_cnt_valid_2 with "Hcnt' Hcnt")
       as %[?%nat_included _]%auth_both_valid; lia. }
   iMod (box_empty with "Hbox") as "[HP Hbox]"=>//.
-  { (* FIXME [solve_ndisj] fails *)
-    etrans; last exact: union_subseteq_l. solve_ndisj. }
+  { (* FIXME [solve_ndisj] fails *) set_solver-. }
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
   iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom _ I) with "Halive")
     as "[Halive Halive']".
   { intros κ'. rewrite elem_of_dom. eauto. }
-  iApply fupd_trans. iApply fupd_mask_mono; first by apply union_subseteq_l.
+  iApply fupd_trans. iApply fupd_mask_mono; last
   iMod ("Hvs" $! I with "[HI Halive] HP Hκ") as "(Hinv & HQ & Hcnt')".
+  { set_solver-. }
   { rewrite lft_vs_inv_unfold. iFrame. }
   rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(HI&Halive)".
   iSpecialize ("Halive'" with "Halive").
@@ -63,7 +63,7 @@ Lemma lfts_kill (A : gmap atomic_lft _) (I : gmap lft lft_names) (K K' : gset lf
   (∀ κ κ', κ ∈ K → is_Some (I !! κ') → κ ⊆ κ' → κ' ∈ K) →
   (∀ κ, lft_alive_in A κ → is_Some (I !! κ) → κ ∉ K → κ ∈ K') →
   Iinv K' -∗ ([∗ set] κ ∈ K, lft_inv A κ ∗ [†κ])
-    ={↑lft_userN ∪ ↑inhN}=∗ Iinv K' ∗ [∗ set] κ ∈ K, lft_inv_dead κ.
+    ={↑lft_userN ∪ ↑borN ∪ ↑inhN}=∗ Iinv K' ∗ [∗ set] κ ∈ K, lft_inv_dead κ.
 Proof.
   intros Iinv. revert K'.
   induction (set_wf K) as [K _ IH]=> K' HKK' HK HK'.
@@ -110,7 +110,7 @@ Proof. by rewrite /kill_set elem_of_filter elem_of_dom. Qed.
 
 Lemma lft_create E :
   ↑lftN ⊆ E →
-  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN}[↑lft_userN]▷=∗ [†κ]).
+  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
 Proof.
   iIntros (?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
@@ -128,8 +128,14 @@ Proof.
   iModIntro; iExists {[ Λ ]}.
   rewrite {1}/lft_tok big_sepMS_singleton. iFrame "HΛ".
   clear I A HΛ. iIntros "!# HΛ".
-  iApply (step_fupd_mask_mono (↑lftN) _ (↑lftN∖↑mgmtN)); [solve_ndisj..|].
+  iApply (step_fupd_mask_mono (↑lftN ∪ ↑lft_userN) _ ((↑lftN ∪ ↑lft_userN)∖↑mgmtN)).
+  { (* FIXME solve_ndisj should really handle this... *)
+    assert (↑lft_userN ## ↑mgmtN) by solve_ndisj.
+    set_solver. }
+  { done. }
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
+  { (* FIXME solve_ndisj should really handle this... *)
+    assert (↑mgmtN ⊆ ↑lftN) by solve_ndisj. set_solver. }
   rewrite /lft_tok big_sepMS_singleton.
   iDestruct (own_valid_2 with "HA HΛ")
     as %[[s [?%leibniz_equiv ?]]%singleton_included_l _]%auth_both_valid.
@@ -150,8 +156,16 @@ Proof.
   iAssert ([∗ set] κ ∈ K, lft_inv A κ ∗ [† κ])%I with "[HinvK]" as "HinvK".
   { iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!#".
     iIntros (κ [? _]%elem_of_kill_set) "$". rewrite /lft_dead. eauto. }
-  iApply fupd_trans. iApply (fupd_mask_mono (↑lft_userN ∪ ↑inhN));
-                       first by apply union_least; solve_ndisj.
+  iApply fupd_trans.
+  iApply (fupd_mask_mono (↑lft_userN ∪ ↑borN ∪ ↑inhN)).
+  { (* FIXME can we make solve_ndisj handle this? *)
+    clear. rewrite -assoc. apply union_least.
+    - assert (↑lft_userN ##@{coPset} ↑mgmtN) by solve_ndisj. set_solver.
+    - assert (↑inhN ##@{coPset} ↑mgmtN) by solve_ndisj.
+      assert (↑inhN ⊆@{coPset} ↑lftN) by solve_ndisj.
+      assert (↑borN ##@{coPset} ↑mgmtN) by solve_ndisj.
+      assert (↑borN ⊆@{coPset} ↑lftN) by solve_ndisj.
+      set_solver. }
   iMod (lfts_kill A I K K' with "[$HI $HinvD] HinvK") as "[[HI HinvD] HinvK]".
   { done. }
   { intros κ κ' [??]%elem_of_kill_set ??. apply elem_of_kill_set.

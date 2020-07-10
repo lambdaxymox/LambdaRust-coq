@@ -80,7 +80,7 @@ Proof.
   iDestruct "Hinv" as "[[[Hinv >%]|[Hinv >%]] Hclose'']".
   - iDestruct "Hinv" as (Pb Pi) "(Halive & Hvs & Hinh)".
     iMod (bor_open_internal with "Hs Halive Hbor Htok") as "(Halive & Hf & HP')".
-      solve_ndisj.
+    { solve_ndisj. }
     iDestruct ("HPP'" with "HP'") as "$".
     iMod ("Hclose'" with "[-Hf Hclose]") as "_".
     { iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''".

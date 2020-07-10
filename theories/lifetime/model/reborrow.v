@@ -81,7 +81,8 @@ Proof.
      (exclusive_local_update _ (1%Qp, to_agree Bor_in)); last done.
     rewrite /to_borUR lookup_fmap. by rewrite HB. }
   iMod (slice_fill _ _ false with "Hislice HP Hbox")
-     as "Hbox"; first by solve_ndisj.
+     as "Hbox".
+  { set_solver-. }
   { by rewrite lookup_fmap HB. }
   iDestruct (@big_sepM_delete with "HB") as "[Hcnt HB]"; first done.
   rewrite /=. iDestruct "Hcnt" as "[% H1◯]".

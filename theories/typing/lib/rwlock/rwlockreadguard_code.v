@@ -83,7 +83,7 @@ Section rwlockreadguard_functions.
     iMod (at_bor_acc_tok with "LFT Hinv Hβ") as "[INV Hcloseβ]"; [done..|].
     iDestruct "INV" as (st') "(Hlx & >H● & Hst)".
     destruct (decide (Z_of_rwlock_st st = Z_of_rwlock_st st')) as [->|?].
-    + iAssert (|={⊤ ∖ ↑rwlockN}[⊤ ∖ ↑rwlockN ∖ ↑lftN]▷=>
+    + iAssert (|={⊤ ∖ ↑rwlockN}[⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ ↑lft_userN]▷=>
                (lx' ↦ #(Z_of_rwlock_st st'-1) ==∗ rwlock_inv tid lx' γ β ty))%I
         with "[H● H◯ Hx' Hν Hst H†]" as "INV".
       { iDestruct (own_valid_2 with "H● H◯") as %[[[=]| (? & st0 & [=<-] & -> & [Heq|Hle])]
@@ -94,12 +94,17 @@ Section rwlockreadguard_functions.
           iDestruct "Hst" as (ν' q') "(>EQν & _ & Hh & _ & >Hq & >Hν')".
           rewrite -EQ. iDestruct "EQν" as %<-%(inj to_agree)%leibniz_equiv.
           iCombine "Hν" "Hν'" as "Hν". iDestruct "Hq" as %->.
-          iApply (step_fupd_mask_mono (↑lftN ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN)));
-            last iApply (step_fupd_mask_frame_r _ (↑lft_userN)); [set_solver+ || solve_ndisj..| |].
+          iApply (step_fupd_mask_mono ((↑lftN ∪ ↑lft_userN) ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ ↑lft_userN)));
+            last iApply (step_fupd_mask_frame_r _ (↑lft_userN)).
+          { set_solver-. }
+          { solve_ndisj. }
+          { rewrite difference_difference. apply: disjoint_difference_r1. done. }
           { (* FIXME [solve_ndisj] fails. *)
-            apply: disjoint_difference_r1. solve_ndisj. }
+            apply: disjoint_difference_r1. done. }
           iMod ("H†" with "Hν") as "H†". iModIntro. iNext. iMod "H†".
-          iMod ("Hh" with "H†") as "Hb". iIntros "!> Hlx". iExists None. iFrame.
+          iMod fupd_intro_mask' as "Hclose"; last iMod ("Hh" with "H†") as "Hb".
+          { set_solver-. }
+          iMod "Hclose" as "_". iIntros "!> Hlx". iExists None. iFrame.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.
           rewrite -(right_id None op (Some _)). apply cancel_local_update_unit, _.
         - iApply step_fupd_intro. set_solver. iNext. iIntros "Hlx".

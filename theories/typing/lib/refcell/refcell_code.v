@@ -204,7 +204,11 @@ Section refcell_functions.
           iDestruct ("Hclose" with "Htok") as "[$ Htok2]". iExists _. iFrame "∗#".
           iSplitR "Htok2".
           + iIntros "!> Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro.
-            iNext. iMod "Hν". iApply "Hh". rewrite -lft_dead_or. auto.
+            iNext. iMod "Hν".
+            iMod fupd_intro_mask' as "Hclose"; last iMod ("Hh" with "[Hν]") as "$".
+            { set_solver-. }
+            * rewrite -lft_dead_or. auto.
+            * done.
           + iExists _. iFrame. by rewrite Qp_div_2. }
       iMod ("Hclose''" with "[$INV] Hna") as "[Hβtok1 Hna]".
       iMod ("Hclose'" with "[$Hβtok1 $Hβtok2]") as "Hα".
@@ -281,7 +285,10 @@ Section refcell_functions.
       iModIntro. iMod ("Hclose''" with "[Hlx Hownst Hbh Htok1] Hna") as "[Hβtok Hna]".
       { iExists _. iFrame. iNext. iSplitL "Hbh".
         - iIntros "Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro. iNext. iMod "Hν".
-          iApply "Hbh". rewrite -lft_dead_or. auto.
+          iMod fupd_intro_mask' as "Hclose"; last iMod ("Hbh" with "[Hν]") as "$".
+          { set_solver-. }
+          * rewrite -lft_dead_or. auto.
+          * done.
         - iSplitL; [|done]. iExists _. iFrame. by rewrite Qp_div_2. }
       iMod ("Hclose'" with "Hβtok") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
       iApply (type_type _ _ _

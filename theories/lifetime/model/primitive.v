@@ -490,7 +490,7 @@ Proof.
 Qed.
 
 Lemma lft_vs_cons κ Pb Pb' Pi :
-  (▷ Pb'-∗ [†κ] ={↑lft_userN}=∗ ▷ Pb) -∗
+  (▷ Pb'-∗ [†κ] ={↑lft_userN ∪ ↑borN}=∗ ▷ Pb) -∗
   lft_vs κ Pb Pi -∗ lft_vs κ Pb' Pi.
 Proof.
   iIntros "Hcons Hvs". rewrite !lft_vs_unfold.

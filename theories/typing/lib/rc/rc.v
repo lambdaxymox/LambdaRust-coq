@@ -85,7 +85,7 @@ Section rc.
                  because [weak_new] cannot prove ty_shr, even for a dead
                  lifetime. *)
               (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-              □ (1.[ν] ={↑lftN}[↑lft_userN]▷=∗ [†ν]))%I.
+              □ (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]))%I.
 
   Global Instance rc_persist_persistent : Persistent (rc_persist tid ν γ l ty).
   Proof. unfold rc_persist, tc_opaque. apply _. Qed.
@@ -298,7 +298,10 @@ Section code.
              rewrite -[in (1).[ν]%I]Hqq' -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans.
              iApply step_fupd_mask_mono;
                last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
-             iModIntro. iNext. iMod "H†". iMod ("Hν†" with "H†") as "Hty". iModIntro.
+             iModIntro. iNext. iMod "H†".
+             iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+             { set_solver-. }
+             iMod "Hclose2" as "_". iModIntro.
              iMod ("Hclose" with "[Hst $Hna]") as "$"; first by iExists _; iFrame.
              iModIntro. iNext. iDestruct "Hty" as (vl) "[??]". iExists _. iFrame.
              by iApply "Hinclo".
@@ -310,7 +313,10 @@ Section code.
                 rewrite -[in (1).[ν]%I]Hqq' -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans.
                 iApply step_fupd_mask_mono;
                   last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
-                iModIntro. iNext. iMod "H†". iMod ("Hν†" with "H†") as "Hty". iModIntro.
+                iModIntro. iNext. iMod "H†".
+                iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+                { set_solver-. }
+                iMod "Hclose2" as "_". iModIntro.
                 iMod (own_update_2 with "Hst Htok") as "Hst".
                 { apply auth_update_dealloc, prod_local_update_1,
                         (cancel_local_update_unit (Some _) None). }
@@ -328,7 +334,10 @@ Section code.
           rewrite -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans -[in (1).[ν]%I]Hqq'.
           iApply step_fupd_mask_mono;
             last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
-          iModIntro. iNext. iMod "H†". iMod ("Hν†" with "H†") as "Hty". iModIntro.
+          iModIntro. iNext. iMod "H†".
+          iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+          { set_solver-. }
+          iMod "Hclose2" as "_". iModIntro.
           iMod ("Hclose" with "[Hst $Hna Hl1 Hl2]") as "$";
             first by iExists _; iFrame; iFrame.
           rewrite Hincls. iFrame. iSplitL "Hty".

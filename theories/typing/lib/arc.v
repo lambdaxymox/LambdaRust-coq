@@ -27,7 +27,7 @@ Section arc.
      (*    because [weak_new] cannot prove ty_shr, even for a dead *)
      (*    lifetime. *)
      (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-     □ (1.[ν] ={↑lftN ∪ ↑arc_endN}[↑lft_userN]▷=∗
+     □ (1.[ν] ={↑lftN ∪ ↑lft_userN ∪ ↑arc_endN}[↑lft_userN]▷=∗
           [†ν] ∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ † l…(2 + ty.(ty_size))))%I.
 
   Global Instance arc_persist_ne tid ν γ l n :
@@ -88,10 +88,14 @@ Section arc.
     iMod (inv_acc with "INV") as "[[H†|[$ Hvs]] Hclose]";
       [set_solver|iDestruct (lft_tok_dead with "Hν H†") as ">[]"|].
     rewrite difference_union_distr_l_L difference_diag_L right_id_L
-            difference_disjoint_L; last solve_ndisj.
+            difference_disjoint_L; last first.
+    { apply disjoint_union_l. split; solve_ndisj. }
     iMod ("Hν†" with "Hν") as "H". iModIntro. iNext. iApply fupd_trans.
-    iMod "H" as "#Hν". iMod ("Hvs" with "Hν") as "$". iIntros "{$Hν} !>".
-    iApply "Hclose". auto.
+    iMod "H" as "#Hν".
+    iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hvs" with "Hν") as "$".
+    { set_solver-. }
+    iIntros "{$Hν} !>".
+    iMod "Hclose2" as "_". iApply "Hclose". auto.
   Qed.
 
   Program Definition arc (ty : type) :=
@@ -394,7 +398,7 @@ Section arc.
     (* All right, we are done preparing our context. Let's get going. *)
     iMod (lft_create with "LFT") as (ν) "[Hν Hν†]"; first done.
     wp_bind (_ +ₗ _)%E. iSpecialize ("Hν†" with "Hν").
-    iApply wp_mask_mono; last iApply (wp_step_fupd with "Hν†"); [solve_ndisj..|].
+    iApply wp_mask_mono; last iApply (wp_step_fupd with "Hν†"); [set_solver-..|].
     wp_op. iIntros "#H† !>". rewrite shift_loc_0. wp_write. wp_op. wp_write. wp_write.
     iApply (type_type _ _ _ [ #lrc ◁ box (weak ty)]
             with "[] LFT HE Hna HL Hk [>-]"); last first.
@@ -768,8 +772,7 @@ Section arc.
       iDestruct "Hpersist" as "(? & ? & H†)". wp_bind (_ <- _)%E.
       iDestruct "Hdrop" as "[Hν Hdrop]". iSpecialize ("H†" with "Hν").
       iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); first done.
-      { (* FIXME [solve_ndisj] fails *)
-        etrans; last exact: union_subseteq_l. solve_ndisj. }
+      { set_solver-. (* FIXME [solve_ndisj] fails *) }
       iDestruct "Hown" as (???) "(_ & Hlen & _)". wp_write. iIntros "(#Hν & Hown & H†)!>".
       wp_seq. wp_op. wp_op. iDestruct "Hown" as (?) "[H↦ Hown]".
       iDestruct (ty_size_eq with "Hown") as %?. rewrite Max.max_0_r.
@@ -873,8 +876,7 @@ Section arc.
       iDestruct "Hpersist" as "(Ha & _ & H†)". wp_bind (_ <- _)%E.
       iSpecialize ("H†" with "Hν").
       iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); first done.
-      { (* FIXME [solve_ndisj] fails *)
-        etrans; last exact: union_subseteq_l. solve_ndisj. }
+      { (* FIXME [solve_ndisj] fails *) set_solver-. }
       wp_write. iIntros "(#Hν & Hown & H†) !>". wp_seq. wp_op. wp_op.
       rewrite -(firstn_skipn ty.(ty_size) vl0) heap_mapsto_vec_app.
       iDestruct "Hr1" as "[Hr1 Hr2]". iDestruct "Hown" as (vl) "[Hrc' Hown]".
@@ -949,8 +951,7 @@ Section arc.
     wp_apply (is_unique_spec with "Hi Htoks"). iIntros ([]) "H"; wp_if.
     - iDestruct "H" as "(Hrc & Hrc1 & Hν)". iSpecialize ("Hc" with "Hν"). wp_bind Skip.
       iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
-      { (* FIXME [solve_ndisj] fails *)
-        etrans; last exact: union_subseteq_l. solve_ndisj. }
+      { (* FIXME [solve_ndisj] fails *) set_solver-. }
       wp_seq. iIntros "(#Hν & Hown & H†) !>". wp_seq.
       iMod ("Hclose2" with "[Hrc Hrc1 H†] Hown") as "[Hb Hα]".
       { iIntros "!> Hown !>". iLeft. iFrame. }
@@ -1036,8 +1037,7 @@ Section arc.
     - iIntros "(Hrc0 & Hrc1 & HP1)". wp_case. wp_bind (_ +ₗ _)%E.
       iSpecialize ("Hc" with "HP1").
       iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
-      { (* FIXME [solve_ndisj] fails *)
-        etrans; last exact: union_subseteq_l. solve_ndisj. }
+      { (* FIXME [solve_ndisj] fails *) set_solver-. }
       wp_op. iIntros "(#Hν & Hrc2 & H†)". iModIntro.
       iMod ("Hclose2" with "[Hrc'↦ Hrc0 Hrc1 H†] Hrc2") as "[Hb Hα1]".
       { iIntros "!> Hrc2". iExists [_]. rewrite heap_mapsto_vec_singleton.
@@ -1053,8 +1053,7 @@ Section arc.
       iApply type_jump; solve_typing.
     - iIntros "[Hν Hweak]". wp_case. iSpecialize ("Hc" with "Hν"). wp_bind (new _). 
       iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); first done.
-      { (* FIXME [solve_ndisj] fails *)
-        etrans; last exact: union_subseteq_l. solve_ndisj. }
+      { (* FIXME [solve_ndisj] fails *) set_solver-. }
       wp_apply wp_new=>//. lia. iIntros (l) "(H† & Hlvl) (#Hν & Hown & H†') !>".
       rewrite -!lock Nat2Z.id.
       wp_let. wp_op. rewrite !heap_mapsto_vec_cons shift_loc_assoc shift_loc_0.

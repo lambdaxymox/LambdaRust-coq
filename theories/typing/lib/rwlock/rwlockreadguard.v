@@ -23,7 +23,7 @@ Section rwlockreadguard.
            ∃ ν q γ β, ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1) ∗
              α ⊑ β ∗ &at{β,rwlockN}(rwlock_inv tid l γ β ty) ∗
              q.[ν] ∗ own γ (◯ reading_st q ν) ∗
-             (1.[ν] ={↑lftN}[↑lft_userN]▷=∗ [†ν])
+             (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν])
          | _ => False
          end;
        ty_shr κ tid l :=
