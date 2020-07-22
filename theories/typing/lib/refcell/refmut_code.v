@@ -287,8 +287,8 @@ Section refmut_functions.
     iDestruct ("Hclose3" with "Hαν") as "[Hα Hν]".
     iMod ("Hclose2" with "Hϝ HL") as "HL".
     wp_rec. iDestruct "Hr" as "[Hr Hr†]".
-    iDestruct "Hr" as (?) "[Hr H]". iDestruct "H" as (vl1 ? ->) "[Hr1' H]".
-    iDestruct "H" as (vl2 ? ->) "[Hr2' ->]".
+    iDestruct "Hr" as (?) "[Hr H]". iDestruct "H" as (vl1 vl1' ->) "[Hr1' H]".
+    iDestruct "H" as (vl2 vl2' ->) "[Hr2' ->]".
     destruct vl1 as [|[[|lr1|]|] []], vl2 as [|[[|lr2|]|] []]=>//=.
     rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton.
     iDestruct "Hr" as "[Hr1 Hr2]". wp_read. wp_let. wp_op. wp_read. wp_let.
@@ -304,14 +304,14 @@ Section refmut_functions.
     destruct st as [[[[??]?]?]|]; last by destruct Hst as [[?|] Hst]; inversion Hst.
     move:Hst=>/Some_pair_included [/Some_pair_included_total_1
               [/to_agree_included /(leibniz_equiv _ _) [= <- <-] _] _].
-    iDestruct "Hst" as "(H† & Hq & _)". iDestruct "Hq" as (q' Hqq') "[Hν1 Hν2]".
+    iDestruct "Hst" as "(H† & Hq & _)". iDestruct "Hq" as (q1 Hqq1) "[Hν1 Hν2]".
     iMod (own_update with "H●") as "[H● ?]".
     { apply auth_update_alloc,
-         (op_local_update_discrete _ _ (writing_stR (q'/2)%Qp ν))=>-[Hagv _].
+         (op_local_update_discrete _ _ (writing_stR (q1/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite -Hqq' comm -{2}(Qp_div_2 q').
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q'/2)%Qp).
+      - apply frac_valid'. rewrite -Hqq1 comm -{2}(Qp_div_2 q1).
+        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q1/2)%Qp).
         apply Qcplus_le_mono_r, Qp_ge_0. }
     wp_let. wp_read. wp_let. wp_op. wp_write.
     wp_apply (wp_delete _ _ _ [_; _] with "[Hrefmut↦1 Hrefmut↦2 Hrefmut†]")=>//.

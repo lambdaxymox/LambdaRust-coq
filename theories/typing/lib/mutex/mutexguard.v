@@ -91,7 +91,7 @@ Section mguard.
     intros α1 α2 Hα ty1 ty2 Hty. generalize Hty. rewrite eqtype_unfold. iIntros (Hty' q) "HL".
     iDestruct (Hty' with "HL") as "#Hty". clear Hty'. iDestruct (Hα with "HL") as "#Hα".
     iIntros "!# #HE". iDestruct ("Hα" with "HE") as "{Hα} Hα".
-    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs) {HE Hty}". iSplit; [done|iSplit; iAlways].
+    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs) {HE Hty}". iSplit; [done|iSplit; iModIntro].
     - iIntros (tid [|[[]|][]]) "H"; try done. simpl.
       iDestruct "H" as (β) "(#H⊑ & #Hinv & Hown)".
       iExists β. iFrame. iSplit; last iSplit.
@@ -100,10 +100,10 @@ Section mguard.
         iApply (at_bor_iff with "[] Hinv"). iNext.
         iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
         iApply heap_mapsto_pred_iff_proper.
-        iAlways; iIntros; iSplit; iIntros; by iApply "Ho".
+        iModIntro; iIntros; iSplit; iIntros; by iApply "Ho".
       + iApply bor_iff; last done. iNext.
         iApply heap_mapsto_pred_iff_proper.
-        iAlways; iIntros; iSplit; iIntros; by iApply "Ho".
+        iModIntro; iIntros; iSplit; iIntros; by iApply "Ho".
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "H". iExists l'.
       iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.

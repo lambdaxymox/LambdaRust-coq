@@ -93,7 +93,7 @@ Section own.
   Lemma own_type_incl n m ty1 ty2 :
     ▷ ⌜n = m⌝ -∗ ▷ type_incl ty1 ty2 -∗ type_incl (own_ptr n ty1) (own_ptr m ty2).
   Proof.
-    iIntros "#Heq (#Hsz & #Ho & #Hs)". iSplit; first done. iSplit; iAlways.
+    iIntros "#Heq (#Hsz & #Ho & #Hs)". iSplit; first done. iSplit; iModIntro.
     - iIntros (?[|[[| |]|][]]) "H"; try done. simpl.
       iDestruct "H" as "[Hmt H†]". iNext. iDestruct ("Hsz") as %<-.
       iDestruct "Heq" as %->. iFrame. iApply (heap_mapsto_pred_wand with "Hmt").
@@ -140,7 +140,7 @@ Section own.
     Sync ty → Sync (own_ptr n ty).
   Proof.
     iIntros (Hsync κ tid1 tid2 l) "H". iDestruct "H" as (l') "[Hm #Hshr]".
-    iExists _. iFrame "Hm". iAlways. iIntros (F q) "% Htok".
+    iExists _. iFrame "Hm". iModIntro. iIntros (F q) "% Htok".
     iMod ("Hshr" with "[] Htok") as "Hfin"; first done. iModIntro. iNext.
     iMod "Hfin" as "{Hshr} [Hshr $]". by iApply Hsync.
   Qed.
@@ -240,7 +240,7 @@ Section typing.
   Lemma read_own_move E L ty n :
     ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
   Proof.
-    rewrite typed_read_eq. iAlways.
+    rewrite typed_read_eq. iModIntro.
     iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%".

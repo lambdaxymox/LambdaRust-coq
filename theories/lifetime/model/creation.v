@@ -71,7 +71,7 @@ Proof.
   pose (Kalive := filter (lft_alive_in A) K).
   destruct (decide (Kalive = ∅)) as [HKalive|].
   { iModIntro. rewrite /Iinv. iFrame.
-    iApply (@big_sepS_impl with "[$HK]"); iAlways.
+    iApply (@big_sepS_impl with "[$HK]"); iModIntro.
     rewrite /lft_inv. iIntros (κ Hκ) "[[[_ %]|[$ _]] _]". set_solver. }
   destruct (minimal_exists_L (⊂) Kalive)
     as (κ & [Hκalive HκK]%elem_of_filter & Hκmin); first done.
@@ -122,7 +122,7 @@ Proof.
   { iNext. rewrite /lfts_inv /own_alft_auth.
     iExists (<[Λ:=true]>A), I. rewrite /to_alftUR fmap_insert; iFrame.
     iApply (@big_sepS_impl with "[$Hinv]").
-    iAlways. rewrite /lft_inv. iIntros (κ ?) "[[Hκ %]|[Hκ %]]".
+    iModIntro. rewrite /lft_inv. iIntros (κ ?) "[[Hκ %]|[Hκ %]]".
     - iLeft. iFrame "Hκ". iPureIntro. by apply lft_alive_in_insert.
     - iRight. iFrame "Hκ". iPureIntro. by apply lft_dead_in_insert. }
   iModIntro; iExists {[ Λ ]}.

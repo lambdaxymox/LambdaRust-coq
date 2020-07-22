@@ -36,7 +36,7 @@ Section proof.
   Proof.
     iIntros "#HR !#". iSplit; iIntros "Hlck"; iApply (lock_proto_iff with "[HR] Hlck").
     - done.
-    - iAlways; iSplit; iIntros; by iApply "HR".
+    - iModIntro; iSplit; iIntros; by iApply "HR".
   Qed.
 
   (** The main proofs. *)

@@ -30,7 +30,7 @@ Section frac_bor.
     ▷ □ (∀ q, φ q ↔ φ' q) -∗ &frac{κ} φ -∗ &frac{κ} φ'.
   Proof.
     iIntros "#Hφφ' H". iDestruct "H" as (γ κ') "[? Hφ]". iExists γ, κ'. iFrame.
-    iApply (at_bor_iff with "[Hφφ'] Hφ"). iNext. iAlways.
+    iApply (at_bor_iff with "[Hφφ'] Hφ"). iNext. iModIntro.
     iSplit; iIntros "H"; iDestruct "H" as (q) "[H ?]"; iExists q; iFrame; by iApply "Hφφ'".
   Qed.
 
@@ -137,7 +137,7 @@ End frac_bor.
 Lemma frac_bor_lft_incl `{!invG Σ, !lftG Σ, !frac_borG Σ} κ κ' q:
   lft_ctx -∗ &frac{κ}(λ q', (q * q').[κ']) -∗ κ ⊑ κ'.
 Proof.
-  iIntros "#LFT#Hbor". iApply lft_incl_intro. iAlways. iSplitR.
+  iIntros "#LFT#Hbor". iApply lft_incl_intro. iModIntro. iSplitR.
   - iIntros (q') "Hκ'".
     iMod (frac_bor_acc with "LFT Hbor Hκ'") as (q'') "[>? Hclose]". done.
     iExists _. iFrame. iIntros "!>Hκ'". iApply "Hclose". auto.

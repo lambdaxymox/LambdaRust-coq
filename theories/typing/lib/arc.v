@@ -151,7 +151,7 @@ Section arc.
   Next Obligation.
     iIntros (ty κ κ' tid l) "#Hincl H". iDestruct "H" as (l') "[#Hl #Hshr]".
     iExists _. iSplit; first by iApply frac_bor_shorten.
-    iAlways. iIntros (F q) "% Htok".
+    iModIntro. iIntros (F q) "% Htok".
     iMod (lft_incl_acc with "Hincl Htok") as (q'') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hshr" with "[] Htok") as "Hshr2"; first done.
     iModIntro. iNext. iMod "Hshr2" as "[Htok HX]".
@@ -178,7 +178,7 @@ Section arc.
     type_incl ty1 ty2 -∗ type_incl (arc ty1) (arc ty2).
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
-    iSplit; first done. iSplit; iAlways.
+    iSplit; first done. iSplit; iModIntro.
     - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as "[(Hl1 & Hl2 & H† & Hc) | Hvl]".
       { iLeft. iFrame. iDestruct "Hsz" as %->.
@@ -266,7 +266,7 @@ Section arc.
   Next Obligation.
     iIntros (ty κ κ' tid l) "#Hincl H". iDestruct "H" as (l') "[#Hl #Hshr]".
     iExists _. iSplit; first by iApply frac_bor_shorten.
-    iAlways. iIntros (F q) "% Htok".
+    iModIntro. iIntros (F q) "% Htok".
     iMod (lft_incl_acc with "Hincl Htok") as (q'') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hshr" with "[] Htok") as "Hshr2"; first done.
     iModIntro. iNext. iMod "Hshr2" as "[Htok HX]".
@@ -291,7 +291,7 @@ Section arc.
     type_incl ty1 ty2 -∗ type_incl (weak ty1) (weak ty2).
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
-    iSplit; first done. iSplit; iAlways.
+    iSplit; first done. iSplit; iModIntro.
     - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as (γ ν) "(#Hpersist & Htk)".
       iExists _, _. iFrame "#∗". by iApply arc_persist_type_incl.
@@ -783,9 +783,9 @@ Section arc.
       { iIntros "_". wp_if. unlock. iFrame. iExists (_::_). rewrite heap_mapsto_vec_cons.
         iFrame. iExists 1%nat, _, []. rewrite /= right_id_L Max.max_0_r.
         auto 10 with iFrame. }
-      iIntros "([H† H1] & H2 & H3)". iDestruct "H1" as (vl') "[H1 Heq]".
+      iIntros "([H† H1] & H2 & H3)". iDestruct "H1" as (vl1) "[H1 Heq]".
       iDestruct "Heq" as %<-. wp_if.
-      wp_apply (wp_delete _ _ _ (_::_::vl') with "[H1 H2 H3 H†]").
+      wp_apply (wp_delete _ _ _ (_::_::vl1) with "[H1 H2 H3 H†]").
       { simpl. lia. }
       { rewrite 2!heap_mapsto_vec_cons shift_loc_assoc. auto with iFrame. }
       iFrame. iIntros "_". iExists (_::_). rewrite heap_mapsto_vec_cons. iFrame.

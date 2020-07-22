@@ -71,7 +71,7 @@ Section rwlock_inv.
     iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid) -∗
                 &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid)))%I as "#Hb".
     { iIntros "!# H". iApply bor_iff; last done.
-      iNext; iAlways; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
+      iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
       iFrame; by iApply "Hown". }
     iDestruct "H" as (st) "H"; iExists st;
       iDestruct "H" as "($&$&H)"; destruct st as [[|[[agν ?]?]|]|]; try done;
@@ -178,7 +178,7 @@ Section rwlock.
     - iPureIntro. simpl. congruence.
     - destruct vl as [|[[]|]]; try done. iDestruct "H" as "[$ H]". by iApply "Hown".
     - iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.
-      iApply at_bor_iff; last done. iNext; iAlways; iSplit; iIntros "H".
+      iApply at_bor_iff; last done. iNext; iModIntro; iSplit; iIntros "H".
       by iApply "Hty1ty2". by iApply "Hty2ty1".
   Qed.
   Lemma rwlock_mono' E L ty1 ty2 :

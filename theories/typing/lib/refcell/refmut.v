@@ -88,14 +88,14 @@ Section refmut.
     intros α1 α2 Hα ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (q) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
     iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
-    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iAlways].
+    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.
       iDestruct "H" as (ν γ q' β ty') "(Hb & #H⊑ & #Hinv & Hν & Hown)".
       iExists ν, γ, q', β, ty'. iFrame "∗#". iSplit.
       + iApply bor_shorten; last iApply bor_iff; last done.
         * iApply lft_intersect_mono; first done. iApply lft_incl_refl.
-        * iNext; iAlways; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
+        * iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
           iExists vl; iFrame; by iApply "Ho".
       + by iApply lft_incl_trans.
     - iIntros (κ tid l) "H /=". iDestruct "H" as (lv lrc) "H". iExists lv, lrc.

@@ -83,7 +83,7 @@ Section rwlockreadguard.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
     iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
-    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iAlways].
+    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
       iDestruct "H" as (ν q' γ β) "(#Hshr & #H⊑ & #Hinv & Htok & Hown)".

@@ -184,7 +184,7 @@ Section rc.
   Next Obligation.
     iIntros (ty κ κ' tid l) "#Hincl H". iDestruct "H" as (l') "[#Hl #Hshr]".
     iExists _. iSplit; first by iApply frac_bor_shorten.
-    iAlways. iIntros (F q) "% Htok".
+    iModIntro. iIntros (F q) "% Htok".
     iMod (lft_incl_acc with "Hincl Htok") as (q'') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hshr" with "[] Htok") as "Hshr2"; first done.
     iModIntro. iNext. iMod "Hshr2" as "[Htok HX]".
@@ -211,7 +211,7 @@ Section rc.
     type_incl ty1 ty2 -∗ type_incl (rc ty1) (rc ty2).
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
-    iSplit; first done. iSplit; iAlways.
+    iSplit; first done. iSplit; iModIntro.
     - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as "[(Hl1 & Hl2 & H† & Hc) | Hvl]".
       { iLeft. iFrame. iDestruct "Hsz" as %->.
@@ -689,7 +689,7 @@ Section code.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [rcx ◁ box (uninit 1); r ◁ box (Σ[ ty; rc ty ])])) ;
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
@@ -784,7 +784,7 @@ Section code.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [rcx ◁ box (uninit 1); r ◁ box (option ty)]));
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
@@ -874,7 +874,7 @@ Section code.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [rcx ◁ box (uninit 1); r ◁ box (option $ &uniq{α}ty)]));
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
@@ -1006,7 +1006,7 @@ Section code.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [rcx ◁ box (uninit 1); r ◁ box (&uniq{α}ty)]));
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.

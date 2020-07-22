@@ -120,7 +120,7 @@ Proof.
     iAssert (&{κ}(P ∗ Q))%I with "[H◯ Hslice]" as "$".
     { rewrite /bor /raw_bor /idx_bor_own. iExists (κ1 ⊓ κ2).
       iSplit; first by iApply (lft_incl_glb with "Hκ1 Hκ2").
-      iExists γ. iFrame. iExists _. iFrame. iNext. iAlways.
+      iExists γ. iFrame. iExists _. iFrame. iNext. iModIntro.
       by iSplit; iIntros "[HP HQ]"; iSplitL "HP"; (iApply "HPP'" || iApply "HQQ'"). }
     iApply "Hclose". iExists A, I. iFrame. rewrite big_sepS_later.
     iApply "Hclose'". iLeft. iFrame "%". iExists Pb, Pi. iFrame. iExists _.

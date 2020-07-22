@@ -548,14 +548,14 @@ Section subtyping.
   Global Instance type_incl_persistent ty1 ty2 : Persistent (type_incl ty1 ty2) := _.
 
   Lemma type_incl_refl ty : ⊢ type_incl ty ty.
-  Proof. iSplit; first done. iSplit; iAlways; iIntros; done. Qed.
+  Proof. iSplit; first done. iSplit; iModIntro; iIntros; done. Qed.
 
   Lemma type_incl_trans ty1 ty2 ty3 :
     type_incl ty1 ty2 -∗ type_incl ty2 ty3 -∗ type_incl ty1 ty3.
   Proof.
     iIntros "(% & #Ho12 & #Hs12) (% & #Ho23 & #Hs23)".
     iSplit; first (iPureIntro; etrans; done).
-    iSplit; iAlways; iIntros.
+    iSplit; iModIntro; iIntros.
     - iApply "Ho23". iApply "Ho12". done.
     - iApply "Hs23". iApply "Hs12". done.
   Qed.
@@ -643,7 +643,7 @@ Section subtyping.
     □ (∀ tid vl, st1.(st_own) tid vl -∗ st2.(st_own) tid vl) -∗
     type_incl st1 st2.
   Proof.
-    iIntros "#Hst". iSplit; first done. iSplit; iAlways.
+    iIntros "#Hst". iSplit; first done. iSplit; iModIntro.
     - iIntros. iApply "Hst"; done.
     - iIntros (???). iDestruct 1 as (vl) "[Hf Hown]". iExists vl. iFrame "Hf".
       by iApply "Hst".

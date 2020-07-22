@@ -276,7 +276,7 @@ Section typing.
       + iApply "HE'". iIntros "{$# Hf Hinh HE' LFT HE %}".
         iInduction κs as [|κ κs] "IH"=> //=. iSplitL.
         { iApply lft_incl_trans; first done. iApply lft_intersect_incl_l. }
-        iApply "IH". iAlways. iApply lft_incl_trans; first done.
+        iApply "IH". iModIntro. iApply lft_incl_trans; first done.
         iApply lft_intersect_incl_r.
       + iSplitL; last done. iExists ϝ. iSplit; first by rewrite /= left_id.
         iFrame "#∗".

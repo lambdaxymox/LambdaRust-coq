@@ -111,7 +111,7 @@ Qed.
 Lemma bor_iff_proper κ P P': ▷ □ (P ↔ P') -∗ □ (&{κ}P ↔ &{κ}P').
 Proof.
   iIntros "#HP !#". iSplit; iIntros "?"; iApply bor_iff; try done.
-  iNext. iAlways. iSplit; iIntros "?"; iApply "HP"; done.
+  iNext. iModIntro. iSplit; iIntros "?"; iApply "HP"; done.
 Qed.
 
 Lemma bor_later E κ P :

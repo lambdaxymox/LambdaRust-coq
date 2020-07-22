@@ -81,13 +81,13 @@ Section rwlockwriteguard.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
     iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
-    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iAlways].
+    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
       iDestruct "H" as (γ β) "(Hb & #H⊑ & #Hinv & Hown)".
       iExists γ, β. iFrame "∗#". iSplit; last iSplit.
       + iApply bor_iff; last done.
-        iNext; iAlways; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
+        iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
         iExists vl; iFrame; by iApply "Ho".
       + by iApply lft_incl_trans.
       + iApply at_bor_iff; try done.

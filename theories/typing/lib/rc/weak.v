@@ -57,7 +57,7 @@ Section weak.
   Next Obligation.
     iIntros (ty κ κ' tid l) "#Hincl H". iDestruct "H" as (l') "[#Hl #Hshr]".
     iExists _. iSplit; first by iApply frac_bor_shorten.
-    iAlways. iIntros (F q) "% Htok".
+    iModIntro. iIntros (F q) "% Htok".
     iMod (lft_incl_acc with "Hincl Htok") as (q'') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hshr" with "[] Htok") as "Hshr2"; first done.
     iModIntro. iNext. iMod "Hshr2" as "[Htok HX]".
@@ -82,7 +82,7 @@ Section weak.
     type_incl ty1 ty2 -∗ type_incl (weak ty1) (weak ty2).
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(Hsz & #Hoincl & #Hsincl)".
-    iSplit; first done. iSplit; iAlways.
+    iSplit; first done. iSplit; iModIntro.
     - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as (γ ν) "(#Hpersist & Htok)".
       iExists _, _. iFrame "Htok". by iApply rc_persist_type_incl.
@@ -132,7 +132,7 @@ Section code.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [w ◁ box (&shr{α}(weak ty)); r ◁ box (option (rc ty))])) ;
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
@@ -380,7 +380,7 @@ Section code.
     iIntros (_ ϝ ret arg). inv_vec arg=>w. simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []] (λ _, [w ◁ box (uninit 1)]));
       [solve_typing..| |]; last first.
-    { simpl. iAlways. iIntros (k arg). inv_vec arg. simpl_subst.
+    { simpl. iModIntro. iIntros (k arg). inv_vec arg. simpl_subst.
       iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }

@@ -81,7 +81,7 @@ Section refcell_inv.
     iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid) -∗
                 &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid)))%I as "#Hb".
     { iIntros "!# H". iApply bor_iff; last done.
-      iNext; iAlways; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
+      iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
       iFrame; by iApply "Hown". }
     iDestruct "H" as (st) "H"; iExists st;
       iDestruct "H" as "($&$&H)"; destruct st as [[[[ν rw] q' ] n]|]; try done;
@@ -192,7 +192,7 @@ Section refcell.
     - iPureIntro. simpl. congruence.
     - destruct vl as [|[[]|]]=>//=. by iApply "Hown".
     - simpl. iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.
-      iApply na_bor_iff; last done. iNext; iAlways; iSplit; iIntros "H".
+      iApply na_bor_iff; last done. iNext; iModIntro; iSplit; iIntros "H".
       by iApply "Hty1ty2". by iApply "Hty2ty1".
   Qed.
   Lemma refcell_mono' E L ty1 ty2 :

@@ -51,10 +51,10 @@ Section uniq_bor.
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hκ with "HL") as "#Hκ".
     iIntros "!# #HE". iSplit; first done.
     iDestruct ("Hty" with "HE") as "(_ & #Ho & #Hs)"; [done..|clear Hty].
-    iSpecialize ("Hκ" with "HE"). iSplit; iAlways.
+    iSpecialize ("Hκ" with "HE"). iSplit; iModIntro.
     - iIntros (? [|[[]|][]]) "H"; try done.
       iApply (bor_shorten with "Hκ"). iApply bor_iff; last done.
-      iNext. iAlways. iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
+      iNext. iModIntro. iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
       iExists vl; iFrame; by iApply "Ho".
     - iIntros (κ ??) "H". iAssert (κ2 ⊓ κ ⊑ κ1 ⊓ κ)%I as "#Hincl'".
       { iApply lft_intersect_mono. done. iApply lft_incl_refl. }
@@ -81,7 +81,7 @@ Section uniq_bor.
     Send ty → Send (uniq_bor κ ty).
   Proof.
     iIntros (Hsend tid1 tid2 [|[[]|][]]) "H"; try done.
-    iApply bor_iff; last done. iNext. iAlways. iApply bi.equiv_iff.
+    iApply bor_iff; last done. iNext. iModIntro. iApply bi.equiv_iff.
     do 3 f_equiv. iSplit; iIntros "."; by iApply Hsend.
   Qed.
 
@@ -89,7 +89,7 @@ Section uniq_bor.
     Sync ty → Sync (uniq_bor κ ty).
   Proof.
     iIntros (Hsync κ' tid1 tid2 l) "H". iDestruct "H" as (l') "[Hm #Hshr]".
-    iExists l'. iFrame "Hm". iAlways. iIntros (F q) "% Htok".
+    iExists l'. iFrame "Hm". iModIntro. iIntros (F q) "% Htok".
     iMod ("Hshr" with "[] Htok") as "Hfin"; first done. iClear "Hshr".
     iModIntro. iNext. iMod "Hfin" as "[Hshr $]". iApply Hsync. done.
   Qed.

@@ -268,25 +268,25 @@ Section arc.
     iModIntro. wp_let. wp_op. wp_bind (CAS _ _ _). iInv N as (st) "[>H● H]" "Hclose1".
     iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?&strong'&?&?&[-> _]).
-    iDestruct "H" as (q) "(>#Hq & [HP1 HP1'] & Hl & Hw)". iDestruct "Hq" as %Hq.
+    iDestruct "H" as (qq) "(>#Hq & [HP1 HP1'] & Hl & Hw)". iDestruct "Hq" as %Hq.
     destruct (decide (strong = strong')) as [->|?].
     - wp_apply (wp_cas_int_suc with "Hl"). iIntros "Hl".
       iMod (own_update with "H●") as "[H● Hown']".
       { apply auth_update_alloc, prod_local_update_1,
-         (op_local_update_discrete _ _ (Some (Cinl ((q/2)%Qp, 1%positive, None))))
+         (op_local_update_discrete _ _ (Some (Cinl ((qq/2)%Qp, 1%positive, None))))
            =>-[/= Hqa ?]. split;[split|]=>//=; last by rewrite left_id.
-        apply frac_valid'. rewrite -Hq comm_L -{2}(Qp_div_2 q).
+        apply frac_valid'. rewrite -Hq comm_L -{2}(Qp_div_2 qq).
         apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
         apply Qcplus_le_mono_r, Qp_ge_0. }
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
       iMod ("Hclose1" with "[Hl Hw H● HP1']") as "_".
       { iExists _. iFrame. iExists _. rewrite /= [xH ⋅ _]comm_L. iFrame.
-        rewrite [(q / 2)%Qp ⋅ _]comm frac_op' -[(_ + _)%Qp]assoc Qp_div_2 left_id_L. auto. }
+        rewrite [(qq / 2)%Qp ⋅ _]comm frac_op' -[(_ + _)%Qp]assoc Qp_div_2 left_id_L. auto. }
       iModIntro. wp_case. iApply "HΦ". iFrame.
     - wp_apply (wp_cas_int_fail with "Hl"); [congruence|]. iIntros "Hl".
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
       iMod ("Hclose1" with "[-HP HΦ]") as "_".
-      { iExists _. iFrame. iExists q. auto with iFrame. }
+      { iExists _. iFrame. iExists qq. auto with iFrame. }
       iModIntro. wp_case. iApply ("IH" with "HP HΦ").
   Qed.
 
@@ -309,7 +309,7 @@ Section arc.
     iApply fupd_wp. iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?&?& wlock & weak' &[-> _]).
     iMod ("Hclose2" with "Hown") as "HP". iModIntro.
-    iDestruct "H" as (q) "(>Heq & HP1 & Hl & Hl1)". iDestruct "Heq" as %Heq.
+    iDestruct "H" as (qq) "(>Heq & HP1 & Hl & Hl1)". iDestruct "Heq" as %Heq.
     destruct (decide (weak = weak' ∧ wlock = None)) as [[<- ->]|Hw].
     - wp_apply (wp_cas_int_suc with "Hl1"). iIntros "Hl1".
       iMod (own_update with "H●") as "[H● Hown']".
@@ -509,7 +509,7 @@ Section arc.
     iIntros "#INV !# * [Hown HP1] HΦ". iLöb as "IH".
     wp_rec. wp_bind (!ˢᶜ_)%E. iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?& s &?&?&[-> _]).
-    iDestruct "H" as (?) "(? & ? & ? & ?)". wp_read.
+    iDestruct "H" as (x') "(? & ? & ? & ?)". wp_read.
     iMod ("Hclose" with "[-Hown HP1 HΦ]") as "_". { iExists _. auto with iFrame. }
     iModIntro. wp_let. wp_op. wp_bind (CAS _ _ _). iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(q' & s' & wl & w &[-> Hqq']).

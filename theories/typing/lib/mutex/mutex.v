@@ -101,7 +101,7 @@ Section mutex.
       iExists _. iFrame "Hincl". iApply (at_bor_iff with "[] Hshr"). iNext.
       iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
       iApply heap_mapsto_pred_iff_proper.
-      iAlways; iIntros; iSplit; iIntros; by iApply "Howni".
+      iModIntro; iIntros; iSplit; iIntros; by iApply "Howni".
   Qed.
 
   Global Instance mutex_proper E L :
@@ -122,7 +122,7 @@ Section mutex.
     iExists _. iFrame "Hincl". iApply (at_bor_iff with "[] Hshr"). iNext.
     iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
     iApply heap_mapsto_pred_iff_proper.
-    iAlways; iIntros; iSplit; iIntros; by iApply send_change_tid.
+    iModIntro; iIntros; iSplit; iIntros; by iApply send_change_tid.
   Qed.
 End mutex.
 

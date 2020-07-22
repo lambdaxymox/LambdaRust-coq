@@ -94,7 +94,7 @@ Section product.
     iClear "∗". iIntros "!# #HE".
     iDestruct ("H1" with "HE") as "#(% & #Ho1 & #Hs1)". clear H1.
     iDestruct ("H2" with "HE") as "#(% & #Ho2 & #Hs2)". clear H2.
-    iSplit; first by (iPureIntro; simpl; f_equal). iSplit; iAlways.
+    iSplit; first by (iPureIntro; simpl; f_equal). iSplit; iModIntro.
     - iIntros (??) "H". iDestruct "H" as (vl1 vl2) "(% & Hown1 & Hown2)".
       iExists _, _. iSplit. done. iSplitL "Hown1".
       + by iApply "Ho1".

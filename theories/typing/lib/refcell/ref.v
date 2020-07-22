@@ -83,7 +83,7 @@ Section ref.
     iIntros (α1 α2 Hα ty1 ty2 Hty q) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
     iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
-    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iAlways].
+    iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.
       iDestruct "H" as (ν q' γ β ty') "(#Hshr & #H⊑ & #Hinv & Htok & Hown)".

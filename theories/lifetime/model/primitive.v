@@ -386,14 +386,14 @@ Lemma raw_bor_iff i P P' : ▷ □ (P ↔ P') -∗ raw_bor i P -∗ raw_bor i P'
 Proof.
   iIntros "#HPP' HP". unfold raw_bor. iDestruct "HP" as (s) "[HiP HP]".
   iExists s. iFrame. iDestruct "HP" as (P0) "[#Hiff ?]". iExists P0. iFrame.
-  iNext. iAlways. iSplit; iIntros.
+  iNext. iModIntro. iSplit; iIntros.
   by iApply "HPP'"; iApply "Hiff". by iApply "Hiff"; iApply "HPP'".
 Qed.
 
 Lemma idx_bor_iff κ i P P' : ▷ □ (P ↔ P') -∗ &{κ,i}P -∗ &{κ,i}P'.
 Proof.
   unfold idx_bor. iIntros "#HPP' [$ HP]". iDestruct "HP" as (P0) "[#HP0P Hs]".
-  iExists P0. iFrame. iNext. iAlways. iSplit; iIntros.
+  iExists P0. iFrame. iNext. iModIntro. iSplit; iIntros.
   by iApply "HPP'"; iApply "HP0P". by iApply "HP0P"; iApply "HPP'".
 Qed.
 

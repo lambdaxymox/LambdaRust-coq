@@ -130,7 +130,7 @@ Section sum.
     { iInduction Htyl as [|???? Hsub] "IH".
       { iClear "∗". iIntros "!# _". done. }
       iDestruct (Hsub with "HL") as "#Hsub". iDestruct ("IH" with "HL") as "{IH} #IH".
-      iAlways. iIntros "#HE". iDestruct ("Hsub" with "HE") as "(% & _ & _)".
+      iModIntro. iIntros "#HE". iDestruct ("Hsub" with "HE") as "(% & _ & _)".
       iDestruct ("IH" with "HE") as %IH. iPureIntro. simpl. inversion_clear IH. by f_equal. }
     iDestruct (subtype_Forall2_llctx with "HL") as "#Htyl"; first done.
     iClear "HL". iIntros "!# #HE".
@@ -146,11 +146,11 @@ Section sum.
         rewrite (nth_lookup_Some tyl2 _ _ ty2) //. }
     clear -Hleq. iClear "∗". iSplit; last iSplit.
     - simpl. by rewrite Hleq.
-    - iAlways. iIntros (tid vl) "H". iDestruct "H" as (i vl' vl'') "(% & % & Hown)".
+    - iModIntro. iIntros (tid vl) "H". iDestruct "H" as (i vl' vl'') "(% & % & Hown)".
       iExists i, vl', vl''. iSplit; first done.
       iSplit; first by rewrite -Hleq.
       iDestruct ("Hty" $! i) as "(_ & #Htyi & _)". by iApply "Htyi".
-    - iAlways. iIntros (κ tid l) "H". iDestruct "H" as (i) "(Hmt & Hshr)".
+    - iModIntro. iIntros (κ tid l) "H". iDestruct "H" as (i) "(Hmt & Hshr)".
       iExists i. iSplitR "Hshr".
       + rewrite /is_pad -Hleq. iDestruct ("Hty" $! i) as "(Hlen & _)".
         iDestruct "Hlen" as %<-. done.
