@@ -7,9 +7,11 @@ Set Default Proof Using "Type".
 
 Class frac_borG Σ := frac_borG_inG :> inG Σ fracR.
 
+Local Definition frac_bor_inv `{!invG Σ, !lftG Σ, !frac_borG Σ} (φ : Qp → iProp Σ) γ κ' :=
+  (∃ q, φ q ∗ own γ q ∗ (⌜q = 1%Qp⌝ ∨ ∃ q', ⌜(q + q' = 1)%Qp⌝ ∗ q'.[κ']))%I.
+
 Definition frac_bor `{!invG Σ, !lftG Σ, !frac_borG Σ} κ (φ : Qp → iProp Σ) :=
-  (∃ γ κ', κ ⊑ κ' ∗ &at{κ',lftN} (∃ q, φ q ∗ own γ q ∗
-                       (⌜q = 1%Qp⌝ ∨ ∃ q', ⌜(q + q' = 1)%Qp⌝ ∗ q'.[κ'])))%I.
+  (∃ γ κ', κ ⊑ κ' ∗ &at{κ',lftN} (frac_bor_inv φ γ κ'))%I.
 Notation "&frac{ κ }" := (frac_bor κ) (format "&frac{ κ }") : bi_scope.
 
 Section frac_bor.
@@ -18,13 +20,13 @@ Section frac_bor.
 
   Global Instance frac_bor_contractive κ n :
     Proper (pointwise_relation _ (dist_later n) ==> dist n) (frac_bor κ).
-  Proof. solve_contractive. Qed.
+  Proof. rewrite /frac_bor /frac_bor_inv. solve_contractive. Qed.
   Global Instance frac_bor_ne κ n :
     Proper (pointwise_relation _ (dist n) ==> dist n) (frac_bor κ).
-  Proof. solve_proper. Qed.
+  Proof. rewrite /frac_bor /frac_bor_inv. solve_proper. Qed.
   Global Instance frac_bor_proper κ :
     Proper (pointwise_relation _ (⊣⊢) ==> (⊣⊢)) (frac_bor κ).
-  Proof. solve_proper. Qed.
+  Proof. rewrite /frac_bor /frac_bor_inv. solve_proper. Qed.
 
   Lemma frac_bor_iff κ φ' :
     ▷ □ (∀ q, φ q ↔ φ' q) -∗ &frac{κ} φ -∗ &frac{κ} φ'.
@@ -66,6 +68,56 @@ Section frac_bor.
       iApply fupd_intro_mask. set_solver. done.
   Qed.
 
+  Local Lemma frac_bor_trade1 γ κ' q :
+    □ (∀ q1 q2, φ (q1+q2)%Qp ↔ φ q1 ∗ φ q2) -∗
+    ▷ frac_bor_inv φ γ κ' ∗ ▷ own γ q ∗ ▷ φ q -∗
+    ▷ (frac_bor_inv φ γ κ' ∗ q.[κ']).
+  Proof.
+    iIntros "#Hφ (H & Hown & Hφ1)". iNext.
+    iDestruct "H" as (qφ) "(Hφqφ & Hown' & [%|Hq])".
+    { subst. iCombine "Hown'" "Hown" as "Hown".
+      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_plus_q_ge_1. }
+    rewrite /frac_bor_inv. iApply bi.sep_exist_r. iExists (q + qφ)%Qp.
+    iDestruct "Hq" as (q' Hqφq') "Hq'κ". iCombine "Hown'" "Hown" as "Hown".
+    iDestruct (own_valid with "Hown") as %Hval. rewrite comm_L. iFrame "Hown".
+    iCombine "Hφ1 Hφqφ" as "Hφq". iDestruct ("Hφ" with "Hφq") as "$".
+    assert (0 < q'-q ∨ q = q')%Qc as [Hq'q|<-].
+    { change (qφ + q ≤ 1)%Qc in Hval. apply Qp_eq in Hqφq'. simpl in Hval, Hqφq'.
+      rewrite <-Hqφq', <-Qcplus_le_mono_l in Hval. apply Qcle_lt_or_eq in Hval.
+      destruct Hval as [Hval|Hval].
+      - left; apply ->Qclt_minus_iff. done.
+      - right; apply Qp_eq, Qc_is_canon. by rewrite Hval. }
+    - assert (q' = mk_Qp _ Hq'q + q)%Qp as ->. { apply Qp_eq. simpl. ring. }
+      iDestruct "Hq'κ" as "[Hq'qκ $]".
+      iRight. iExists _. iIntros "{$Hq'qκ}!%".
+      revert Hqφq'. rewrite !Qp_eq. move=>/=<-. ring.
+    - iFrame "Hq'κ". iLeft. iPureIntro. rewrite comm_L. done.
+  Qed.
+
+  Local Lemma frac_bor_trade2 γ κ' qκ' :
+    □ (∀ q1 q2, φ (q1+q2)%Qp ↔ φ q1 ∗ φ q2) -∗
+    ▷ frac_bor_inv φ γ κ' ∗ ▷ qκ'.[κ'] -∗
+    ▷ (frac_bor_inv φ γ κ' ∗ ∃ q0 q1, ⌜qκ' = (q0 + q1)%Qp⌝ ∗ q1.[κ'] ∗ own γ q0 ∗ φ q0).
+  Proof.
+    iIntros "#Hφ [H Hκ']". iNext.
+    iDestruct "H" as (qφ) "(Hφqφ & Hown & Hq)".
+    destruct (Qp_lower_bound qκ' qφ) as (qq & qκ'0 & qφ0 & Hqκ' & Hqφ).
+    iApply bi.sep_exist_l. iExists qq.
+    iApply bi.sep_exist_l. iExists qκ'0.
+    subst qκ' qφ. rewrite /frac_bor_inv.
+    iApply bi.sep_exist_r. iExists qφ0.
+    iDestruct ("Hφ" with "Hφqφ") as "[$ $] {Hφ}".
+    iDestruct "Hown" as "[$ $]".
+    iDestruct "Hκ'" as "[Hκ' $]".
+    iSplit; last done.
+    iDestruct "Hq" as "[%|Hq]".
+      - iRight. iExists qq. iFrame. iPureIntro.
+        by rewrite (comm _ qφ0).
+      - iDestruct "Hq" as (q') "[% Hq'κ]". iRight. iExists (qq + q')%Qp.
+        iFrame. iPureIntro.
+        rewrite assoc (comm _ _ qq). done.
+  Qed.
+
   Lemma frac_bor_acc' E q κ :
     ↑lftN ⊆ E →
     lft_ctx -∗ □ (∀ q1 q2, φ (q1+q2)%Qp ↔ φ q1 ∗ φ q2) -∗
@@ -75,41 +127,15 @@ Section frac_bor.
     iDestruct "Hfrac" as (γ κ') "#[#Hκκ' Hshr]".
     iMod (lft_incl_acc with "Hκκ' Hκ") as (qκ') "[[Hκ1 Hκ2] Hclose]". done.
     iMod (at_bor_acc_tok with "LFT Hshr Hκ1") as "[H Hclose']"; try done.
-    iDestruct "H" as (qφ) "(Hφqφ & >Hown & Hq)".
-    destruct (Qp_lower_bound (qκ'/2) (qφ/2)) as (qq & qκ'0 & qφ0 & Hqκ' & Hqφ).
-    iExists qq.
-    iAssert (▷ (φ qq ∗ φ (qφ0 + qφ / 2)))%Qp%I with "[Hφqφ]" as "[$ Hqφ]".
-    { iNext. rewrite -{1}(Qp_div_2 qφ) {1}Hqφ. iApply "Hφ". by rewrite assoc. }
-    rewrite -{1}(Qp_div_2 qφ) {1}Hqφ -assoc {1}Hqκ'.
-    iDestruct "Hκ2" as "[Hκq Hκqκ0]". iDestruct "Hown" as "[Hownq Hown]".
-    iMod ("Hclose'" with "[Hqφ Hq Hown Hκq]") as "Hκ1".
-    { iNext. iExists _. iFrame. iRight. iDestruct "Hq" as "[%|Hq]".
-      - subst. iExists qq. iIntros "{$Hκq}!%".
-        by rewrite (comm _ qφ0) -assoc (comm _ qφ0) -Hqφ Qp_div_2.
-      - iDestruct "Hq" as (q') "[% Hq'κ]". iExists (qq + q')%Qp.
-        iIntros "{$Hκq $Hq'κ}!%". by rewrite assoc (comm _ _ qq) assoc -Hqφ Qp_div_2. }
-    clear Hqφ qφ qφ0. iIntros "!>Hqφ".
+    iDestruct (frac_bor_trade2 with "Hφ [$H $Hκ2]") as "[H Htrade]".
+    iDestruct "Htrade" as (q0 q1) "(>Hq & >Hκ2 & >Hown & Hqφ)".
+    iDestruct "Hq" as %Hq.
+    iMod ("Hclose'" with "H") as "Hκ1".
+    iExists q0. iFrame "Hqφ". iIntros "!>Hqφ".
     iMod (at_bor_acc_tok with "LFT Hshr Hκ1") as "[H Hclose']"; try done.
-    iDestruct "H" as (qφ) "(Hφqφ & >Hown & >[%|Hq])".
-    { subst. iCombine "Hown" "Hownq" as "Hown".
-      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_plus_q_ge_1. }
-    iDestruct "Hq" as (q') "[Hqφq' Hq'κ]". iCombine "Hown" "Hownq" as "Hown".
-    iDestruct (own_valid with "Hown") as %Hval. iDestruct "Hqφq'" as %Hqφq'.
-    assert (0 < q'-qq ∨ qq = q')%Qc as [Hq'q|<-].
-    { change (qφ + qq ≤ 1)%Qc in Hval. apply Qp_eq in Hqφq'. simpl in Hval, Hqφq'.
-      rewrite <-Hqφq', <-Qcplus_le_mono_l in Hval. apply Qcle_lt_or_eq in Hval.
-      destruct Hval as [Hval|Hval].
-      by left; apply ->Qclt_minus_iff. right; apply Qp_eq, Qc_is_canon. by rewrite Hval. }
-    - assert (q' = mk_Qp _ Hq'q + qq)%Qp as ->. { apply Qp_eq. simpl. ring. }
-      iDestruct "Hq'κ" as "[Hq'qκ Hqκ]".
-      iMod ("Hclose'" with "[Hqφ Hφqφ Hown Hq'qκ]") as "Hqκ2".
-      { iNext. iExists (qφ + qq)%Qp. iFrame. iSplitR "Hq'qκ". by iApply "Hφ"; iFrame.
-        iRight. iExists _. iIntros "{$Hq'qκ}!%".
-        revert Hqφq'. rewrite !Qp_eq. move=>/=<-. ring. }
-      iApply "Hclose". iFrame. rewrite Hqκ'. by iFrame.
-    - iMod ("Hclose'" with "[Hqφ Hφqφ Hown]") as "Hqκ2".
-      { iNext. iExists (qφ ⋅ qq)%Qp. iFrame. iSplitL. by iApply "Hφ"; iFrame. auto. }
-      iApply "Hclose". iFrame. rewrite Hqκ'. by iFrame.
+    iDestruct (frac_bor_trade1 with "Hφ [$H $Hown $Hqφ]") as "[H >Hκ3]".
+    iMod ("Hclose'" with "H") as "Hκ1".
+    iApply "Hclose". iFrame "Hκ1". rewrite Hq. iFrame.
   Qed.
 
   Lemma frac_bor_acc E q κ `{!Fractional φ} :
