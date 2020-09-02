@@ -8,6 +8,7 @@ Set Default Proof Using "Type".
 Definition elctx_elt : Type := lft * lft.
 Notation elctx := (list elctx_elt).
 
+Declare Scope lrust_elctx_scope.
 Delimit Scope lrust_elctx_scope with EL.
 (* We need to define [elctx] and [llctx] as notations to make eauto
    work. But then, Coq is not able to bind them to their

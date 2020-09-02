@@ -9,6 +9,7 @@ Open Scope Z_scope.
 Definition block : Set := positive.
 Definition loc : Set := block * Z.
 
+Declare Scope loc_scope.
 Bind Scope loc_scope with loc.
 Delimit Scope loc_scope with L.
 Open Scope loc_scope.

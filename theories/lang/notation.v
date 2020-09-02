@@ -94,6 +94,6 @@ Notation "'letcall:' x := f args 'in' e" :=
    we would even want them to print in general.
    TODO: Introduce a Definition. *)
 Notation "e1 '<-{Σ' i } '()'" := (e1 <- #i)%E
-  (only parsing, at level 80, format "e1  <-{Σ  i }  ()" ) : expr_scope.
+  (only parsing, at level 80) : expr_scope.
 Notation "e1 '<-{Σ' i } e2" := (e1 <-{Σ i} () ;; e1+ₗ#1 <- e2)%E
   (at level 80, format "e1 <-{Σ  i }  e2") : expr_scope.

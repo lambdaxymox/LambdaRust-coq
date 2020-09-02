@@ -144,6 +144,7 @@ Qed.
 
 Coercion ty_of_st : simple_type >-> type.
 
+Declare Scope lrust_type_scope.
 Delimit Scope lrust_type_scope with T.
 Bind Scope lrust_type_scope with type.
 
