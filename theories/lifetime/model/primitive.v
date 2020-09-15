@@ -66,7 +66,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move : Hγs.
-  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL' <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /to_agree_op_inv_L <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_bor_into_op κ x x1 x2 :
@@ -100,7 +100,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
-  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL'=> <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /to_agree_op_inv_L=> <-.
   iExists γs. iSplit; first done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_cnt_into_op κ x x1 x2 :
@@ -134,7 +134,7 @@ Proof.
   iIntros "[Hx Hy]".
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
-  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /agree_op_invL'=> <-.
+  rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /to_agree_op_inv_L=> <-.
   iExists γs. iSplit. done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_inh_into_op κ x x1 x2 :

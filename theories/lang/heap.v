@@ -143,7 +143,7 @@ Section heap.
   Proof.
     rewrite heap_mapsto_eq -own_op -auth_frag_op own_valid discrete_valid.
     eapply pure_elim; [done|]=> /auth_frag_valid /=.
-    rewrite singleton_op -pair_op singleton_valid=> -[? /agree_op_invL'->]; eauto.
+    rewrite singleton_op -pair_op singleton_valid=> -[? /to_agree_op_inv_L->]; eauto.
   Qed.
 
   Lemma heap_mapsto_vec_nil l q : l ↦∗{q} [] ⊣⊢ True.
