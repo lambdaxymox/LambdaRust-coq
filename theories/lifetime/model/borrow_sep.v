@@ -97,9 +97,9 @@ Proof.
     iDestruct (own_bor_valid_2 with "Hown Hbor2")
         as %[EQB2%to_borUR_included _]%auth_both_valid.
     iAssert ⌜j1 ≠ j2⌝%I with "[#]" as %Hj1j2.
-    { iDestruct (own_bor_valid_2 with "Hbor1 Hbor2") as %Hj1j2%auth_valid_discrete.
-      iIntros (->).
-      exfalso. revert Hj1j2. rewrite /= singleton_op singleton_valid.
+    { iIntros (->). iDestruct (own_bor_valid_2 with "Hbor1 Hbor2") as %Hj1j2.
+      exfalso; revert Hj1j2.
+      rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid.
       by intros [[]]. }
     iMod (slice_combine _ _ true with "Hslice1 Hslice2 Hbox")
       as (γ) "(% & Hslice & Hbox)"; first solve_ndisj.
