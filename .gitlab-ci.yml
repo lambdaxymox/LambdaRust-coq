@@ -16,7 +16,7 @@ variables:
   cache:
     key: "$CI_JOB_NAME"
     paths:
-    - opamroot/
+    - _opam/
   only:
   - master
   - /^ci/
