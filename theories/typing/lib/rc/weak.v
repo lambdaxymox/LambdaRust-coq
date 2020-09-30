@@ -158,7 +158,7 @@ Section code.
     iMod (na_bor_acc with "LFT Hwtokb Hα1 Hna") as "(>Hwtok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hwtok") as
-      %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid.
+      %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid_discrete.
     destruct st as [[[q'' strong]| |]|]; try done.
     - (* Success case. *)
       iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >Hq''q0 & [Hν1 Hν2] & Hν†)".
@@ -261,7 +261,7 @@ Section code.
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
-               %option_included _]%prod_included [Hval _]]%auth_both_valid;
+               %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
     { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
       apply csum_included in Hincl. naive_solver. }
@@ -327,7 +327,7 @@ Section code.
       iMod (na_bor_acc with "LFT Hwtokb Hα1 Hna") as "(>Hwtok & Hna & Hclose3)"; [solve_ndisj..|].
       iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
       iDestruct (own_valid_2 with "Hrc● Hwtok") as
-        %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid.
+        %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid_discrete.
       iMod (own_update with "Hrc●") as "[Hrc● $]".
       { by apply auth_update_alloc, prod_local_update_2,
            (op_local_update_discrete _ _ 1%nat). }
@@ -400,7 +400,7 @@ Section code.
       iMod (na_inv_acc with "Hinv Hna") as "(Hrcproto & Hna & Hclose)"; [solve_ndisj..|].
       iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
       iDestruct (own_valid_2 with "Hrc● Hwtok") as
-          %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid.
+          %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid_discrete.
       destruct weakc; first by simpl in *; lia.
       iMod (own_update_2 with "Hrc● Hwtok") as "Hrc●".
       { apply auth_update_dealloc, prod_local_update_2,
@@ -473,7 +473,7 @@ Section code.
     { rewrite tctx_interp_singleton tctx_hasty_val' //=. iFrame.
       iExists [_]. rewrite heap_mapsto_vec_singleton. iFrame.
       iMod (own_alloc (● _ ⋅ ◯ _)) as (γ) "[??]"; last (iExists _, _; iFrame).
-      { apply auth_both_valid. by split. }
+      { apply auth_both_valid_discrete. by split. }
       iExists ty. iFrame "Hν†". iSplitR; first by iApply type_incl_refl.
       iSplitL; last by iRight. iMod (na_inv_alloc with "[-]") as "$"; last done.
       iExists _. iFrame. rewrite freeable_sz_full_S shift_loc_assoc. iFrame.

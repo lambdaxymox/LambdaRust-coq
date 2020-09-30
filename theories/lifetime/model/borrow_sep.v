@@ -25,7 +25,7 @@ Proof.
     iDestruct "Hinv" as (Pb Pi) "(H & Hvs & Hinh)".
     iDestruct "H" as (B) "(Hbox & >Hown & HB)".
     iDestruct (own_bor_valid_2 with "Hown Hbor")
-        as %[EQB%to_borUR_included _]%auth_both_valid.
+        as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
     iMod (slice_iff _ _ true with "HPP' Hslice Hbox")
       as (s' Pb') "(% & #HPbPb' & Hslice & Hbox)"; first solve_ndisj.
     { by rewrite lookup_fmap EQB. }
@@ -93,9 +93,9 @@ Proof.
     iDestruct "Hinv" as (Pb Pi) "(H & Hvs & Hinh)".
     iDestruct "H" as (B) "(Hbox & >Hown & HB)".
     iDestruct (own_bor_valid_2 with "Hown Hbor1")
-        as %[EQB1%to_borUR_included _]%auth_both_valid.
+        as %[EQB1%to_borUR_included _]%auth_both_valid_discrete.
     iDestruct (own_bor_valid_2 with "Hown Hbor2")
-        as %[EQB2%to_borUR_included _]%auth_both_valid.
+        as %[EQB2%to_borUR_included _]%auth_both_valid_discrete.
     iAssert ⌜j1 ≠ j2⌝%I with "[#]" as %Hj1j2.
     { iIntros (->). iDestruct (own_bor_valid_2 with "Hbor1 Hbor2") as %Hj1j2.
       exfalso; revert Hj1j2.

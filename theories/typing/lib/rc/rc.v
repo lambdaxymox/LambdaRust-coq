@@ -159,7 +159,7 @@ Section rc.
         iMod (bor_create with "LFT Hown") as "[HP HPend]"; first solve_ndisj.
         iMod (own_alloc (● (Some $ Cinl ((1/2)%Qp, 1%positive), 0%nat) ⋅
                          ◯ (Some $ Cinl ((1/2)%Qp, 1%positive), 0%nat))) as (γ) "[Ha Hf]".
-        { by apply auth_both_valid. }
+        { by apply auth_both_valid_discrete. }
         iMod (na_inv_alloc tid _ _ (rc_inv tid ν γ l' ty)
               with "[Ha Hν2 Hl'1 Hl'2 H† HPend]") as "#?".
         { rewrite /rc_inv. iExists (Some $ Cinl (_, _), _). iFrame. iExists _.
@@ -282,7 +282,7 @@ Section code.
       iMod (na_inv_acc with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
       iDestruct "Hproto" as ([st weak]) "[>Hst Hproto]".
       iDestruct (own_valid_2 with "Hst Htok") as %[[[[=]|(?&st'&[=<-]&EQst'&Hincl)]
-        %option_included _]%prod_included [Hval _]]%auth_both_valid.
+        %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete.
       simpl in EQst'. subst st. destruct Hincl as [Hincl|Hincl].
       + destruct st' as [[]| |]; try by inversion Hincl. apply (inj Cinl) in Hincl.
         apply (inj2 pair) in Hincl. destruct Hincl as [<-%leibniz_equiv <-%leibniz_equiv].
@@ -346,7 +346,7 @@ Section code.
           iMod (na_inv_acc with "Hinv Hna") as "(Hproto & Hna & Hclose)"; [solve_ndisj..|].
           iDestruct "Hproto" as ([st weak]) "[>Hst Hproto]".
           iDestruct (own_valid_2 with "Hst Htok") as %[[[[=]|(?&st'&[=<-]&EQst'&Hincl)]
-            %option_included _]%prod_included [Hval _]]%auth_both_valid.
+            %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete.
           simpl in EQst'. subst st. destruct Hincl as [Hincl|Hincl]; first last.
           { apply csum_included in Hincl. destruct Hincl as
              [->|[(?&?&[=]&?)|(?&?&[=<-]&->&?%exclusive_included)]]; try done. apply _. }
@@ -417,7 +417,7 @@ Section code.
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
-               %option_included _]%prod_included [Hval _]]%auth_both_valid;
+               %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
     { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
       apply csum_included in Hincl. naive_solver. }
@@ -476,7 +476,7 @@ Section code.
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
-               %option_included _]%prod_included [Hval _]]%auth_both_valid;
+               %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
     { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
       apply csum_included in Hincl. naive_solver. }
@@ -581,7 +581,7 @@ Section code.
     iMod (na_bor_acc with "LFT Hrctokb Hα1 Hna") as "(>Hrctok & Hna & Hclose3)"; [solve_ndisj..|].
     iDestruct "Hrcproto" as ([st weak]) "[>Hrc● Hrcst]".
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
-               %option_included _]%prod_included [Hval _]]%auth_both_valid;
+               %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
     { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
       apply csum_included in Hincl. naive_solver. }
@@ -1076,7 +1076,7 @@ Section code.
       { iDestruct "Hty" as "[(Hl1 & Hl2 & Hl† & Hl3)|Hty]"; last done.
         iMod (own_alloc (● (Some $ Cinl ((1/2)%Qp, 1%positive), 0%nat) ⋅
                          rc_tok (1/2)%Qp)) as (γ) "[Ha Hf]";
-          first by apply auth_both_valid.
+          first by apply auth_both_valid_discrete.
         iMod (lft_create with "LFT") as (ν) "[[Hν1 Hν2] #Hν†]"=>//.
         iApply (fupd_mask_mono (↑lftN))=>//. iExists γ, ν, (1/2)%Qp. iFrame.
         iMod (bor_create _ ν with "LFT Hl3") as "[Hb Hh]"=>//. iExists _.

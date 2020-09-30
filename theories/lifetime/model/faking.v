@@ -16,10 +16,10 @@ Proof.
   iIntros "HA HI Hinv".
   destruct (decide (is_Some (I !! κ))) as [?|HIκ%eq_None_not_Some].
   { iModIntro. iExists A, I. by iFrame. }
-  iMod (own_alloc (● 0 ⋅ ◯ 0)) as (γcnt) "[Hcnt Hcnt']"; first by apply auth_both_valid.
+  iMod (own_alloc (● 0 ⋅ ◯ 0)) as (γcnt) "[Hcnt Hcnt']"; first by apply auth_both_valid_discrete.
   iMod (own_alloc (● (∅ : gmap slice_name
     (frac * agree bor_stateO)) ⋅ ◯ ∅)) as (γbor) "[Hbor Hbor']".
-  { by apply auth_both_valid. }
+  { by apply auth_both_valid_discrete. }
   iMod (own_alloc (● (ε : gset_disj slice_name)))
      as (γinh) "Hinh"; first by apply auth_auth_valid.
   set (γs := LftNames γbor γcnt γinh).

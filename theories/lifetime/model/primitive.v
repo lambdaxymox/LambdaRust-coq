@@ -37,7 +37,7 @@ Lemma own_ilft_auth_agree (I : gmap lft lft_names) κ γs :
     own ilft_name (◯ {[κ := to_agree γs]}) -∗ ⌜is_Some (I !! κ)⌝.
 Proof.
   iIntros "HI Hκ". iDestruct (own_valid_2 with "HI Hκ")
-    as %[[? [Hl ?]]%singleton_included_l _]%auth_both_valid.
+    as %[[? [Hl ?]]%singleton_included_l _]%auth_both_valid_discrete.
   unfold to_ilftUR in *. simplify_map_eq.
   destruct (fmap_Some_equiv_1 _ _ _ Hl) as (?&?&?). eauto.
 Qed.
@@ -47,7 +47,7 @@ Lemma own_alft_auth_agree (A : gmap atomic_lft bool) Λ b :
     own alft_name (◯ {[Λ := to_lft_stateR b]}) -∗ ⌜A !! Λ = Some b⌝.
 Proof.
   iIntros "HA HΛ".
-  iDestruct (own_valid_2 with "HA HΛ") as %[HA _]%auth_both_valid.
+  iDestruct (own_valid_2 with "HA HΛ") as %[HA _]%auth_both_valid_discrete.
   iPureIntro. move: HA=> /singleton_included_l [qs [/leibniz_equiv_iff]].
   rewrite lookup_fmap fmap_Some=> -[b' [? ->]] /Some_included.
   move=> [/leibniz_equiv_iff|/csum_included]; destruct b, b'; naive_solver.
@@ -457,7 +457,7 @@ Proof.
   { iIntros (I) "HI". iApply (own_inh_auth with "HI HE◯'"). }
   iIntros (Q'). rewrite {1}/lft_inh. iDestruct 1 as (PE) "[>HE Hbox]".
   iDestruct (own_inh_valid_2 with "HE HE◯")
-    as %[Hle%gset_disj_included _]%auth_both_valid.
+    as %[Hle%gset_disj_included _]%auth_both_valid_discrete.
   iMod (own_inh_update_2 with "HE HE◯") as "HE".
   { apply auth_update_dealloc, gset_disj_dealloc_local_update. }
   iMod (slice_delete_full _ _ true with "Hslice Hbox")

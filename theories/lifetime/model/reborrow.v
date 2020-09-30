@@ -34,7 +34,7 @@ Proof.
     iDestruct "Hκ" as (Pb' Pi') "(Hκalive&Hvs'&Hinh')".
   rewrite {2}/lft_bor_alive; iDestruct "Hκalive" as (B) "(Hbox & >HB● & HB)".
   iDestruct (own_bor_valid_2 with "HB● Hi")
-    as %[HB%to_borUR_included _]%auth_both_valid.
+    as %[HB%to_borUR_included _]%auth_both_valid_discrete.
   iMod (slice_empty _ _ true with "Hislice Hbox") as "[HP Hbox]"; first done.
   { by rewrite lookup_fmap HB. }
   iMod (own_bor_update_2 with "HB● Hi") as "[HB● Hi]".
@@ -75,7 +75,7 @@ Proof.
   iDestruct ("Hκalive" with "[//]") as (Pb' Pi') "(Hκalive&Hvs'&Hinh)".
   rewrite /lft_bor_alive; iDestruct "Hκalive" as (B') "(Hbox & HB● & HB)".
   iDestruct (own_bor_valid_2 with "HB● Hi")
-    as %[HB%to_borUR_included _]%auth_both_valid.
+    as %[HB%to_borUR_included _]%auth_both_valid_discrete.
   iMod (own_bor_update_2 with "HB● Hi") as "[HB● Hi]".
   { eapply auth_update, singleton_local_update,
      (exclusive_local_update _ (1%Qp, to_agree Bor_in)); last done.
@@ -119,7 +119,7 @@ Proof.
   iDestruct "Hinvκ" as (Pb Pi) "(Halive & Hvs & Hinh)".
   iDestruct "Halive" as (B) "(Hbox & >H● & HB)".
   iDestruct (own_bor_valid_2 with "H● Hbor")
-    as %[EQB%to_borUR_included _]%auth_both_valid.
+    as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
   iMod (slice_empty _ _ true with "Hs' Hbox") as "[Hidx Hbox]".
     solve_ndisj. by rewrite lookup_fmap EQB.
   iAssert (▷ idx_bor_own 1 (κ, i))%I with "[Hidx]" as ">Hidx"; [by iApply "HP'"|].
