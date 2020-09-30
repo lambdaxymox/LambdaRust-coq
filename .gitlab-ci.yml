@@ -18,8 +18,8 @@ variables:
     paths:
     - _opam/
   only:
-  - master
-  - /^ci/
+  - /^master/@iris/lambda-rust
+  - /^ci/@iris/lambda-rust
   except:
   - triggers
   - schedules
