@@ -76,7 +76,7 @@ Section frac_bor.
     iIntros "#Hφ (H & Hown & Hφ1)". iNext.
     iDestruct "H" as (qφ) "(Hφqφ & Hown' & [%|Hq])".
     { subst. iCombine "Hown'" "Hown" as "Hown".
-      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_plus_q_ge_1. }
+      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_plus_ge. }
     rewrite /frac_bor_inv. iApply bi.sep_exist_r. iExists (q + qφ)%Qp.
     iDestruct "Hq" as (q' Hqφq') "Hq'κ". iCombine "Hown'" "Hown" as "Hown".
     iDestruct (own_valid with "Hown") as %Hval. rewrite comm_L. iFrame "Hown".
