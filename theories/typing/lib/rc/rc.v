@@ -294,7 +294,7 @@ Section code.
           -- iLeft. iSplit; first done. rewrite Hincls. iFrame "Hl†".
              iMod (own_update_2 with "Hst Htok") as "Hst".
              { apply auth_update_dealloc. rewrite -{1}(right_id (None, 0%nat) _ (_, _)).
-               apply: cancel_local_update_unit. }
+               apply cancel_local_update_unit, _. }
              rewrite -[in (1).[ν]%I]Hqq' -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans.
              iApply step_fupd_mask_mono;
                last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
@@ -329,7 +329,7 @@ Section code.
         * iIntros "Hl1".
           iMod (own_update_2 with "Hst Htok") as "[Hst Htok]".
           { apply auth_update. etrans.
-            - rewrite [(Some _, weak)]pair_split. apply: cancel_local_update_unit.
+            - rewrite [(Some _, weak)]pair_split. apply cancel_local_update_unit, _.
             - apply (op_local_update _ _ (Some (Cinr (Excl tt)), 0%nat)). auto. }
           rewrite -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans -[in (1).[ν]%I]Hqq'.
           iApply step_fupd_mask_mono;
@@ -356,7 +356,7 @@ Section code.
              iApply ("Hclose" with "[>- $Hna]"). iExists (None, 0%nat).
              iMod (own_update_2 with "Hst Htok") as "$"; last done.
              apply auth_update_dealloc. rewrite -{1}(right_id (None, 0%nat) _ (_, _)).
-             apply: cancel_local_update_unit.
+             apply cancel_local_update_unit, _.
           -- iRight. iSplitR; first by auto with lia. iIntros "!> Hl† Hl2 Hvl".
              iApply ("Hclose" with "[>- $Hna]"). iExists (None, S weak).
              rewrite Hincls. iFrame. iSplitR "Hl2"; last first.

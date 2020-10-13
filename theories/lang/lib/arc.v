@@ -616,7 +616,7 @@ Section arc.
       + setoid_subst. iDestruct "H" as (?) "(Hq & ? & ? & >? & >%)". subst. wp_read.
         iMod (own_update_2 with "H● H◯") as "H●".
         { apply auth_update_dealloc. rewrite -{1}[(_, 0%nat)]right_id.
-          apply: cancel_local_update_unit. }
+          apply cancel_local_update_unit, _. }
         iMod ("Hclose" with "[H●]") as "_"; first by iExists _; iFrame.
         iModIntro. wp_seq. wp_op. wp_let. wp_op. wp_write. iApply "HΦ".
         iDestruct "Hq" as %<-. iFrame.
