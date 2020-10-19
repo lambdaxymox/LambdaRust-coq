@@ -27,7 +27,7 @@ variables:
 
 ## Build jobs
 
-# We are on Coq's benchmark suite, so better make sure we keep working with Coq master
+# We are in Coq's benchmark suite, so better make sure we keep working with Coq master.
 build-coq.dev:
   <<: *template
   variables:
