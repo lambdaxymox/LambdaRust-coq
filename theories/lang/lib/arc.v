@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.base_logic.lib Require Import invariants.
 From iris.program_logic Require Import weakestpre.
 From iris.proofmode Require Import tactics.
@@ -275,9 +274,8 @@ Section arc.
       { apply auth_update_alloc, prod_local_update_1,
          (op_local_update_discrete _ _ (Some (Cinl ((qq/2)%Qp, 1%positive, None))))
            =>-[/= Hqa ?]. split;[split|]=>//=; last by rewrite left_id.
-        apply frac_valid'. rewrite -Hq comm_L -{2}(Qp_div_2 qq).
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
-        apply Qcplus_le_mono_r, Qp_ge_0. }
+        apply frac_valid'. rewrite -Hq comm_L.
+        by apply Qp_add_le_mono_l, Qp_div_le. }
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
       iMod ("Hclose1" with "[Hl Hw H● HP1']") as "_".
       { iExists _. iFrame. iExists _. rewrite /= [xH ⋅ _]comm_L. iFrame.
@@ -407,9 +405,8 @@ Section arc.
           { apply auth_update_alloc. rewrite -[(_,0%nat)]right_id.
             apply op_local_update_discrete=>Hv. constructor; last done.
             split; last by rewrite /= left_id; apply Hv. split=>[|//].
-            apply frac_valid'. rewrite -Heq comm_L -{2}(Qp_div_2 q).
-            apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
-            apply Qcplus_le_mono_r, Qp_ge_0. }
+            apply frac_valid'. rewrite /= -Heq comm_L.
+            by apply Qp_add_le_mono_l, Qp_div_le. }
           iFrame. iApply "Hclose1". iExists _. iFrame. iExists _. iFrame.
           rewrite /= [xH ⋅ _]comm_L frac_op' [(_ + c)%Qp]comm -[(_ + _)%Qp]assoc
                   Qp_div_2 left_id_L. auto with iFrame.

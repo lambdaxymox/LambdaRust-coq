@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree.
 From iris.bi Require Import fractional.

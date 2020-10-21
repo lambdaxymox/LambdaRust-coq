@@ -1,4 +1,3 @@
-From Coq Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From lrust.lang.lib Require Import memcpy.
 From lrust.typing Require Export type.
@@ -8,23 +7,23 @@ Set Default Proof Using "Type".
 Section own.
   Context `{!typeG Σ}.
 
-  Program Definition freeable_sz (n : nat) (sz : nat) (l : loc) : iProp Σ :=
+  Definition freeable_sz (n : nat) (sz : nat) (l : loc) : iProp Σ :=
     match sz, n return _ with
     | 0%nat, _ => True
     | _, 0%nat => False
-    | sz, n => †{mk_Qp (sz / n) _}l…sz
+    | sz, n => †{pos_to_Qp (Pos.of_nat sz) / pos_to_Qp (Pos.of_nat n)}l…sz
     end%I.
-  Next Obligation. intros _ _ _ sz0 ? n ?. by apply Qcmult_pos_pos. Qed.
   Arguments freeable_sz : simpl never.
+
   Global Instance freeable_sz_timeless n sz l : Timeless (freeable_sz n sz l).
   Proof. destruct sz, n; apply _. Qed.
 
   Lemma freeable_sz_full n l : freeable_sz n n l ⊣⊢ †{1}l…n ∨ ⌜Z.of_nat n = 0⌝.
   Proof.
-    destruct n.
+    destruct n as [|n].
     - iSplit; iIntros "H /="; auto.
     - assert (Z.of_nat (S n) = 0 ↔ False) as -> by done. rewrite right_id.
-      rewrite /freeable_sz (proj2 (Qp_eq (mk_Qp _ _) 1)) //= /Qcdiv Qcmult_inv_r //.
+      by rewrite /freeable_sz Qp_div_diag.
   Qed.
 
   Lemma freeable_sz_full_S n l : freeable_sz (S n) (S n) l ⊣⊢ †{1}l…(S n).
@@ -38,8 +37,8 @@ Section own.
     - by rewrite left_id shift_loc_0.
     - by rewrite right_id Nat.add_0_r.
     - iSplit. by iIntros "[[]?]". by iIntros "[]".
-    - rewrite heap_freeable_op_eq. f_equiv. apply Qp_eq; simpl.
-      by rewrite -Qcmult_plus_distr_l -Nat.add_succ_l Nat2Z.inj_add -Z2Qc_inj_add.
+    - rewrite heap_freeable_op_eq. f_equiv.
+      by rewrite -Qp_div_add_distr pos_to_Qp_add -Nat2Pos.inj_add.
   Qed.
 
   (* Make sure 'simpl' doesn't unfold. *)

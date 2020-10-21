@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree numbers.
 From lrust.lang.lib Require Import memcpy.
@@ -169,9 +168,7 @@ Section code.
       { apply auth_update_alloc, prod_local_update_1,
         (op_local_update_discrete _ _ (Some (Cinl ((qb/2)%Qp, 1%positive))))=>-[/= Hqa _].
         split; simpl; last done. apply frac_valid'.
-        rewrite -Hq''q0 comm_L -{2}(Qp_div_2 qb).
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (_ / _)%Qp).
-        apply Qcplus_le_mono_r, Qp_ge_0. }
+        rewrite /= -Hq''q0 comm_L. by apply Qp_add_le_mono_l, Qp_div_le. }
       rewrite right_id -Some_op -Cinl_op -pair_op.
       iMod ("Hclose3" with "[$Hwtok] Hna") as "[Hα1 Hna]".
       iMod ("Hclose2" with "[Hrc● Hl'1 Hl'2 Hl'† Hν2 Hν† $Hna]") as "Hna".

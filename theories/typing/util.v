@@ -1,4 +1,3 @@
-From Coq Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From lrust.typing Require Export type.
 Set Default Proof Using "Type".

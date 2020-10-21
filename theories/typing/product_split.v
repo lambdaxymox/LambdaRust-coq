@@ -1,4 +1,3 @@
-From Coq Require Import Qcanon.
 From iris.algebra Require Import numbers.
 From iris.proofmode Require Import tactics.
 From lrust.typing Require Export type.

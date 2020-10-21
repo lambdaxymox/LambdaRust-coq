@@ -271,7 +271,7 @@ Section typing.
       iSpecialize ("Hf" $! x ϝ _ vl). iDestruct (HE ϝ with "HL") as "#HE'".
       iMod (bor_create _ ϝ with "LFT Hκs") as "[Hκs HκsI]"; first done.
       iDestruct (frac_bor_lft_incl with "LFT [>Hκs]") as "#Hκs".
-      { iApply (bor_fracture with "LFT"); first done. by rewrite Qp_mult_1_r. }
+      { iApply (bor_fracture with "LFT"); first done. by rewrite Qp_mul_1_r. }
       iApply ("Hf" with "LFT [] Htl [Htk] [Hk HκsI HL]").
       + iApply "HE'". iIntros "{$# Hf Hinh HE' LFT HE %}".
         iInduction κs as [|κ κs] "IH"=> //=. iSplitL.

@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree numbers.
 From iris.bi Require Import fractional.
@@ -82,7 +81,7 @@ Section refmut_functions.
     iMod (bor_sep with "LFT H") as "[_ H]". done.
     iMod (bor_sep with "LFT H") as "[H _]". done.
     iMod (bor_fracture (λ q', (q * q').[ν])%I with "LFT [H]") as "H". done.
-    { by rewrite Qp_mult_1_r. }
+    { by rewrite Qp_mul_1_r. }
     iDestruct (frac_bor_lft_incl _ _ q with "LFT H") as "#Hαν". iClear "H".
     rewrite heap_mapsto_vec_cons. iMod (bor_sep with "LFT H↦") as "[H↦ _]". done.
     iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hcloseα]". done.
@@ -310,9 +309,8 @@ Section refmut_functions.
          (op_local_update_discrete _ _ (writing_stR (q1/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite -Hqq1 comm -{2}(Qp_div_2 q1).
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q1/2)%Qp).
-        apply Qcplus_le_mono_r, Qp_ge_0. }
+      - apply frac_valid'. rewrite /= -Hqq1 comm_L.
+        by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_let. wp_read. wp_let. wp_op. wp_write.
     wp_apply (wp_delete _ _ _ [_; _] with "[Hrefmut↦1 Hrefmut↦2 Hrefmut†]")=>//.
     { rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton /= freeable_sz_full.
@@ -325,7 +323,7 @@ Section refmut_functions.
     { iExists (Some (_, true, _, _)).
       rewrite -Some_op -!pair_op agree_idemp /= (comm _ xH _).
       iFrame. iSplitL; [|done]. iExists _. iFrame.
-      rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
+      rewrite (comm Qp_add) (assoc Qp_add) Qp_div_2 (comm Qp_add). auto. }
     iMod ("Hβclose" with "Hβ") as "Hα". iMod ("Hclose1" with "Hα HL") as "HL".
     iApply (type_type _ [_] _ [ #lrefmuts ◁ box (Π[refmut α ty1; refmut α ty2]) ]
        with "[] LFT HE Hna HL Hk"); first last.

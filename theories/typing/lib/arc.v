@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree.
 From iris.bi Require Import fractional.
@@ -142,7 +141,7 @@ Section arc.
       { iExists _, _, _. iFrame "Hpersist".
         iMod (bor_sep with "LFT HX") as "[Hrc Hlft]"; first solve_ndisj.
         iDestruct (frac_bor_lft_incl with "LFT [> Hlft]") as "$".
-        { iApply (bor_fracture with "LFT"); first solve_ndisj. by rewrite Qp_mult_1_r. }
+        { iApply (bor_fracture with "LFT"); first solve_ndisj. by rewrite Qp_mul_1_r. }
         iApply (bor_share with "Hrc"); solve_ndisj. }
       iApply ("Hclose1" with "[]"). by auto.
     - iMod ("Hclose1" with "[]") as "_"; first by auto.

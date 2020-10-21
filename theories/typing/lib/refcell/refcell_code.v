@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree.
 From iris.bi Require Import fractional.
@@ -185,13 +184,12 @@ Section refcell_functions.
               (op_local_update_discrete _ _ (reading_stR (q'/2)%Qp ν)) => ?.
             split; [split|].
             - by rewrite /= agree_idemp.
-            - apply frac_valid'. rewrite -Hqq' comm -{2}(Qp_div_2 q').
-              apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q'/2)%Qp).
-              apply Qcplus_le_mono_r, Qp_ge_0.
+            - apply frac_valid'. rewrite /= -Hqq' comm_L.
+              by apply Qp_add_le_mono_l, Qp_div_le.
             - done. }
           iFrame "∗#". iExists (Some (ν, false, _, _)). iFrame "∗#".
           rewrite [_ ⋅ _]comm -Some_op -!pair_op agree_idemp. iFrame.
-          iExists _. iFrame. rewrite -(assoc Qp_plus) Qp_div_2 //.
+          iExists _. iFrame. rewrite -(assoc Qp_add) Qp_div_2 //.
         - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
           iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply
             auth_update_alloc, (op_local_update_discrete _ _ (reading_stR (1/2)%Qp ν)).

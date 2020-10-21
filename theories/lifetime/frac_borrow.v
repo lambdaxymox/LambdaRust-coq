@@ -1,4 +1,3 @@
-From Coq Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.bi Require Import fractional.
 From iris.algebra Require Import frac.
@@ -76,21 +75,16 @@ Section frac_bor.
     iIntros "#Hφ (H & Hown & Hφ1)". iNext.
     iDestruct "H" as (qφ) "(Hφqφ & Hown' & [%|Hq])".
     { subst. iCombine "Hown'" "Hown" as "Hown".
-      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_plus_ge. }
+      by iDestruct (own_valid with "Hown") as %Hval%Qp_not_add_le_l. }
     rewrite /frac_bor_inv. iApply bi.sep_exist_r. iExists (q + qφ)%Qp.
     iDestruct "Hq" as (q' Hqφq') "Hq'κ". iCombine "Hown'" "Hown" as "Hown".
     iDestruct (own_valid with "Hown") as %Hval. rewrite comm_L. iFrame "Hown".
     iCombine "Hφ1 Hφqφ" as "Hφq". iDestruct ("Hφ" with "Hφq") as "$".
-    assert (0 < q'-q ∨ q = q')%Qc as [Hq'q|<-].
-    { change (qφ + q ≤ 1)%Qc in Hval. apply Qp_eq in Hqφq'. simpl in Hval, Hqφq'.
-      rewrite <-Hqφq', <-Qcplus_le_mono_l in Hval. apply Qcle_lt_or_eq in Hval.
-      destruct Hval as [Hval|Hval].
-      - left; apply ->Qclt_minus_iff. done.
-      - right; apply Qp_eq, Qc_is_canon. by rewrite Hval. }
-    - assert (q' = mk_Qp _ Hq'q + q)%Qp as ->. { apply Qp_eq. simpl. ring. }
-      iDestruct "Hq'κ" as "[Hq'qκ $]".
-      iRight. iExists _. iIntros "{$Hq'qκ}!%".
-      revert Hqφq'. rewrite !Qp_eq. move=>/=<-. ring.
+    assert (q ≤ q')%Qp as [[r ->]%Qp_lt_sum|<-]%Qp_le_lteq.
+    { apply (Qp_add_le_mono_l _ _ qφ). by rewrite Hqφq'. }
+    - iDestruct "Hq'κ" as "[$ Hr]".
+      iRight. iExists _. iIntros "{$Hr} !%".
+      by rewrite (comm_L Qp_add q) -assoc_L.
     - iFrame "Hq'κ". iLeft. iPureIntro. rewrite comm_L. done.
   Qed.
 

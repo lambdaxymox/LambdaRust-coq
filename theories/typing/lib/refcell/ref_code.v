@@ -1,4 +1,3 @@
-From Coq.QArith Require Import Qcanon.
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import auth csum frac agree numbers.
 From iris.bi Require Import fractional.
@@ -13,7 +12,7 @@ Section ref_functions.
   Lemma refcell_inv_reading_inv tid l γ α ty q ν :
     refcell_inv tid l γ α ty -∗
     own γ (◯ reading_stR q ν) -∗
-    ∃ (q' : Qp) n, l ↦ #(Zpos n) ∗ ⌜(q ≤ q')%Qc⌝ ∗
+    ∃ (q' : Qp) n, l ↦ #(Zpos n) ∗ ⌜(q ≤ q')%Qp⌝ ∗
             own γ (● (refcell_st_to_R $ Some (ν, false, q', n)) ⋅ ◯ reading_stR q ν) ∗
             ((1).[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ &{α}((l +ₗ 1) ↦∗: ty_own ty tid)) ∗
             (∃ q'', ⌜(q' + q'' = 1)%Qp⌝ ∗ q''.[ν]) ∗
@@ -21,7 +20,7 @@ Section ref_functions.
   Proof.
     iIntros "INV H◯".
     iDestruct "INV" as (st) "(H↦lrc & H● & INV)".
-    iAssert (∃ q' n, st ≡ Some (ν, false, q', n) ∗ ⌜q ≤ q'⌝%Qc)%I with
+    iAssert (∃ q' n, st ≡ Some (ν, false, q', n) ∗ ⌜q ≤ q'⌝%Qp)%I with
        "[#]" as (q' n) "[%%]".
     { destruct st as [[[[??]?]?]|];
       iDestruct (own_valid_2 with "H● H◯")
@@ -74,9 +73,8 @@ Section ref_functions.
          (op_local_update_discrete _ _ (reading_stR (q''/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite -Hq'q'' comm -{2}(Qp_div_2 q'').
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q''/2)%Qp).
-        apply Qcplus_le_mono_r, Qp_ge_0. }
+      - apply frac_valid'. rewrite /= -Hq'q'' comm_L.
+        by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_apply wp_new; [done..|]. iIntros (lr) "(?&Hlr)".
     iAssert (lx' ↦∗{qlx'} [ #lv; #lrc])%I  with "[H↦1 H↦2]" as "H↦".
     { rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton. iFrame. }
@@ -85,7 +83,7 @@ Section ref_functions.
     iMod ("Hcloseδ" with "[H↦lrc H● Hν1 Hshr' H†] Hna") as "[Hδ Hna]".
     { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op -!pair_op agree_idemp.
       iFrame. iExists _. iFrame.
-      rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
+      rewrite (comm Qp_add) (assoc Qp_add) Qp_div_2 (comm Qp_add). auto. }
     iMod ("Hcloseβ" with "Hδ") as "Hβ". iMod ("Hcloseα1" with "[$H↦]") as "Hα2".
     iMod ("Hclose'" with "[$Hα1 $Hα2] HL") as "HL". iMod ("Hclose" with "Hβ HL") as "HL".
     iApply (type_type _ _ _
@@ -337,9 +335,8 @@ Section ref_functions.
          (op_local_update_discrete _ _ (reading_stR (q2/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite -Hq1q2 comm -{2}(Qp_div_2 q2).
-        apply Qcplus_le_mono_l. rewrite -{1}(Qcplus_0_l (q2/2)%Qp).
-        apply Qcplus_le_mono_r, Qp_ge_0. }
+      - apply frac_valid'. rewrite /= -Hq1q2 comm_L.
+        by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_let. wp_read. wp_let. wp_op. wp_write.
     wp_apply (wp_delete _ _ _ [_; _] with "[Href↦1 Href↦2 Href†]")=>//.
     { rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton /= freeable_sz_full.
@@ -351,7 +348,7 @@ Section ref_functions.
     iMod ("Hclosena" with "[H↦lrc H● Hν1 Hshr' H†] Hna") as "[Hβ Hna]".
     { iExists (Some (_, false, _, _)). rewrite Z.add_comm -Some_op -!pair_op agree_idemp.
       iFrame. iExists _. iFrame.
-      rewrite (comm Qp_plus) (assoc Qp_plus) Qp_div_2 (comm Qp_plus). auto. }
+      rewrite (comm Qp_add) (assoc Qp_add) Qp_div_2 (comm Qp_add). auto. }
     iMod ("Hβclose" with "Hβ") as "Hα". iMod ("Hclose1" with "Hα HL") as "HL".
     iApply (type_type _ [_] _ [ #lrefs ◁ box (Π[ref α ty1; ref α ty2]) ]
        with "[] LFT HE Hna HL Hk"); first last.

@@ -50,7 +50,7 @@ Section rwlockreadguard.
     iMod (bor_persistent with "LFT Hinv Htok") as "[#Hinv $]". done.
     iMod (bor_sep with "LFT Hb") as "[Hκν _]". done.
     iDestruct (frac_bor_lft_incl with "LFT [> Hκν]") as "#Hκν".
-    { iApply bor_fracture; try done. by rewrite Qp_mult_1_r. }
+    { iApply bor_fracture; try done. by rewrite Qp_mul_1_r. }
     iExists _. iFrame "#". iApply ty_shr_mono; last done.
     iApply lft_intersect_mono; last done. iApply lft_incl_refl.
   Qed.
