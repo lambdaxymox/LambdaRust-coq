@@ -16,7 +16,7 @@ Section own.
     end%I.
   Next Obligation. intros _ _ _ sz0 ? n ?. by apply Qcmult_pos_pos. Qed.
   Arguments freeable_sz : simpl never.
-  Global Instance freable_sz_timeless n sz l : Timeless (freeable_sz n sz l).
+  Global Instance freeable_sz_timeless n sz l : Timeless (freeable_sz n sz l).
   Proof. destruct sz, n; apply _. Qed.
 
   Lemma freeable_sz_full n l : freeable_sz n n l ⊣⊢ †{1}l…n ∨ ⌜Z.of_nat n = 0⌝.

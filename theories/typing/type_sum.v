@@ -7,7 +7,7 @@ Set Default Proof Using "Type".
 Section case.
   Context `{!typeG Σ}.
 
-  (* FIXME : have a iris version of Forall2. *)
+  (* FIXME : have an Iris version of Forall2. *)
   Lemma type_case_own' E L C T p n tyl el :
     Forall2 (λ ty e,
       (⊢ typed_body E L C ((p +ₗ #0 ◁ own_ptr n (uninit 1)) :: (p +ₗ #1 ◁ own_ptr n ty) ::
