@@ -91,7 +91,7 @@ borrows" in the Coq development.
 | F-endlft              | programs.v      | type_endlft           |
 | F-call                | function.v      | type_call'            |
 
-Some of these lemmas are called `something'` because the version without the `'` is a derived, more speicalized form used together with our eauto-based `solve_typing` tactic.  You can see this tactic in action in the [examples](theories/typing/examples) subfolder.
+Some of these lemmas are called `something'` because the version without the `'` is a derived, more specialized form used together with our eauto-based `solve_typing` tactic.  You can see this tactic in action in the [examples](theories/typing/examples) subfolder.
 
 ### Lifetime Logic Rules
 
