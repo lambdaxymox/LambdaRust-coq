@@ -37,7 +37,7 @@ build-coq.8.12.0:
   <<: *template
   variables:
     OPAM_PINS: "coq version 8.12.0"
-    OPAM_PKG: "coq-lambda-rust"
+    OPAM_PKG: "1"
     DENY_WARNINGS: "1"
   tags:
   - fp-timing
