@@ -13,7 +13,7 @@
 *~
 *.bak
 .coq-native/
-build-dep/
+builddep/
 Makefile.coq
 Makefile.coq.conf
 _opam

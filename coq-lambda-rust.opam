@@ -1,5 +1,4 @@
 opam-version: "2.0"
-name: "coq-lambda-rust"
 maintainer: "Ralf Jung <jung@mpi-sws.org>"
 authors: "The RustBelt Team"
 license: "BSD"
