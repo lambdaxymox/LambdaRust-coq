@@ -274,7 +274,7 @@ Section type_dist2.
       (∀ κ tid l, ty1.(ty_shr) κ tid l ≡{n}≡ ty2.(ty_shr) κ tid l) →
       type_dist2 n ty1 ty2.
 
-  Global Instance type_dist2_equivalence : Equivalence (type_dist2 n).
+  Global Instance type_dist2_equivalence n : Equivalence (type_dist2 n).
   Proof.
     constructor.
     - by constructor.

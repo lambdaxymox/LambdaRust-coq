@@ -71,7 +71,7 @@ Section rc.
       | _ => True
       end)%I.
 
-  Global Instance rc_inv_ne ν γ l n :
+  Global Instance rc_inv_ne tid ν γ l n :
     Proper (type_dist2 n ==> dist n) (rc_inv tid ν γ l).
   Proof.
     solve_proper_core ltac:(fun _ => f_type_equiv || f_contractive || f_equiv).
@@ -86,10 +86,10 @@ Section rc.
               (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
               □ (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]))%I.
 
-  Global Instance rc_persist_persistent : Persistent (rc_persist tid ν γ l ty).
+  Global Instance rc_persist_persistent tid ν γ l ty : Persistent (rc_persist tid ν γ l ty).
   Proof. unfold rc_persist, tc_opaque. apply _. Qed.
 
-  Global Instance rc_persist_ne ν γ l n :
+  Global Instance rc_persist_ne tid ν γ l n :
     Proper (type_dist2 n ==> dist n) (rc_persist tid ν γ l).
   Proof.
     solve_proper_core ltac:(fun _ => exact: type_dist2_S || exact: type_dist2_dist ||

@@ -18,7 +18,7 @@ Section atomic_bors.
   Proof. solve_proper. Qed.
   Global Instance at_bor_contractive κ : Contractive (at_bor κ N).
   Proof. solve_contractive. Qed.
-  Global Instance at_bor_proper : Proper ((⊣⊢) ==> (⊣⊢)) (at_bor κ N).
+  Global Instance at_bor_proper κ : Proper ((⊣⊢) ==> (⊣⊢)) (at_bor κ N).
   Proof. solve_proper. Qed.
 
   Lemma at_bor_iff κ P' : ▷ □ (P ↔ P') -∗ &at{κ, N} P -∗ &at{κ, N} P'.
@@ -27,7 +27,7 @@ Section atomic_bors.
     iApply (idx_bor_iff with "HPP' HP").
   Qed.
 
-  Global Instance at_bor_persistent : Persistent (&at{κ, N} P) := _.
+  Global Instance at_bor_persistent κ N P : Persistent (&at{κ, N} P) := _.
 
   Lemma bor_share E κ :
     N ## lftN → &{κ}P ={E}=∗ &at{κ, N}P.

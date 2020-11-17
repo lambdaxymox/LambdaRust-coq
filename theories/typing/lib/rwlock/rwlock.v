@@ -192,14 +192,14 @@ Section rwlock.
 
   (* Apparently, we don't need to require ty to be sync,
      contrarily to Rust's implementation. *)
-  Global Instance rwlock_send :
+  Global Instance rwlock_send ty :
     Send ty → Send (rwlock ty).
-  Proof. move=>????[|[[]|]]//=??. iIntros "[$?]". by iApply send_change_tid. Qed.
+  Proof. move=>???[|[[]|]]//=??. iIntros "[$?]". by iApply send_change_tid. Qed.
 
-  Global Instance rwlock_sync :
+  Global Instance rwlock_sync ty :
     Send ty → Sync ty → Sync (rwlock ty).
   Proof.
-    move=>???????/=. do 2 apply bi.exist_mono=>?. apply bi.sep_mono_r.
+    move=>??????/=. do 2 apply bi.exist_mono=>?. apply bi.sep_mono_r.
     iApply at_bor_iff. iIntros "!> !#". iApply bi.equiv_iff.
     apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
     - do 5 f_equiv. apply bi.equiv_spec; split; iApply send_change_tid.

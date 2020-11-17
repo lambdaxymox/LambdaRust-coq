@@ -49,10 +49,10 @@ Section cell.
   Lemma cell_proper' E L ty1 ty2 : eqtype E L ty1 ty2 → eqtype E L (cell ty1) (cell ty2).
   Proof. eapply cell_proper. Qed.
 
-  Global Instance cell_copy :
+  Global Instance cell_copy ty :
     Copy ty → Copy (cell ty).
   Proof.
-    intros ty Hcopy. split; first by intros; simpl; unfold ty_own; apply _.
+    intros Hcopy. split; first by intros; simpl; unfold ty_own; apply _.
     iIntros (κ tid E F l q ??) "#LFT #Hshr Htl Htok". iExists 1%Qp. simpl in *.
     (* Size 0 needs a special case as we can't keep the thread-local invariant open. *)
     destruct (ty_size ty) as [|sz] eqn:Hsz; simpl in *.
@@ -73,7 +73,7 @@ Section cell.
     by iMod ("Hclose" with "Hown Htl") as "[$ $]".
   Qed.
 
-  Global Instance cell_send :
+  Global Instance cell_send ty :
     Send ty → Send (cell ty).
   Proof. by unfold cell, Send. Qed.
 End cell.

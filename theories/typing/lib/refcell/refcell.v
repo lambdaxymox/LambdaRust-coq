@@ -204,9 +204,9 @@ Section refcell.
     eqtype E L ty1 ty2 → eqtype E L (refcell ty1) (refcell ty2).
   Proof. eapply refcell_proper. Qed.
 
-  Global Instance refcell_send :
+  Global Instance refcell_send ty :
     Send ty → Send (refcell ty).
-  Proof. move=>????[|[[]|]]//=. Qed.
+  Proof. move=>???[|[[]|]]//=. Qed.
 End refcell.
 
 Hint Resolve refcell_mono' refcell_proper' : lrust_typing.
