@@ -20,8 +20,8 @@ Section rwlockreadguard.
        ty_own tid vl :=
          match vl return _ with
          | [ #(LitLoc l) ] =>
-           ∃ ν q γ β, ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1) ∗
-             α ⊑ β ∗ &at{β,rwlockN}(rwlock_inv tid l γ β ty) ∗
+           ∃ ν q γ β tid_own, ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1) ∗
+             α ⊑ β ∗ &at{β,rwlockN}(rwlock_inv tid_own tid l γ β ty) ∗
              q.[ν] ∗ own γ (◯ reading_st q ν) ∗
              (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν])
          | _ => False
@@ -42,6 +42,7 @@ Section rwlockreadguard.
     iMod (bor_exists with "LFT Hb") as (q') "Hb". done.
     iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
     iMod (bor_exists with "LFT Hb") as (β) "Hb". done.
+    iMod (bor_exists with "LFT Hb") as (tid_own) "Hb". done.
     iMod (bor_sep with "LFT Hb") as "[Hshr Hb]". done.
     iMod (bor_persistent with "LFT Hshr Htok") as "[#Hshr Htok]". done.
     iMod (bor_sep with "LFT Hb") as "[Hαβ Hb]". done.
@@ -86,8 +87,8 @@ Section rwlockreadguard.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
-      iDestruct "H" as (ν q' γ β) "(#Hshr & #H⊑ & #Hinv & Htok & Hown)".
-      iExists ν, q', γ, β. iFrame "∗#". iSplit; last iSplit.
+      iDestruct "H" as (ν q' γ β tid_own) "(#Hshr & #H⊑ & #Hinv & Htok & Hown)".
+      iExists ν, q', γ, β, tid_own. iFrame "∗#". iSplit; last iSplit.
       + iApply ty_shr_mono; last by iApply "Hs".
         iApply lft_intersect_mono. done. iApply lft_incl_refl.
       + by iApply lft_incl_trans.
@@ -124,13 +125,13 @@ Section rwlockreadguard.
      the lock, so Rust does not implement Send for RwLockWriteGuard. We can
      prove this for our spinlock implementation, however. *)
   Global Instance rwlockreadguard_send α ty :
-    Send ty → Sync ty → Send (rwlockreadguard α ty).
+    Sync ty → Send (rwlockreadguard α ty).
   Proof.
-    iIntros (???? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
+    iIntros (??? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
     iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
     repeat lazymatch goal with
            | |- (ty_shr _ _ _ _) ≡ (ty_shr _ _ _ _) => by apply sync_change_tid'
-           | |- (rwlock_inv _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid
+           | |- (rwlock_inv _ _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid_shr
            | |- _ => f_equiv
            end.
   Qed.

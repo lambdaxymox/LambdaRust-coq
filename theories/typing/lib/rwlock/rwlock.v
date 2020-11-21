@@ -30,46 +30,49 @@ Definition rwlockN := lrustN .@ "rwlock".
 Section rwlock_inv.
   Context `{!typeG Σ, !rwlockG Σ}.
 
-  Definition rwlock_inv tid (l : loc) (γ : gname) (α : lft) ty : iProp Σ :=
+  Definition rwlock_inv tid_own tid_shr (l : loc) (γ : gname) (α : lft) ty
+    : iProp Σ :=
     (∃ st, l ↦ #(Z_of_rwlock_st st) ∗ own γ (● st) ∗
       match st return _ with
       | None =>
         (* Not locked. *)
-        &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)
+        &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid_own)
       | Some (Cinr (agν, q, n)) =>
         (* Locked for read. *)
         ∃ (ν : lft) q', agν ≡ to_agree ν ∗
                 □ (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]) ∗
-                ([†ν] ={↑lftN}=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
-                ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1) ∗
+                ([†ν] ={↑lftN}=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid_own)) ∗
+                ty.(ty_shr) (α ⊓ ν) tid_shr (l +ₗ 1) ∗
                 ⌜(q + q')%Qp = 1%Qp⌝ ∗ q'.[ν]
       | _ => (* Locked for write. *) True
       end)%I.
 
-  Global Instance rwlock_inv_type_ne n tid l γ α :
-    Proper (type_dist2 n ==> dist n) (rwlock_inv tid l γ α).
+  Global Instance rwlock_inv_type_ne n tid_own tid_shr l γ α :
+    Proper (type_dist2 n ==> dist n) (rwlock_inv tid_own tid_shr l γ α).
   Proof.
     solve_proper_core
       ltac:(fun _ => exact: type_dist2_S || f_type_equiv || f_contractive || f_equiv).
   Qed.
 
-  Global Instance rwlock_inv_ne tid l γ α : NonExpansive (rwlock_inv tid l γ α).
+  Global Instance rwlock_inv_ne tid_own tid_shr l γ α :
+    NonExpansive (rwlock_inv tid_own tid_shr l γ α).
   Proof.
     intros n ???. eapply rwlock_inv_type_ne, type_dist_dist2. done.
   Qed.
 
   Lemma rwlock_inv_proper E L ty1 ty2 q :
     eqtype E L ty1 ty2 →
-    llctx_interp L q -∗ ∀ tid l γ α, □ (elctx_interp E -∗
-    rwlock_inv tid l γ α ty1 -∗ rwlock_inv tid l γ α ty2).
+    llctx_interp L q -∗ ∀ tid_own tid_shr l γ α, □ (elctx_interp E -∗
+    rwlock_inv tid_own tid_shr l γ α ty1 -∗
+    rwlock_inv tid_own tid_shr l γ α ty2).
   Proof.
     (* TODO : this proof is essentially [solve_proper], but within the logic.
               It would easily gain from some automation. *)
     rewrite eqtype_unfold. iIntros (Hty) "HL".
     iDestruct (Hty with "HL") as "#Hty". iIntros "* !# #HE H".
     iDestruct ("Hty" with "HE") as "(% & #Hown & #Hshr)".
-    iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid) -∗
-                &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid)))%I as "#Hb".
+    iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid_own) -∗
+                &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid_own)))%I as "#Hb".
     { iIntros "!# H". iApply bor_iff; last done.
       iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
       iFrame; by iApply "Hown". }
@@ -81,14 +84,21 @@ Section rwlock_inv.
     iIntros "Hν". iApply "Hb". iApply ("Hh" with "Hν").
   Qed.
 
-  Lemma rwlock_inv_change_tid tid1 tid2 l γ α ty :
-    Send ty → Sync ty →
-    rwlock_inv tid1 l γ α ty ≡ rwlock_inv tid2 l γ α ty.
+  Lemma rwlock_inv_change_tid_own tid_own1 tid_own2 tid_shr l γ α ty :
+    Send ty →
+    rwlock_inv tid_own1 tid_shr l γ α ty ≡ rwlock_inv tid_own2 tid_shr l γ α ty.
   Proof.
-    intros ??. apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
+    intros ?. apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
     - do 5 f_equiv. iApply send_change_tid'.
-    - iApply sync_change_tid'.
     - iApply send_change_tid'.
+  Qed.
+
+  Lemma rwlock_inv_change_tid_shr tid_own tid_shr1 tid_shr2 l γ α ty :
+    Sync ty →
+    rwlock_inv tid_own tid_shr1 l γ α ty ≡ rwlock_inv tid_own tid_shr2 l γ α ty.
+  Proof.
+    intros ?. apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
+    iApply sync_change_tid'.
   Qed.
 End rwlock_inv.
 
@@ -110,7 +120,8 @@ Section rwlock.
          | #(LitInt z) :: vl' => ⌜-1 ≤ z⌝ ∗ ty.(ty_own) tid vl'
          | _ => False
          end%I;
-       ty_shr κ tid l := (∃ α γ, κ ⊑ α ∗ &at{α,rwlockN}(rwlock_inv tid l γ α ty))%I |}.
+       ty_shr κ tid l :=
+         (∃ α γ, κ ⊑ α ∗ &at{α,rwlockN}(rwlock_inv tid tid l γ α ty))%I |}.
   Next Obligation.
     iIntros (??[|[[]|]]); try iIntros "[]". rewrite ty_size_eq.
     iIntros "[_ %] !% /=". congruence.
@@ -129,7 +140,7 @@ Section rwlock.
       iSplitL "Hn"; [eauto|iExists _; iFrame]. }
     iMod (bor_sep with "LFT H") as "[Hn Hvl]". done.
     iMod (bor_acc_cons with "LFT Hn Htok") as "[H Hclose]". done.
-    iAssert ((q / 2).[κ] ∗ ▷ ∃ γ, rwlock_inv tid l γ κ ty)%I with "[> -Hclose]"
+    iAssert ((q / 2).[κ] ∗ ▷ ∃ γ, rwlock_inv tid tid l γ κ ty)%I with "[> -Hclose]"
       as "[$ HQ]"; last first.
     { iMod ("Hclose" with "[] HQ") as "[Hb $]".
       - iIntros "!> H !>". iNext. iDestruct "H" as (γ st) "(H & _ & _)".
@@ -210,7 +221,8 @@ Section rwlock.
     Send ty → Sync ty → Sync (rwlock ty).
   Proof.
     move=>??????/=. do 2 apply bi.exist_mono=>?. apply bi.sep_mono_r.
-    apply bi.equiv_spec. f_equiv. apply: rwlock_inv_change_tid.
+    apply bi.equiv_spec. f_equiv.
+    by rewrite rwlock_inv_change_tid_own rwlock_inv_change_tid_shr.
   Qed.
 End rwlock.
 

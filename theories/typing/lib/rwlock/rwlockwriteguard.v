@@ -21,8 +21,8 @@ Section rwlockwriteguard.
        ty_own tid vl :=
          match vl return _ with
          | [ #(LitLoc l) ] =>
-           ∃ γ β, &{β}((l +ₗ 1) ↦∗: ty.(ty_own) tid) ∗
-             α ⊑ β ∗ &at{β,rwlockN}(rwlock_inv tid l γ β ty) ∗
+           ∃ γ β tid_shr, &{β}((l +ₗ 1) ↦∗: ty.(ty_own) tid) ∗
+             α ⊑ β ∗ &at{β,rwlockN}(rwlock_inv tid tid_shr l γ β ty) ∗
              own γ (◯ writing_st)
          | _ => False
          end;
@@ -41,6 +41,7 @@ Section rwlockwriteguard.
       try by iMod (bor_persistent with "LFT Hb Htok") as "[>[] _]".
     iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
     iMod (bor_exists with "LFT Hb") as (β) "Hb". done.
+    iMod (bor_exists with "LFT Hb") as (tid_shr) "Hb". done.
     iMod (bor_sep with "LFT Hb") as "[Hb H]". done.
     iMod (bor_sep with "LFT H") as "[Hαβ _]". done.
     iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ $]". done.
@@ -84,8 +85,8 @@ Section rwlockwriteguard.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
-      iDestruct "H" as (γ β) "(Hb & #H⊑ & #Hinv & Hown)".
-      iExists γ, β. iFrame "∗#". iSplit; last iSplit.
+      iDestruct "H" as (γ β tid_shr) "(Hb & #H⊑ & #Hinv & Hown)".
+      iExists γ, β, tid_shr. iFrame "∗#". iSplit; last iSplit.
       + iApply bor_iff; last done.
         iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
         iExists vl; iFrame; by iApply "Ho".
@@ -128,13 +129,13 @@ Section rwlockwriteguard.
      the lock, so Rust does not implement Send for RwLockWriteGuard. We can
      prove this for our spinlock implementation, however. *)
   Global Instance rwlockwriteguard_send α ty :
-    Send ty → Sync ty → Send (rwlockwriteguard α ty).
+    Send ty → Send (rwlockwriteguard α ty).
   Proof.
-    iIntros (???? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
+    iIntros (??? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
     iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
     repeat lazymatch goal with
            | |- (ty_own _ _ _) ≡ (ty_own _ _ _) => by apply send_change_tid'
-           | |- (rwlock_inv _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid
+           | |- (rwlock_inv _ _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid_own
            | |- _ => f_equiv
            end.
   Qed.

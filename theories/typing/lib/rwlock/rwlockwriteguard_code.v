@@ -79,6 +79,7 @@ Section rwlockwriteguard_functions.
     rewrite heap_mapsto_vec_singleton.
     iMod (bor_exists with "LFT H") as (γ) "H". done.
     iMod (bor_exists with "LFT H") as (δ) "H". done.
+    iMod (bor_exists with "LFT H") as (tid_shr) "H". done.
     iMod (bor_sep with "LFT H") as "[Hb H]". done.
     iMod (bor_sep with "LFT H") as "[Hβδ _]". done.
     iMod (bor_persistent with "LFT Hβδ Hα") as "[#Hβδ Hα]". done.
@@ -116,7 +117,7 @@ Section rwlockwriteguard_functions.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']".
     destruct x' as [[|lx'|]|]; try done. simpl.
-    iDestruct "Hx'" as (γ β) "(Hx' & #Hαβ & #Hinv & H◯)".
+    iDestruct "Hx'" as (γ β tid_own) "(Hx' & #Hαβ & #Hinv & H◯)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)";
       [solve_typing..|].
     iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.

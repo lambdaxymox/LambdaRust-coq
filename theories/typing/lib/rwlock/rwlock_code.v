@@ -181,7 +181,7 @@ Section rwlock_functions.
       + iApply (wp_cas_int_suc with "Hlx"). iNext. iIntros "Hlx".
         iAssert (∃ qν ν, (qβ / 2).[β] ∗ (qν).[ν] ∗
                          ty_shr ty (β ⊓ ν) tid (lx +ₗ 1) ∗
-                         own γ (◯ reading_st qν ν) ∗ rwlock_inv tid lx γ β ty ∗
+                         own γ (◯ reading_st qν ν) ∗ rwlock_inv tid tid lx γ β ty ∗
                          ((1).[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]))%I
           with "[> Hlx Hownst Hst Hβtok2]"
           as (q' ν) "(Hβtok2 & Hν & Hshr & Hreading & INV & H†)".
@@ -220,7 +220,7 @@ Section rwlock_functions.
               with "[] LFT HE Hna HL Hk"); first last.
         { rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val
                   tctx_hasty_val' //. iFrame.
-          iExists _, _, _, _. iFrame "∗#". iApply ty_shr_mono; last done.
+          iExists _, _, _, _, _. iFrame "∗#". iApply ty_shr_mono; last done.
           iApply lft_intersect_mono; first done. iApply lft_incl_refl. }
         iApply (type_sum_assign (option $ rwlockreadguard α ty)); [solve_typing..|].
         simpl. iApply type_jump; solve_typing.
@@ -294,7 +294,7 @@ Section rwlock_functions.
                      #lx ◁ rwlockwriteguard α ty]
               with "[] LFT HE Hna HL Hk"); first last.
       { rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val
-                tctx_hasty_val' //. iFrame.  iExists _, _. iFrame "∗#". }
+                tctx_hasty_val' //. iFrame.  iExists _, _, _. iFrame "∗#". }
       iApply (type_sum_assign (option $ rwlockwriteguard α ty)); [solve_typing..|].
       simpl. iApply type_jump; solve_typing.
   Qed.

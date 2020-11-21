@@ -71,7 +71,7 @@ Section rwlockreadguard_functions.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']".
     destruct x' as [[|lx'|]|]; try done. simpl.
-    iDestruct "Hx'" as (ν q γ β) "(Hx' & #Hαβ & #Hinv & Hν & H◯ & H†)".
+    iDestruct "Hx'" as (ν q γ β tid_own) "(Hx' & #Hαβ & #Hinv & Hν & H◯ & H†)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
     iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
     wp_bind (!ˢᶜ#lx')%E.
@@ -83,7 +83,7 @@ Section rwlockreadguard_functions.
     iDestruct "INV" as (st') "(Hlx & >H● & Hst)".
     destruct (decide (Z_of_rwlock_st st = Z_of_rwlock_st st')) as [->|?].
     + iAssert (|={⊤ ∖ ↑rwlockN}[⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ ↑lft_userN]▷=>
-               (lx' ↦ #(Z_of_rwlock_st st'-1) ==∗ rwlock_inv tid lx' γ β ty))%I
+               (lx' ↦ #(Z_of_rwlock_st st'-1) ==∗ rwlock_inv tid_own tid lx' γ β ty))%I
         with "[H● H◯ Hx' Hν Hst H†]" as "INV".
       { iDestruct (own_valid_2 with "H● H◯") as %[[[=]| (? & st0 & [=<-] & -> & [Heq|Hle])]
            %option_included Hv]%auth_both_valid_discrete.
