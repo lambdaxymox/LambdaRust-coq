@@ -23,6 +23,8 @@ Section proof.
 
   Global Instance lock_proto_ne l : NonExpansive (lock_proto l).
   Proof. solve_proper. Qed.
+  Global Instance lock_proto_proper l : Proper ((≡) ==> (≡)) (lock_proto l).
+  Proof. apply ne_proper, _. Qed.
 
   Lemma lock_proto_iff l R R' :
     □ (R ↔ R') -∗ lock_proto l R -∗ lock_proto l R'.

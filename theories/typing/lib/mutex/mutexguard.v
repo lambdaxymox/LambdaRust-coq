@@ -125,8 +125,18 @@ Section mguard.
   Qed.
 
   (* POSIX requires the unlock to occur from the thread that acquired
-     the lock, so Rust does not implement Send for RwLockWriteGuard. We could
-     prove this. *)
+     the lock, so Rust does not implement Send for MutexGuard. We can
+     prove this for our spinlock implementation, however. *)
+  Global Instance mutexguard_send α ty :
+    Send ty → Send (mutexguard α ty).
+  Proof.
+    iIntros (??? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
+    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
+    repeat match goal with
+           | |- (ty_own _ _ _) ≡ (ty_own _ _ _) => by apply send_change_tid'
+           | |- _ => f_equiv
+           end.
+  Qed.
 End mguard.
 
 Section code.

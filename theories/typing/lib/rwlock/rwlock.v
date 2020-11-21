@@ -80,6 +80,16 @@ Section rwlock_inv.
     iFrame. iSplitR. done. iSplitL "Hh"; last by iApply "Hshr".
     iIntros "Hν". iApply "Hb". iApply ("Hh" with "Hν").
   Qed.
+
+  Lemma rwlock_inv_change_tid tid1 tid2 l γ α ty :
+    Send ty → Sync ty →
+    rwlock_inv tid1 l γ α ty ≡ rwlock_inv tid2 l γ α ty.
+  Proof.
+    intros ??. apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
+    - do 5 f_equiv. iApply send_change_tid'.
+    - iApply sync_change_tid'.
+    - iApply send_change_tid'.
+  Qed.
 End rwlock_inv.
 
 Section rwlock.
@@ -200,11 +210,7 @@ Section rwlock.
     Send ty → Sync ty → Sync (rwlock ty).
   Proof.
     move=>??????/=. do 2 apply bi.exist_mono=>?. apply bi.sep_mono_r.
-    iApply at_bor_iff. iIntros "!> !#". iApply bi.equiv_iff.
-    apply bi.exist_proper=>?; do 7 f_equiv; first do 7 f_equiv.
-    - do 5 f_equiv. apply bi.equiv_spec; split; iApply send_change_tid.
-    - apply bi.equiv_spec; split; iApply sync_change_tid.
-    - apply bi.equiv_spec; split; iApply send_change_tid.
+    apply bi.equiv_spec. f_equiv. apply: rwlock_inv_change_tid.
   Qed.
 End rwlock.
 

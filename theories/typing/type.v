@@ -519,6 +519,18 @@ Section type.
     iIntros (Hsend κ tid1 tid2 l). iDestruct 1 as (vl) "[Hm Hown]".
     iExists vl. iFrame "Hm". iNext. by iApply Hsend.
   Qed.
+
+  Lemma send_change_tid' t tid1 tid2 vl :
+    Send t → t.(ty_own) tid1 vl ≡ t.(ty_own) tid2 vl.
+  Proof.
+    intros ?. apply: anti_symm; apply send_change_tid.
+  Qed.
+
+  Lemma sync_change_tid' t κ tid1 tid2 l :
+    Sync t → t.(ty_shr) κ tid1 l ≡ t.(ty_shr) κ tid2 l.
+  Proof.
+    intros ?. apply: anti_symm; apply sync_change_tid.
+  Qed.
 End type.
 
 Definition type_incl `{!typeG Σ} (ty1 ty2 : type) : iProp Σ :=

@@ -121,8 +121,19 @@ Section rwlockreadguard.
   Qed.
 
   (* POSIX requires the unlock to occur from the thread that acquired
-     the lock, so Rust does not implement Send for RwLockWriteGuard. We could
-     prove this. *)
+     the lock, so Rust does not implement Send for RwLockWriteGuard. We can
+     prove this for our spinlock implementation, however. *)
+  Global Instance rwlockreadguard_send α ty :
+    Send ty → Sync ty → Send (rwlockreadguard α ty).
+  Proof.
+    iIntros (???? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
+    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
+    repeat lazymatch goal with
+           | |- (ty_shr _ _ _ _) ≡ (ty_shr _ _ _ _) => by apply sync_change_tid'
+           | |- (rwlock_inv _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid
+           | |- _ => f_equiv
+           end.
+  Qed.
 End rwlockreadguard.
 
 Hint Resolve rwlockreadguard_mono' rwlockreadguard_proper' : lrust_typing.
