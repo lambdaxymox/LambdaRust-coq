@@ -7,6 +7,12 @@ Section option.
 
   Definition option (τ : type) := Σ[unit; τ]%T.
 
+  Global Instance option_ne : NonExpansive option.
+  Proof. solve_proper. Qed.
+
+  Global Instance option_type_ne : TypeNonExpansive option.
+  Proof. solve_proper. Qed.
+
   (* Variant indices. *)
   Definition none := 0%nat.
   Definition some := 1%nat.
