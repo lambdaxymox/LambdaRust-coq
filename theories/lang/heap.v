@@ -9,13 +9,13 @@ From lrust.lang Require Export lang.
 Set Default Proof Using "Type".
 Import uPred.
 
-Definition lock_stateR : cmraT :=
+Definition lock_stateR : cmra :=
   csumR (exclR unitO) natR.
 
-Definition heapUR : ucmraT :=
+Definition heapUR : ucmra :=
   gmapUR loc (prodR (prodR fracR lock_stateR) (agreeR valO)).
 
-Definition heap_freeableUR : ucmraT :=
+Definition heap_freeableUR : ucmra :=
   gmapUR block (prodR fracR (gmapR Z (exclR unitO))).
 
 Class heapG Σ := HeapG {
