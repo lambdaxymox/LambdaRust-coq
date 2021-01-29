@@ -95,12 +95,12 @@ Section lft_contexts.
   Lemma lctx_lft_incl_incl κ κ' : lctx_lft_incl κ κ' → lctx_lft_incl κ κ'.
   Proof. done. Qed.
 
-  Lemma lctx_lft_incl_relf κ : lctx_lft_incl κ κ.
+  Lemma lctx_lft_incl_refl κ : lctx_lft_incl κ κ.
   Proof. iIntros (qL) "_ !# _". iApply lft_incl_refl. Qed.
 
   Global Instance lctx_lft_incl_preorder : PreOrder lctx_lft_incl.
   Proof.
-    split; first by intros ?; apply lctx_lft_incl_relf.
+    split; first by intros ?; apply lctx_lft_incl_refl.
     iIntros (??? H1 H2 ?) "HL".
     iDestruct (H1 with "HL") as "#H1".
     iDestruct (H2 with "HL") as "#H2".
@@ -314,7 +314,7 @@ Lemma elctx_sat_submseteq `{!invG Σ, !lftG Σ} E E' L :
 Proof. iIntros (HE' ?) "_ !# H". by iApply big_sepL_submseteq. Qed.
 
 Hint Resolve
-     lctx_lft_incl_relf lctx_lft_incl_static lctx_lft_incl_local'
+     lctx_lft_incl_refl lctx_lft_incl_static lctx_lft_incl_local'
      lctx_lft_incl_external' lctx_lft_incl_intersect
      lctx_lft_incl_intersect_l lctx_lft_incl_intersect_r
      lctx_lft_alive_static lctx_lft_alive_local lctx_lft_alive_external
