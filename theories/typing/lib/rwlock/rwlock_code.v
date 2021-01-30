@@ -22,7 +22,7 @@ Section rwlock_functions.
     typed_val (rwlock_new ty) (fn(∅; ty) → rwlock ty).
   Proof.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
-      iIntros (_ ret ϝ arg). inv_vec arg=>x. simpl_subst.
+      iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new (S ty.(ty_size))); [solve_typing..|].
     iIntros (r tid) "#LFT HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
@@ -57,7 +57,7 @@ Section rwlock_functions.
     typed_val (rwlock_into_inner ty) (fn(∅; rwlock ty) → ty).
   Proof.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
-      iIntros (_ ret ϝ arg). inv_vec arg=>x. simpl_subst.
+      iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|].
     iIntros (r tid) "#LFT HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
