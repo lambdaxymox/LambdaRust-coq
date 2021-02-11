@@ -120,6 +120,15 @@ Section typing_rules.
     iApply (He with "LFT [Hκ1 Hκ2 HE] Htl HL HC HT").
     rewrite /elctx_interp /=. by iFrame.
   Qed.
+  Lemma type_equivalize_lft_static E L C T κ e :
+    (⊢ typed_body ((static ⊑ₑ κ) :: E) L C T e) →
+    ⊢ typed_body E ((κ ⊑ₗ []) :: L) C T e.
+  Proof.
+    iIntros (He tid) "#LFT #HE Htl [Hκ HL] HC HT".
+    iMod (lctx_equalize_lft_static with "LFT Hκ") as "Hκ_static".
+    iApply (He with "LFT [Hκ_static HE] Htl HL HC HT").
+    rewrite /elctx_interp /=. by iFrame.
+  Qed.
 
   Lemma type_let' E L T1 T2 (T : tctx) C xb e e' :
     Closed (xb :b: []) e' →

@@ -82,6 +82,17 @@ Section lft_contexts.
       + iApply lft_incl_static.
       + iApply lft_incl_trans; last done. iApply lft_incl_static.
   Qed.
+  Lemma lctx_equalize_lft_static qL κ `{!frac_borG Σ} :
+    lft_ctx -∗ llctx_elt_interp (κ ⊑ₗ []%list) qL ={⊤}=∗
+      elctx_elt_interp (static ⊑ₑ κ).
+  Proof.
+    iIntros "#LFT". iDestruct 1 as (κ') "(% & Hκ & _)"; simplify_eq/=.
+    iMod (lft_eternalize with "Hκ") as "#Hincl".
+    iModIntro.
+    - iApply (lft_incl_glb with "[]"); simpl.
+      + iApply lft_incl_refl.
+      + done.
+  Qed.
 
   Context (E : elctx) (L : llctx).
 
