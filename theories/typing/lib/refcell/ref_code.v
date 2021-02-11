@@ -73,7 +73,7 @@ Section ref_functions.
          (op_local_update_discrete _ _ (reading_stR (q''/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite /= -Hq'q'' comm_L.
+      - apply frac_valid. rewrite /= -Hq'q'' comm_L.
         by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_apply wp_new; [done..|]. iIntros (lr) "(?&Hlr)".
     iAssert (lx' ↦∗{qlx'} [ #lv; #lrc])%I  with "[H↦1 H↦2]" as "H↦".
@@ -335,7 +335,7 @@ Section ref_functions.
          (op_local_update_discrete _ _ (reading_stR (q2/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite /= -Hq1q2 comm_L.
+      - apply frac_valid. rewrite /= -Hq1q2 comm_L.
         by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_let. wp_read. wp_let. wp_op. wp_write.
     wp_apply (wp_delete _ _ _ [_; _] with "[Href↦1 Href↦2 Href†]")=>//.

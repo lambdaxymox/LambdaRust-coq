@@ -94,7 +94,7 @@ Proof.
     iExists Pb', Pi'. iFrame "Hvs' Hinh". rewrite /lft_bor_alive.
     iExists (<[i:=Bor_in]>B'). rewrite /to_borUR !fmap_insert. iFrame.
     rewrite -insert_delete big_sepM_insert ?lookup_delete //=. by iFrame. }
-  iModIntro. rewrite -[S n]Nat.add_1_l -nat_op_plus auth_frag_op own_cnt_op.
+  iModIntro. rewrite -[S n]Nat.add_1_l -nat_op auth_frag_op own_cnt_op.
   by iFrame.
 Qed.
 

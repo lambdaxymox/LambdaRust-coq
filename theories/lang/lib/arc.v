@@ -274,12 +274,12 @@ Section arc.
       { apply auth_update_alloc, prod_local_update_1,
          (op_local_update_discrete _ _ (Some (Cinl ((qq/2)%Qp, 1%positive, None))))
            =>-[/= Hqa ?]. split;[split|]=>//=; last by rewrite left_id.
-        apply frac_valid'. rewrite -Hq comm_L.
+        apply frac_valid. rewrite -Hq comm_L.
         by apply Qp_add_le_mono_l, Qp_div_le. }
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
       iMod ("Hclose1" with "[Hl Hw H● HP1']") as "_".
       { iExists _. iFrame. iExists _. rewrite /= [xH ⋅ _]comm_L. iFrame.
-        rewrite [(qq / 2)%Qp ⋅ _]comm frac_op' -[(_ + _)%Qp]assoc Qp_div_2 left_id_L. auto. }
+        rewrite [(qq / 2)%Qp ⋅ _]comm frac_op -[(_ + _)%Qp]assoc Qp_div_2 left_id_L. auto. }
       iModIntro. wp_case. iApply "HΦ". iFrame.
     - wp_apply (wp_cas_int_fail with "Hl"); [congruence|]. iIntros "Hl".
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
@@ -405,10 +405,10 @@ Section arc.
           { apply auth_update_alloc. rewrite -[(_,0%nat)]right_id.
             apply op_local_update_discrete=>Hv. constructor; last done.
             split; last by rewrite /= left_id; apply Hv. split=>[|//].
-            apply frac_valid'. rewrite /= -Heq comm_L.
+            apply frac_valid. rewrite /= -Heq comm_L.
             by apply Qp_add_le_mono_l, Qp_div_le. }
           iFrame. iApply "Hclose1". iExists _. iFrame. iExists _. iFrame.
-          rewrite /= [xH ⋅ _]comm_L frac_op' [(_ + c)%Qp]comm -[(_ + _)%Qp]assoc
+          rewrite /= [xH ⋅ _]comm_L frac_op [(_ + c)%Qp]comm -[(_ + _)%Qp]assoc
                   Qp_div_2 left_id_L. auto with iFrame.
         + iIntros "Hl". iFrame. iApply ("Hclose1" with "[-]"). iExists _. iFrame.
           iExists q. auto with iFrame.

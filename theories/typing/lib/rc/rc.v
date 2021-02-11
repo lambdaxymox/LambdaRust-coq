@@ -590,13 +590,13 @@ Section code.
     iMod (own_update with "Hrc●") as "[Hrc● Hrctok2]".
     { apply auth_update_alloc, prod_local_update_1,
       (op_local_update_discrete _ _ (Some (Cinl ((qb/2)%Qp, 1%positive))))=>-[/= Hqa _].
-      split; simpl; last done. apply frac_valid'. rewrite /= -H comm_L.
+      split; simpl; last done. apply frac_valid. rewrite /= -H comm_L.
       by apply Qp_add_le_mono_l, Qp_div_le. }
     rewrite right_id -Some_op -Cinl_op -pair_op. iDestruct "Hνtok" as "[Hνtok1 Hνtok2]".
     iMod ("Hclose3" with "[$Hrctok] Hna") as "[Hα1 Hna]".
     iMod ("Hclose2" with "[Hrc● Hl'1 Hl'2 Hl'† Hνtok2 Hν† $Hna]") as "Hna".
     { iExists _. iFrame "Hrc●". iExists _. rewrite Z.add_comm. iFrame.
-      rewrite [_ ⋅ _]comm frac_op' -[(_ + _)%Qp]assoc Qp_div_2. auto. }
+      rewrite [_ ⋅ _]comm frac_op -[(_ + _)%Qp]assoc Qp_div_2. auto. }
     iMod ("Hclose1" with "[$Hα1 $Hα2] HL") as "HL".
     (* Finish up the proof. *)
     iApply (type_type _ _ _ [ x ◁ box (&shr{α}(rc ty)); #lr ◁ box (rc ty)]

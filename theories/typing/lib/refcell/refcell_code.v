@@ -184,7 +184,7 @@ Section refcell_functions.
               (op_local_update_discrete _ _ (reading_stR (q'/2)%Qp ν)) => ?.
             split; [split|].
             - by rewrite /= agree_idemp.
-            - apply frac_valid'. rewrite /= -Hqq' comm_L.
+            - apply frac_valid. rewrite /= -Hqq' comm_L.
               by apply Qp_add_le_mono_l, Qp_div_le.
             - done. }
           iFrame "∗#". iExists (Some (ν, false, _, _)). iFrame "∗#".

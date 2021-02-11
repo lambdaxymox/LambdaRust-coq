@@ -309,7 +309,7 @@ Section refmut_functions.
          (op_local_update_discrete _ _ (writing_stR (q1/2)%Qp ν))=>-[Hagv _].
       split; [split|done].
       - by rewrite /= agree_idemp.
-      - apply frac_valid'. rewrite /= -Hqq1 comm_L.
+      - apply frac_valid. rewrite /= -Hqq1 comm_L.
         by apply Qp_add_le_mono_l, Qp_div_le. }
     wp_let. wp_read. wp_let. wp_op. wp_write.
     wp_apply (wp_delete _ _ _ [_; _] with "[Hrefmut↦1 Hrefmut↦2 Hrefmut†]")=>//.
