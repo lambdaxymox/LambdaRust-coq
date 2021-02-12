@@ -66,8 +66,8 @@ Section typing.
     lctx_lft_incl E L κ2 κ1 → subtype E L ty1 ty2 →
     subtype E L (&shr{κ1}ty1) (&shr{κ2}ty2).
   Proof. by intros; apply shr_mono. Qed.
-  Lemma shr_proper' E L κ ty1 ty2 :
-    eqtype E L ty1 ty2 → eqtype E L (&shr{κ}ty1) (&shr{κ}ty2).
+  Lemma shr_proper' E L κ1 κ2 ty1 ty2 :
+    lctx_lft_eq E L κ1 κ2 → eqtype E L ty1 ty2 → eqtype E L (&shr{κ1}ty1) (&shr{κ2}ty2).
   Proof. by intros; apply shr_proper. Qed.
 
   Lemma tctx_reborrow_shr E L p ty κ κ' :

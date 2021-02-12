@@ -104,8 +104,8 @@ Section typing.
     lctx_lft_incl E L κ2 κ1 → eqtype E L ty1 ty2 →
     subtype E L (&uniq{κ1}ty1) (&uniq{κ2}ty2).
   Proof. by intros; apply uniq_mono. Qed.
-  Lemma uniq_proper' E L κ ty1 ty2 :
-    eqtype E L ty1 ty2 → eqtype E L (&uniq{κ}ty1) (&uniq{κ}ty2).
+  Lemma uniq_proper' E L κ1 κ2 ty1 ty2 :
+    lctx_lft_eq E L κ1 κ2 → eqtype E L ty1 ty2 → eqtype E L (&uniq{κ1}ty1) (&uniq{κ2}ty2).
   Proof. by intros; apply uniq_proper. Qed.
 
   Lemma tctx_reborrow_uniq E L p ty κ κ' :

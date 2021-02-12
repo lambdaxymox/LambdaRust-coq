@@ -332,6 +332,8 @@ Hint Resolve
      elctx_sat_nil elctx_sat_lft_incl elctx_sat_app elctx_sat_refl
   : lrust_typing.
 
+Hint Extern 10 (lctx_lft_eq _ _ _ _) => split : lrust_typing.
+
 Hint Resolve elctx_sat_submseteq | 100 : lrust_typing.
 
 Hint Opaque elctx_sat lctx_lft_alive lctx_lft_incl : lrust_typing.
