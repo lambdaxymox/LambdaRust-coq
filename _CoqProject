@@ -62,7 +62,6 @@ theories/typing/lib/fake_shared.v
 theories/typing/lib/cell.v
 theories/typing/lib/spawn.v
 theories/typing/lib/join.v
-theories/typing/lib/diverging_static.v
 theories/typing/lib/take_mut.v
 theories/typing/lib/rc/rc.v
 theories/typing/lib/rc/weak.v
@@ -88,3 +87,4 @@ theories/typing/examples/unbox.v
 theories/typing/examples/init_prod.v
 theories/typing/examples/lazy_lft.v
 theories/typing/examples/nonlexical.v
+theories/typing/examples/diverging_static.v

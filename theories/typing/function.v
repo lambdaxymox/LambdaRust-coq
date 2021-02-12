@@ -333,13 +333,13 @@ Section typing.
     rewrite tctx_interp_cons tctx_hasty_val. iFrame.
   Qed.
 
-  (* Specialized type_call':  Adapted for use by solve_typing; fixed "list of
-     alive lifetimes" to be the local ones. *)
-  Lemma type_call {A} x E L C T T' T'' p (ps : list path)
+  (* Specialized type_call':  Adapted for use by solve_typing.
+     κs is still expected to be given manually. *)
+  Lemma type_call {A} κs x E L C T T' T'' p (ps : list path)
                         (fp : A → fn_params (length ps)) k :
     p ◁ fn fp ∈ T →
-    Forall (lctx_lft_alive E L) (L.*1) →
-    (∀ ϝ, elctx_sat (((λ κ, ϝ ⊑ₑ κ) <$> (L.*1)) ++ E) L ((fp x).(fp_E) ϝ)) →
+    Forall (lctx_lft_alive E L) κs →
+    (∀ ϝ, elctx_sat (((λ κ, ϝ ⊑ₑ κ) <$> κs) ++ E) L ((fp x).(fp_E) ϝ)) →
     tctx_extract_ctx E L (zip_with TCtx_hasty ps
                                    (box <$> vec_to_list (fp x).(fp_tys))) T T' →
     k ◁cont(L, T'') ∈ C →
