@@ -131,7 +131,7 @@ Section mguard.
     Send ty → Send (mutexguard α ty).
   Proof.
     iIntros (??? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
-    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
+    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_entails.
     repeat match goal with
            | |- (ty_own _ _ _) ≡ (ty_own _ _ _) => by apply send_change_tid'
            | |- _ => f_equiv

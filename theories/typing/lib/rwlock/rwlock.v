@@ -221,7 +221,7 @@ Section rwlock.
     Send ty → Sync ty → Sync (rwlock ty).
   Proof.
     move=>??????/=. do 2 apply bi.exist_mono=>?. apply bi.sep_mono_r.
-    apply bi.equiv_spec. f_equiv.
+    apply bi.equiv_entails. f_equiv.
     by rewrite rwlock_inv_change_tid_own rwlock_inv_change_tid_shr.
   Qed.
 End rwlock.

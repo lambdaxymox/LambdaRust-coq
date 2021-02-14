@@ -132,7 +132,7 @@ Section rwlockwriteguard.
     Send ty → Send (rwlockwriteguard α ty).
   Proof.
     iIntros (??? [|[[]|][]]) "H"; try done. simpl. iRevert "H".
-    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_spec.
+    iApply bi.exist_mono. iIntros (κ); simpl. apply bi.equiv_entails.
     repeat lazymatch goal with
            | |- (ty_own _ _ _) ≡ (ty_own _ _ _) => by apply send_change_tid'
            | |- (rwlock_inv _ _ _ _ _ _) ≡ _ => by apply rwlock_inv_change_tid_own
