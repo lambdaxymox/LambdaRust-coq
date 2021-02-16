@@ -203,7 +203,7 @@ Section refcell_functions.
           iSplitR "Htok2".
           + iIntros "!> Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro.
             iNext. iMod "Hν".
-            iMod fupd_intro_mask' as "Hclose"; last iMod ("Hh" with "[Hν]") as "$".
+            iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hh" with "[Hν]") as "$".
             { set_solver-. }
             * rewrite -lft_dead_or. auto.
             * done.
@@ -283,7 +283,7 @@ Section refcell_functions.
       iModIntro. iMod ("Hclose''" with "[Hlx Hownst Hbh Htok1] Hna") as "[Hβtok Hna]".
       { iExists _. iFrame. iNext. iSplitL "Hbh".
         - iIntros "Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro. iNext. iMod "Hν".
-          iMod fupd_intro_mask' as "Hclose"; last iMod ("Hbh" with "[Hν]") as "$".
+          iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hbh" with "[Hν]") as "$".
           { set_solver-. }
           * rewrite -lft_dead_or. auto.
           * done.

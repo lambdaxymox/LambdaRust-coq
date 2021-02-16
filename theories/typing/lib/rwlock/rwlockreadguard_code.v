@@ -101,7 +101,7 @@ Section rwlockreadguard_functions.
           { (* FIXME [solve_ndisj] fails. *)
             apply: disjoint_difference_r1. done. }
           iMod ("H†" with "Hν") as "H†". iModIntro. iNext. iMod "H†".
-          iMod fupd_intro_mask' as "Hclose"; last iMod ("Hh" with "H†") as "Hb".
+          iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hh" with "H†") as "Hb".
           { set_solver-. }
           iMod "Hclose" as "_". iIntros "!> Hlx". iExists None. iFrame.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.

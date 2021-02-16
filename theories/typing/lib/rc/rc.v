@@ -298,7 +298,7 @@ Section code.
              iApply step_fupd_mask_mono;
                last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
              iModIntro. iNext. iMod "H†".
-             iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+             iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
              { set_solver-. }
              iMod "Hclose2" as "_". iModIntro.
              iMod ("Hclose" with "[Hst $Hna]") as "$"; first by iExists _; iFrame.
@@ -313,7 +313,7 @@ Section code.
                 iApply step_fupd_mask_mono;
                   last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
                 iModIntro. iNext. iMod "H†".
-                iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+                iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
                 { set_solver-. }
                 iMod "Hclose2" as "_". iModIntro.
                 iMod (own_update_2 with "Hst Htok") as "Hst".
@@ -334,7 +334,7 @@ Section code.
           iApply step_fupd_mask_mono;
             last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
           iModIntro. iNext. iMod "H†".
-          iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
+          iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
           { set_solver-. }
           iMod "Hclose2" as "_". iModIntro.
           iMod ("Hclose" with "[Hst $Hna Hl1 Hl2]") as "$";

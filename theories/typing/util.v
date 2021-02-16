@@ -42,7 +42,7 @@ Section util.
       iModIntro. iNext. iMod "Hdelay" as "[Hb Htok]".
       iMod (ty.(ty_share) with "LFT Hb Htok") as "[#$ $]"; first solve_ndisj.
       iApply "Hclose". auto.
-    - iMod fupd_intro_mask' as "Hclose'"; first solve_ndisj. iModIntro.
+    - iMod fupd_mask_subseteq as "Hclose'"; first solve_ndisj. iModIntro.
       iNext. iMod "Hclose'" as "_". iMod ("Hclose" with "[]") as "_"; by eauto.
   Qed.
 
@@ -65,7 +65,7 @@ Section util.
       iMod (ty.(ty_share) with "LFT [Hb] Htok") as "[#Hshr $]"; first solve_ndisj.
       { iApply bor_shorten; done. }
       iMod ("Hclose" with "[]") as "_"; auto.
-    - iMod fupd_intro_mask' as "Hclose'"; last iModIntro; first solve_ndisj.
+    - iMod fupd_mask_subseteq as "Hclose'"; last iModIntro; first solve_ndisj.
       iNext. iMod "Hclose'" as "_". iMod ("Hclose" with "[]") as "_"; by eauto.
   Qed.
 End util.

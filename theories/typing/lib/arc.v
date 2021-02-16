@@ -91,7 +91,7 @@ Section arc.
     { apply disjoint_union_l. split; solve_ndisj. }
     iMod ("Hν†" with "Hν") as "H". iModIntro. iNext. iApply fupd_trans.
     iMod "H" as "#Hν".
-    iMod fupd_intro_mask' as "Hclose2"; last iMod ("Hvs" with "Hν") as "$".
+    iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hvs" with "Hν") as "$".
     { set_solver-. }
     iIntros "{$Hν} !>".
     iMod "Hclose2" as "_". iApply "Hclose". auto.
@@ -486,7 +486,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (c) "[Hα _]". iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -529,7 +529,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (c) "[Hα _]". iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -574,7 +574,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (q'') "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -618,7 +618,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>$ Hclose1]"; [solve_ndisj..|].
-      iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -662,7 +662,7 @@ Section arc.
               with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -709,7 +709,7 @@ Section arc.
               with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!# Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>$ Hclose1]"; [solve_ndisj..|].
-      iMod fupd_intro_mask' as "Hclose2"; last iModIntro. set_solver.
+      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros ([] q') "[Hα Hown]"; wp_if; iMod ("Hclose1" with "Hα HL") as "HL".
     - (* Finish up the proof (sucess). *)

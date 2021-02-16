@@ -128,7 +128,7 @@ Proof.
     iMod (slice_empty _ _ true with "Hs Hbox") as "[HP' Hbox]".
       solve_ndisj. by rewrite lookup_fmap EQB.
     iDestruct ("HPP'" with "HP'") as "$".
-    iMod fupd_intro_mask' as "Hclose"; last iIntros "!>HP'". solve_ndisj.
+    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!>HP'". solve_ndisj.
     iDestruct ("HPP'" with "HP'") as "HP".
     iMod "Hclose" as "_". iMod (slice_fill _ _ true with "Hs HP Hbox") as "Hbox".
       solve_ndisj. by rewrite lookup_insert. iFrame.
@@ -140,7 +140,7 @@ Proof.
     iMod ("Hclose'" with "[-Hbor]") as "_".
     + iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''". eauto.
     + iMod (lft_incl_dead with "Hle H†"). done. iFrame.
-      iApply fupd_intro_mask'. solve_ndisj.
+      iApply fupd_mask_subseteq. solve_ndisj.
 Qed.
 
 (** Basic borrows  *)
@@ -234,7 +234,7 @@ Proof.
       as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
     iMod (slice_delete_full _ _ true with "Hs Hbox") as (Pb') "(HP' & EQ & Hbox)".
       solve_ndisj. by rewrite lookup_fmap EQB. iDestruct ("HPP'" with "HP'") as "$".
-    iMod fupd_intro_mask' as "Hclose"; last iIntros "!>* HvsQ HQ". solve_ndisj.
+    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!>* HvsQ HQ". solve_ndisj.
     iMod "Hclose" as "_". iDestruct (add_vs with "EQ Hvs [HvsQ]") as "Hvs".
     { iNext. iIntros "HQ H†". iApply "HPP'". iApply ("HvsQ" with "HQ H†"). }
     iMod (slice_insert_full _ _ true with "HQ Hbox") as (j) "(% & #Hs' & Hbox)".
@@ -259,6 +259,6 @@ Proof.
     iMod ("Hclose'" with "[-Hbor]") as "_".
     + iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''". eauto.
     + iMod (lft_incl_dead with "Hle H†") as "$". done.
-      iApply fupd_intro_mask'. solve_ndisj.
+      iApply fupd_mask_subseteq. solve_ndisj.
 Qed.
 End accessors.

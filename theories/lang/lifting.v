@@ -178,7 +178,7 @@ Lemma wp_read_na E l q v :
 Proof.
   iIntros (Φ) ">Hv HΦ". iApply wp_lift_head_step; auto. iIntros (σ1 κ κs n) "Hσ".
   iMod (heap_read_na with "Hσ Hv") as (m) "(% & Hσ & Hσclose)".
-  iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+  iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
   iModIntro; iSplit; first by eauto.
   iNext; iIntros (e2 σ2 efs Hstep); inv_head_step. iMod "Hclose" as "_".
   iModIntro. iFrame "Hσ". iSplit; last done.
@@ -211,7 +211,7 @@ Proof.
   iIntros (<- Φ) ">Hv HΦ".
   iApply wp_lift_head_step; auto. iIntros (σ1 κ κs n) "Hσ".
   iMod (heap_write_na with "Hσ Hv") as "(% & Hσ & Hσclose)".
-  iMod (fupd_intro_mask' _ ∅) as "Hclose"; first set_solver.
+  iMod (fupd_mask_subseteq ∅) as "Hclose"; first set_solver.
   iModIntro; iSplit; first by eauto.
   iNext; iIntros (e2 σ2 efs Hstep); inv_head_step. iMod "Hclose" as "_".
   iModIntro. iFrame "Hσ". iSplit; last done.

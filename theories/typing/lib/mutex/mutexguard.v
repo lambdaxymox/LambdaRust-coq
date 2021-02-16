@@ -151,7 +151,7 @@ Section code.
     (* FIXME: This should work: iIntros (?? R). *) intros ?? R.
     iIntros "#LFT #Hshr #Hlincl !# Htok".
     iMod (at_bor_acc_tok with "LFT Hshr Htok") as "[Hproto Hclose1]"; [done..|].
-    iMod (fupd_intro_mask') as "Hclose2"; last iModIntro; first solve_ndisj.
+    iMod (fupd_mask_subseteq) as "Hclose2"; last iModIntro; first solve_ndisj.
     iFrame. iIntros "Hproto". iMod "Hclose2" as "_".
     iMod ("Hclose1" with "Hproto") as "$". done.
   Qed.

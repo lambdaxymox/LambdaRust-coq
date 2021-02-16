@@ -64,7 +64,7 @@ Section frac_bor.
     - iLeft. iDestruct "Hφ" as (q) "(Hφ & Hγ & H)". iExists q. iFrame.
       iIntros "!>Hφ". iApply "Hclose". iExists q. iFrame.
     - iRight. iMod "Hclose" as "_". iMod (lft_incl_dead with "Hκκ' H†") as "$". done.
-      iApply fupd_intro_mask. set_solver. done.
+      iApply fupd_mask_intro_subseteq. set_solver. done.
   Qed.
 
   Local Lemma frac_bor_trade1 γ κ' q :
