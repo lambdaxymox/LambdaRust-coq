@@ -7,7 +7,7 @@ From lrust.typing Require Import lft_contexts.
 Set Default Proof Using "Type".
 
 Class typeG Σ := TypeG {
-  type_heapG :> lrustG Σ;
+  type_lrustG :> lrustG Σ;
   type_lftG :> lftG Σ;
   type_na_invG :> na_invG Σ;
   type_frac_borrowG :> frac_borG Σ
