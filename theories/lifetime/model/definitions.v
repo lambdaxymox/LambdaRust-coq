@@ -207,7 +207,7 @@ Instance raw_bor_params : Params (@raw_bor) 4 := {}.
 Instance bor_params : Params (@bor) 4 := {}.
 
 Notation "q .[ κ ]" := (lft_tok q κ)
-    (format "q .[ κ ]", at level 0) : bi_scope.
+    (format "q .[ κ ]", at level 2, left associativity) : bi_scope.
 Notation "[† κ ]" := (lft_dead κ) (format "[† κ ]"): bi_scope.
 
 Notation "&{ κ }" := (bor κ) (format "&{ κ }") : bi_scope.
