@@ -21,7 +21,7 @@ Module Type lifetime_sig.
   Global Notation lftPreG := lftPreG'.
   Existing Class lftPreG'.
 
-  (** Definitions *)
+  (** * Definitions *)
   Parameter lft : Type.
   Parameter static : lft.
   Declare Instance lft_intersect : Meet lft.
@@ -38,7 +38,7 @@ Module Type lifetime_sig.
   Parameter idx_bor_own : ∀ `{!lftG Σ} (q : frac) (i : bor_idx), iProp Σ.
   Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
 
-  (** Notation *)
+  (** * Notation *)
   Notation "q .[ κ ]" := (lft_tok q κ)
       (format "q .[ κ ]", at level 0) : bi_scope.
   Notation "[† κ ]" := (lft_dead κ) (format "[† κ ]"): bi_scope.
@@ -51,7 +51,7 @@ Module Type lifetime_sig.
   Section properties.
   Context `{!invG Σ, !lftG Σ}.
 
-  (** Instances *)
+  (** * Instances *)
   Global Declare Instance lft_inhabited : Inhabited lft.
   Global Declare Instance bor_idx_inhabited : Inhabited bor_idx.
 
@@ -88,12 +88,13 @@ Module Type lifetime_sig.
   Global Declare Instance idx_bor_own_as_fractional i q :
     AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
 
-  (** Laws *)
+  (** * Laws *)
   Parameter lft_tok_sep : ∀ q κ1 κ2, q.[κ1] ∗ q.[κ2] ⊣⊢ q.[κ1 ⊓ κ2].
   Parameter lft_dead_or : ∀ κ1 κ2, [†κ1] ∨ [†κ2] ⊣⊢ [† κ1 ⊓ κ2].
   Parameter lft_tok_dead : ∀ q κ, q.[κ] -∗ [† κ] -∗ False.
   Parameter lft_tok_static : ∀ q, ⊢ q.[static].
   Parameter lft_dead_static : [† static] -∗ False.
+  Parameter lft_intersect_static_cancel_l : ∀ κ κ', κ ⊓ κ' = static → κ = static.
 
   Parameter lft_create : ∀ E, ↑lftN ⊆ E →
     lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
