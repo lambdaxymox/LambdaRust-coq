@@ -29,6 +29,16 @@ Section derived.
 Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
 
+Lemma lft_create E :
+  ↑lftN ⊆ E →
+  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+Proof.
+  iIntros (?) "#LFT".
+  iMod (lft_create_strong (λ _, True) with "LFT") as (κ _) "H"=>//;
+    [by apply pred_infinite_True|].
+  by auto.
+Qed.
+
 (* Deriving this just to prove that it can be derived.
 (It is in the signature only for code sharing reasons.) *)
 Lemma bor_shorten_ κ κ' P : κ ⊑ κ' -∗ &{κ'}P -∗ &{κ}P.

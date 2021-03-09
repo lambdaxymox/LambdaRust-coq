@@ -18,6 +18,7 @@ theories/lifetime/lifetime.v
 theories/lifetime/at_borrow.v
 theories/lifetime/na_borrow.v
 theories/lifetime/frac_borrow.v
+theories/lifetime/meta.v
 theories/lang/adequacy.v
 theories/lang/heap.v
 theories/lang/lang.v

@@ -38,6 +38,11 @@ Module Type lifetime_sig.
   Parameter idx_bor_own : ∀ `{!lftG Σ} (q : frac) (i : bor_idx), iProp Σ.
   Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
 
+  (** Our lifetime creation lemma offers allocating a lifetime that is defined
+  by a [positive] in some given infinite set. This operation converts the
+  [positive] to a lifetime. *)
+  Parameter positive_to_lft : positive → lft.
+
   (** * Notation *)
   Notation "q .[ κ ]" := (lft_tok q κ)
       (format "q .[ κ ]", at level 0) : bi_scope.
@@ -88,6 +93,8 @@ Module Type lifetime_sig.
   Global Declare Instance idx_bor_own_as_fractional i q :
     AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
 
+  Global Declare Instance positive_to_lft_inj : Inj eq eq positive_to_lft.
+
   (** * Laws *)
   Parameter lft_tok_sep : ∀ q κ1 κ2, q.[κ1] ∗ q.[κ2] ⊣⊢ q.[κ1 ⊓ κ2].
   Parameter lft_dead_or : ∀ κ1 κ2, [†κ1] ∨ [†κ2] ⊣⊢ [† κ1 ⊓ κ2].
@@ -96,8 +103,13 @@ Module Type lifetime_sig.
   Parameter lft_dead_static : [† static] -∗ False.
   Parameter lft_intersect_static_cancel_l : ∀ κ κ', κ ⊓ κ' = static → κ = static.
 
-  Parameter lft_create : ∀ E, ↑lftN ⊆ E →
-    lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+  (** Create a lifetime in some given set of names [P]. This lemma statement
+     requires exposing [atomic_lft], because [P] restricted to the image of
+     [atomic_to_lft] might well not be infinite. *)
+  Parameter lft_create_strong : ∀ P E, pred_infinite P → ↑lftN ⊆ E →
+    lft_ctx ={E}=∗
+    ∃ p : positive, let κ := positive_to_lft p in ⌜P p⌝ ∗
+         (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
   Parameter bor_create : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ ▷ P ={E}=∗ &{κ} P ∗ ([†κ] ={E}=∗ ▷ P).
   Parameter bor_fake : ∀ E κ P,
