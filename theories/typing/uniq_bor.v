@@ -44,25 +44,40 @@ Section uniq_bor.
   Global Instance uniq_bor_wf κ ty `{!TyWf ty} : TyWf (uniq_bor κ ty) :=
     { ty_lfts := [κ]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty κ }.
 
-  Global Instance uniq_mono E L :
-    Proper (flip (lctx_lft_incl E L) ==> eqtype E L ==> subtype E L) uniq_bor.
+  Lemma uniq_type_incl κ1 κ2 ty1 ty2 :
+    κ2 ⊑ κ1 -∗
+    ▷ type_equal ty1 ty2 -∗
+    type_incl (uniq_bor κ1 ty1) (uniq_bor κ2 ty2).
   Proof.
-    intros κ1 κ2 Hκ ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (?) "HL".
-    iDestruct (Hty with "HL") as "#Hty". iDestruct (Hκ with "HL") as "#Hκ".
-    iIntros "!# #HE". iSplit; first done.
-    iDestruct ("Hty" with "HE") as "(_ & #Ho & #Hs)"; [done..|clear Hty].
-    iSpecialize ("Hκ" with "HE"). iSplit; iModIntro.
+    iIntros "#Hlft #Hty". iSplit; first done.
+    iSplit; iModIntro.
     - iIntros (? [|[[]|][]]) "H"; try done.
-      iApply (bor_shorten with "Hκ"). iApply bor_iff; last done.
-      iNext. iModIntro. iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
-      iExists vl; iFrame; by iApply "Ho".
+      iApply (bor_shorten with "Hlft"). iApply bor_iff; last done.
+      iNext. iModIntro.
+      iDestruct "Hty" as "(_ & Hty & _)".
+      iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
+      iExists vl; iFrame; by iApply "Hty".
     - iIntros (κ ??) "H". iAssert (κ2 ⊓ κ ⊑ κ1 ⊓ κ)%I as "#Hincl'".
-      { iApply lft_intersect_mono. done. iApply lft_incl_refl. }
+      { iApply lft_intersect_mono; first done. iApply lft_incl_refl. }
       iDestruct "H" as (l') "[Hbor #Hupd]". iExists l'. iIntros "{$Hbor}!# %%% Htok".
       iMod (lft_incl_acc with "Hincl' Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       iMod ("Hupd" with "[%] Htok") as "Hupd'"; try done. iModIntro. iNext.
       iMod "Hupd'" as "[H Htok]". iMod ("Hclose" with "Htok") as "$".
-      iApply ty_shr_mono; [done..|]. by iApply "Hs".
+      iDestruct "Hty" as "(_ & _ & Hty)".
+      iApply ty_shr_mono; last by iApply "Hty".
+      done.
+  Qed.
+
+  Global Instance uniq_mono E L :
+    Proper (flip (lctx_lft_incl E L) ==> eqtype E L ==> subtype E L) uniq_bor.
+  Proof.
+    intros κ1 κ2 Hκ ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (??) "HL".
+    iDestruct (Hty with "HL") as "#Hty". iDestruct (Hκ with "HL") as "#Hκ".
+    iIntros "!# #HE".
+    iApply uniq_type_incl.
+    - iDestruct ("Hκ" with "HE") as %H.
+      apply lft_incl_syn_sem in H. iApply H.
+    - iNext. iApply "Hty". done.
   Qed.
   Global Instance uniq_mono_flip E L :
     Proper (lctx_lft_incl E L ==> eqtype E L ==> flip (subtype E L)) uniq_bor.
@@ -112,7 +127,8 @@ Section typing.
     lctx_lft_incl E L κ' κ →
     tctx_incl E L [p ◁ &uniq{κ}ty] [p ◁ &uniq{κ'}ty; p ◁{κ'} &uniq{κ}ty].
   Proof.
-    iIntros (Hκκ' tid ?) "#LFT HE HL H". iDestruct (Hκκ' with "HL HE") as "#Hκκ'".
+    iIntros (Hκκ' tid ??) "#LFT HE HL H". iDestruct (Hκκ' with "HL HE") as %H.
+    iDestruct (lft_incl_syn_sem κ' κ H) as "Hκκ'".
     iFrame. rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as ([[]|]) "[% Hb]"; try done.
     iMod (rebor with "LFT Hκκ' Hb") as "[Hb Hext]". done. iModIntro.
@@ -132,7 +148,7 @@ Section typing.
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
     rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
-    iIntros ([[]|] tid F qL ?) "#LFT #HE Htl HL Hown"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "#LFT #HE Htl HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Hκ") as "[H↦ Hclose']"; first solve_ndisj.
     iDestruct "H↦" as (vl) "[>H↦ #Hown]".
@@ -146,7 +162,7 @@ Section typing.
     lctx_lft_alive E L κ → ⊢ typed_write E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
     rewrite typed_write_eq. iIntros (Halive) "!#".
-    iIntros ([[]|] tid F qL ?) "#LFT HE HL Hown"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "#LFT HE HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Htok") as "[H↦ Hclose']"; first solve_ndisj.
     iDestruct "H↦" as (vl) "[>H↦ Hown]". rewrite ty.(ty_size_eq).

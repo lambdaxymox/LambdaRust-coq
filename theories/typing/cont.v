@@ -16,9 +16,11 @@ Section typing.
     tctx_incl E L T (T' (list_to_vec argsv)) →
     ⊢ typed_body E L C T (k args).
   Proof.
-    iIntros (Hargs HC Hincl tid) "#LFT #HE Hna HL HC HT".
+    iIntros (Hargs HC Hincl tid qmax) "#LFT #HE Hna HL HC HT".
+    iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Hincl with "LFT HE HL HT") as "(HL & HT)".
     iSpecialize ("HC" with "[]"); first done.
+    iDestruct ("HLclose" with "HL") as "HL".
     assert (args = of_val <$> argsv) as ->.
     { clear -Hargs. induction Hargs as [|a av ?? [<-%of_to_val| ->] _ ->]=>//=. }
     rewrite -{3}(vec_to_list_to_vec argsv). iApply ("HC" with "Hna HL HT").
@@ -32,7 +34,7 @@ Section typing.
                      (subst_v (kb::argsb) (k:::args) econt)) -∗
     typed_body E L2 C T (letcont: kb argsb := econt in e2).
   Proof.
-    iIntros (Hc1 Hc2) "He2 #Hecont". iIntros (tid) "#LFT #HE Htl HL HC HT".
+    iIntros (Hc1 Hc2) "He2 #Hecont". iIntros (tid qmax) "#LFT #HE Htl HL HC HT".
     rewrite (_ : (rec: kb argsb := econt)%E = of_val (rec: kb argsb := econt)%V); last by unlock.
     wp_let. iApply ("He2" with "LFT HE Htl HL [HC] HT").
     iLöb as "IH". iIntros (x) "H".
@@ -48,7 +50,7 @@ Section typing.
           typed_body E L1 C (T' args) (subst_v (kb :: argsb) (k:::args) econt)) -∗
     typed_body E L2 C T (letcont: kb argsb := econt in e2).
   Proof.
-    iIntros (Hc1 Hc2) "He2 Hecont". iIntros (tid) "#LFT #HE Htl HL HC HT".
+    iIntros (Hc1 Hc2) "He2 Hecont". iIntros (tid qmax) "#LFT #HE Htl HL HC HT".
     rewrite (_ : (rec: kb argsb := econt)%E = of_val (rec: kb argsb := econt)%V); last by unlock.
     wp_let. iApply ("He2" with "LFT HE Htl HL [HC Hecont] HT").
     iIntros (x) "H".

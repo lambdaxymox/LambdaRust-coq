@@ -87,15 +87,16 @@ Section mguard.
   Global Instance mutexguard_mono E L :
     Proper (flip (lctx_lft_incl E L) ==> eqtype E L ==> subtype E L) mutexguard.
   Proof.
-    intros α1 α2 Hα ty1 ty2 Hty. generalize Hty. rewrite eqtype_unfold. iIntros (Hty' q) "HL".
+    intros α1 α2 Hα ty1 ty2 Hty. generalize Hty. rewrite eqtype_unfold.
+    iIntros (Hty' qmax qL) "HL".
     iDestruct (Hty' with "HL") as "#Hty". clear Hty'. iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as "{Hα} Hα".
+    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα12.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs) {HE Hty}". iSplit; [done|iSplit; iModIntro].
     - iIntros (tid [|[[]|][]]) "H"; try done. simpl.
       iDestruct "H" as (β) "(#H⊑ & #Hinv & Hown)".
       iExists β. iFrame. iSplit; last iSplit.
-      + by iApply lft_incl_trans.
-      + iApply (at_bor_shorten with "Hα").
+      + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
+      + iApply at_bor_shorten; first by iApply lft_incl_syn_sem.
         iApply (at_bor_iff with "[] Hinv"). iNext.
         iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
         iApply heap_mapsto_pred_iff_proper.
@@ -106,11 +107,13 @@ Section mguard.
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "H". iExists l'.
       iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
-      { iApply lft_intersect_mono. done. iApply lft_incl_refl. }
+      { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
       iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
-      iApply ty_shr_mono; try done. iApply lft_intersect_mono. done. iApply lft_incl_refl.
-      by iApply "Hs".
+      iApply ty_shr_mono; try done.
+      + iApply lft_intersect_mono; first by iApply lft_incl_syn_sem.
+        iApply lft_incl_refl.
+      + by iApply "Hs".
   Qed.
 
   Global Instance mutexguard_proper E L :
@@ -172,7 +175,7 @@ Section code.
     iApply type_deref; [solve_typing..|]; iIntros (m); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (g); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hg [Hx [Hm _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hg [Hx [Hm _]]]".
     rewrite !tctx_hasty_val [[x]]lock /=.
     destruct m as [[|lm|]|]; try done. iDestruct "Hm" as (κ') "[#Hακ' #Hshr]".
     iDestruct (ownptr_uninit_own with "Hg") as (lg vlg) "(% & Hg & Hg†)".
@@ -208,7 +211,7 @@ Section code.
       iIntros ([α β] ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (g'); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hg [Hg' _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hg [Hg' _]]".
     rewrite !tctx_hasty_val [[g]]lock /=.
     destruct g' as [[|lg|]|]; try done. simpl.
     iMod (bor_exists with "LFT Hg'") as (vl) "Hbor"; first done.
@@ -225,7 +228,7 @@ Section code.
     iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hclose2]"; first done.
     wp_bind (!_)%E. iMod (bor_unnest with "LFT Hlm") as "Hlm"; first done.
     wp_read. wp_let. iMod "Hlm".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl_noend α β with "HL HE") as "%"; [solve_typing..|].
     iMod ("Hclose2" with "H↦") as "[_ Hα]".
     iMod ("Hclose1" with "Hα HL") as "HL".
     (* Switch back to typing mode. *)
@@ -234,7 +237,7 @@ Section code.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
       unlock. iFrame. iApply bor_shorten; last done.
       iApply lft_incl_glb; last by iApply lft_incl_refl.
-      iApply lft_incl_trans; done. }
+      iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem. }
     iApply type_letalloc_1; [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -250,14 +253,14 @@ Section code.
       iIntros ([α β] ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (g'); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hg [Hg' _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hg [Hg' _]]".
     rewrite !tctx_hasty_val [[g]]lock /=.
     destruct g' as [[|lg|]|]; try done. simpl.
     iDestruct "Hg'" as (lm) "[Hlg Hshr]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose1)";
       [solve_typing..|].
     iMod (frac_bor_acc with "LFT Hlg Hα1") as (qlx') "[H↦ Hclose2]"; first done.
-    iMod (lctx_lft_alive_tok β with "HE HL") as (qβ) "(Hβ & HL & Hclose3)";
+    iMod (lctx_lft_alive_tok_noend β with "HE HL") as (qβ) "(Hβ & HL & Hclose3)";
       [solve_typing..|].
     iDestruct (lft_intersect_acc with "Hβ Hα2") as (qβα) "[Hα2β Hclose4]".
     wp_bind (!_)%E. iApply (wp_step_fupd with "[Hshr Hα2β]");
@@ -267,13 +270,13 @@ Section code.
     iMod ("Hclose3" with "Hβ HL") as "HL".
     iMod ("Hclose2" with "H↦") as "Hα1".
     iMod ("Hclose1" with "[$] HL") as "HL".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "%"; [solve_typing..|].
     (* Switch back to typing mode. *)
     iApply (type_type _ _ _ [ g ◁ own_ptr _ _; #lm +ₗ #1 ◁ &shr{α} ty ]
         with "[] LFT HE Hna HL Hk"); last first.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
       unlock. iFrame. iApply ty_shr_mono; last done.
-      iApply lft_incl_glb; last by iApply lft_incl_refl. done. }
+      iApply lft_incl_glb; last by iApply lft_incl_refl. by iApply lft_incl_syn_sem. }
     iApply type_letalloc_1; [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -293,7 +296,7 @@ Section code.
       iIntros (α ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (m); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hg [Hm _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hg [Hm _]]".
     rewrite !tctx_hasty_val [[g]]lock /=.
     destruct m as [[|lm|]|]; try done. iDestruct "Hm" as (β) "(#Hαβ & #Hshr & Hcnt)".
     (* All right, we are done preparing our context. Let's get going. *)

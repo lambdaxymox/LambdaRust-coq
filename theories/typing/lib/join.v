@@ -43,7 +43,7 @@ Section join.
     iApply type_let; [apply HfA|solve_typing|]. iIntros (fA); simpl_subst.
     iApply type_let; [apply HfB|solve_typing|]. iIntros (fB); simpl_subst.
     (* Drop to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk (HfB & HfA & HenvA & HenvB & _)".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk (HfB & HfA & HenvA & HenvB & _)".
     iMod (lctx_lft_alive_tok ϝ with "HE HL") as (qϝ1) "(Hϝ1 & HL & Hclose1)";
       [solve_typing..|].
     (* FIXME: using wp_apply here breaks calling solve_to_val. *)
@@ -60,7 +60,7 @@ Section join.
         wp_rec. iApply (finish_spec with "[$Hfin Hret Hϝ1]"); last auto.
         rewrite right_id. iFrame. by iApply @send_change_tid. }
     iNext. iIntros (c) "Hjoin". wp_let. wp_let.
-    iMod (lctx_lft_alive_tok ϝ with "HE HL") as (qϝ2) "(Hϝ2 & HL & Hclose2)";
+    iMod (lctx_lft_alive_tok_noend ϝ with "HE HL") as (qϝ2) "(Hϝ2 & HL & Hclose2)";
       [solve_typing..|].
     rewrite !tctx_hasty_val.
     iApply (type_call_iris _ [ϝ] () [_] with "LFT HE Hna [Hϝ2] HfB [HenvB]").

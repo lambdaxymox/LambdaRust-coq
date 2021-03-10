@@ -94,7 +94,7 @@ Section weak.
   Global Instance weak_mono E L :
     Proper (subtype E L ==> subtype E L) weak.
   Proof.
-    iIntros (ty1 ty2 Hsub ?) "HL". iDestruct (Hsub with "HL") as "#Hsub".
+    iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
     iIntros "!# #HE". iApply weak_subtype. iApply "Hsub"; done.
   Qed.
   Global Instance weak_proper E L :
@@ -136,7 +136,7 @@ Section code.
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (w'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hw [Hw' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hw [Hw' [Hr _]]]".
     rewrite !tctx_hasty_val [[w]]lock.
     destruct w' as [[|lw|]|]; try done. iDestruct "Hw'" as (l') "[#Hlw #Hshr]".
     iDestruct (ownptr_uninit_own with "Hr") as (lr vlr) "(% & Hr & Hr†)".
@@ -238,7 +238,7 @@ Section code.
     iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     iDestruct (ownptr_uninit_own with "Hr") as (lr vlr) "(% & Hr & Hr†)".
@@ -301,7 +301,7 @@ Section code.
     iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     iDestruct (ownptr_uninit_own with "Hr") as (lr vlr) "(% & Hr & Hr†)".
@@ -383,7 +383,7 @@ Section code.
       iApply type_jump; solve_typing. }
     iIntros (k). simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (w'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hw [Hw' _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hw [Hw' _]]".
     rewrite !tctx_hasty_val [[w]]lock. destruct w' as [[|lw|]|]; try done. wp_op.
     iDestruct "Hw'" as (γ ν) "[#Hpersist Hwtok]".
     iAssert (∃ wv : Z, (lw +ₗ 1) ↦ #wv ∗
@@ -452,7 +452,7 @@ Section code.
       iIntros (_ ϝ ret arg). inv_vec arg. simpl_subst.
     iApply (type_new (2 + ty.(ty_size))); [solve_typing..|]; iIntros (rcbox); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (w); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hw [Hrcbox _]]". rewrite !tctx_hasty_val.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hw [Hrcbox _]]". rewrite !tctx_hasty_val.
     iDestruct (ownptr_uninit_own with "Hrcbox") as (lrcbox vlrcbox)
        "(% & Hrcbox↦ & Hrcbox†)". subst rcbox. inv_vec vlrcbox=>??? /=.
     iDestruct (heap_mapsto_vec_cons with "Hrcbox↦") as "[Hrcbox↦0 Hrcbox↦1]".

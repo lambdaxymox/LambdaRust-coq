@@ -51,14 +51,14 @@ Section ref_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
-    iIntros (tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]=>//=.
     iDestruct "Hx'" as (ν q γ δ ty' lv lrc) "#(Hαν & Hfrac & Hshr & Hβδ & Hinv & H◯inv)".
     wp_op.
     iMod (lctx_lft_alive_tok β with "HE HL") as (qβ) "(Hβ & HL & Hclose)"; [solve_typing..|].
     iMod (lft_incl_acc with "Hβδ Hβ") as (qδ) "[Hδ Hcloseβ]". done.
-    iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose')";
+    iMod (lctx_lft_alive_tok_noend α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose')";
       [solve_typing..|].
     iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]". done.
     iMod (na_bor_acc with "LFT Hinv Hδ Hna") as "(INV & Hna & Hcloseδ)"; [done..|].
@@ -111,7 +111,7 @@ Section ref_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
-    iIntros (tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]=>//=.
     iDestruct "Hx'" as (ν q γ δ ty' lv lrc) "#(Hαν & Hfrac & Hshr & Hx')".
@@ -120,12 +120,13 @@ Section ref_functions.
     rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton.
     iMod "H↦" as "[H↦1 H↦2]". wp_read. wp_let.
     iMod ("Hcloseα" with "[$H↦1 $H↦2]") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl α β with "HL HE") as %?; [solve_typing..|].
     iApply (type_type _ _ _
         [ x ◁ box (&shr{α}(ref β ty)); #lv ◁ &shr{α}ty]
         with "[] LFT HE Hna HL Hk"); first last.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
-      iFrame. iApply (ty_shr_mono with "[] Hshr"). by iApply lft_incl_glb. }
+      iFrame. iApply (ty_shr_mono with "[] Hshr").
+      iApply lft_incl_glb; last done. by iApply lft_incl_syn_sem. }
     iApply (type_letalloc_1 (&shr{α}ty)); [solve_typing..|].
     iIntros (r). simpl_subst. iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -146,7 +147,7 @@ Section ref_functions.
   Proof.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk Hx". rewrite tctx_interp_singleton tctx_hasty_val.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk Hx". rewrite tctx_interp_singleton tctx_hasty_val.
     destruct x as [[|lx|]|]; try done. iDestruct "Hx" as "[Hx Hx†]".
     iDestruct "Hx" as ([|[[|lv|]|][|[[|lrc|]|][]]]) "Hx"; simpl;
       try iDestruct "Hx" as "[_ >[]]".
@@ -209,10 +210,11 @@ Section ref_functions.
     typed_val call_once (fn(∀ α, ∅; fty, &shr{α}ty1) → &shr{α}ty2) →
     typed_val (ref_map call_once) (fn(∀ α, ∅; ref α ty1, fty) → ref α ty2).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#". iIntros (α ϝ ret arg).
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (α ϝ ret arg).
        inv_vec arg=>ref env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk (#Hf' & Href & Henv & _)".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk (#Hf' & Href & Henv & _)".
     rewrite (tctx_hasty_val _ ref). destruct ref as [[|lref|]|]; try done.
     iDestruct "Href" as "[Href Href†]".
     iDestruct "Href" as ([|[[|lv|]|][|[[|lrc|]|][]]]) "Href"; simpl;
@@ -224,10 +226,10 @@ Section ref_functions.
     iIntros (lx) "(H† & Hlx)". rewrite heap_mapsto_vec_singleton.
     wp_let. wp_write. wp_let. rewrite tctx_hasty_val.
     iMod (lctx_lft_alive_tok α with "HE HL") as (?) "(Hα & HL & Hclose1)";[solve_typing..|].
-    iMod (lctx_lft_alive_tok ϝ with "HE HL") as (?) "(Hϝ & HL & Hclose2)";[solve_typing..|].
+    iMod (lctx_lft_alive_tok_noend ϝ with "HE HL") as (?) "(Hϝ & HL & Hclose2)";[solve_typing..|].
     iDestruct (lft_intersect_acc with "Hα Hν") as (?) "[Hαν Hclose3]".
     iDestruct (lft_intersect_acc with "Hαν Hϝ") as (?) "[Hανϝ Hclose4]".
-    rewrite -[ϝ in (α ⊓ ν) ⊓ ϝ](right_id_L).
+    rewrite -[ϝ in (α ⊓ ν) ⊓ ϝ]right_id_L.
     iApply (type_call_iris _ [α ⊓ ν; ϝ] (α ⊓ ν) [_; _]
        with "LFT HE Hna [Hανϝ] Hf' [$Henv Hlx H†]"); [solve_typing|done| |].
     { rewrite big_sepL_singleton tctx_hasty_val' //. rewrite /= freeable_sz_full.
@@ -287,10 +289,11 @@ Section ref_functions.
     typed_val (ref_map_split call_once)
               (fn(∀ α, ∅; ref α ty, fty) → Π[ref α ty1; ref α ty2]).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#". iIntros (α ϝ ret arg).
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (α ϝ ret arg).
        inv_vec arg=>ref env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk (#Hf' & Href & Henv & _)".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk (#Hf' & Href & Henv & _)".
     rewrite (tctx_hasty_val _ ref). destruct ref as [[|lref|]|]; try done.
     iDestruct "Href" as "[Href Href†]".
     iDestruct "Href" as ([|[[|lv|]|][|[[|lrc|]|][]]]) "Href"; simpl;
@@ -302,10 +305,10 @@ Section ref_functions.
     iIntros (lx) "(H† & Hlx)". rewrite heap_mapsto_vec_singleton.
     wp_let. wp_write. wp_let. rewrite tctx_hasty_val.
     iMod (lctx_lft_alive_tok α with "HE HL") as (?) "(Hα & HL & Hclose1)";[solve_typing..|].
-    iMod (lctx_lft_alive_tok ϝ with "HE HL") as (?) "(Hϝ & HL & Hclose2)";[solve_typing..|].
+    iMod (lctx_lft_alive_tok_noend ϝ with "HE HL") as (?) "(Hϝ & HL & Hclose2)";[solve_typing..|].
     iDestruct (lft_intersect_acc with "Hα Hν") as (?) "[Hαν Hclose3]".
     iDestruct (lft_intersect_acc with "Hαν Hϝ") as (?) "[Hανϝ Hclose4]".
-    rewrite -[ϝ in (α ⊓ ν) ⊓ ϝ](right_id_L).
+    rewrite -[ϝ in (α ⊓ ν) ⊓ ϝ]right_id_L.
     iApply (type_call_iris _ [α ⊓ ν; ϝ] (α ⊓ ν) [_; _]
        with "LFT HE Hna [Hανϝ] Hf' [$Henv Hlx H†]"); [solve_typing|done| |].
     { rewrite big_sepL_singleton tctx_hasty_val' //. rewrite /= freeable_sz_full.

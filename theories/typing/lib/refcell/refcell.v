@@ -68,9 +68,9 @@ Section refcell_inv.
     eapply refcell_inv_type_ne, type_dist_dist2. done.
   Qed.
 
-  Lemma refcell_inv_proper E L ty1 ty2 q :
+  Lemma refcell_inv_proper E L ty1 ty2 qmax qL :
     eqtype E L ty1 ty2 →
-    llctx_interp L q -∗ ∀ tid l γ α, □ (elctx_interp E -∗
+    llctx_interp_noend qmax L qL -∗ ∀ tid l γ α, □ (elctx_interp E -∗
     refcell_inv tid l γ α ty1 -∗ refcell_inv tid l γ α ty2).
   Proof.
     (* TODO : this proof is essentially [solve_proper], but within the logic. *)
@@ -183,7 +183,7 @@ Section refcell.
   Proof.
     (* TODO : this proof is essentially [solve_proper], but within the logic.
               It would easily gain from some automation. *)
-    iIntros (ty1 ty2 EQ qL) "HL". generalize EQ. rewrite eqtype_unfold=>EQ'.
+    iIntros (ty1 ty2 EQ qmax qL) "HL". generalize EQ. rewrite eqtype_unfold=>EQ'.
     iDestruct (EQ' with "HL") as "#EQ'".
     iDestruct (refcell_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (refcell_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.

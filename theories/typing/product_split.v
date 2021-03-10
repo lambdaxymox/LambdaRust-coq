@@ -36,12 +36,12 @@ Section product_split.
     (∀ tid ty vl, (ptr ty).(ty_own) tid vl -∗ ⌜∃ l : loc, vl = [(#l) : val]⌝) →
     ∀ p, tctx_incl E L [p ◁ ptr $ product tyl] (hasty_ptr_offsets p ptr tyl 0).
   Proof.
-    iIntros (Hsplit Hloc p tid q) "#LFT #HE HL H".
+    iIntros (Hsplit Hloc p tid qmax qL) "#LFT #HE HL H".
     iInduction tyl as [|ty tyl IH] "IH" forall (p).
     { rewrite tctx_interp_nil. auto. }
     rewrite product_cons. iMod (Hsplit with "LFT HE HL H") as "(HL & H)".
     cbn -[tctx_elt_interp].
-    iDestruct "H" as "[Hty Htyl]". iDestruct "Hty" as (v) "[Hp Hty]". iDestruct "Hp" as %Hp. 
+    iDestruct "H" as "[Hty Htyl]". iDestruct "Hty" as (v) "[Hp Hty]". iDestruct "Hp" as %Hp.
     iDestruct (Hloc with "Hty") as %[l [=->]].
     iAssert (tctx_elt_interp tid (p +ₗ #0 ◁ ptr ty)) with "[Hty]" as "$".
     { iExists #l. iSplit; last done. simpl; by rewrite Hp shift_loc_0. }
@@ -58,7 +58,7 @@ Section product_split.
     (∀ tid ty vl, (ptr ty).(ty_own) tid vl -∗ ⌜∃ l : loc, vl = [(#l) : val]⌝) →
     ∀ p, tctx_incl E L (hasty_ptr_offsets p ptr tyl 0) [p ◁ ptr $ product tyl].
   Proof.
-    iIntros (Hptr Htyl Hmerge Hloc p tid q) "#LFT #HE HL H".
+    iIntros (Hptr Htyl Hmerge Hloc p tid qmax qL) "#LFT #HE HL H".
     iInduction tyl as [|ty tyl IH] "IH" forall (p Htyl); first done.
     rewrite product_cons. rewrite /= tctx_interp_singleton tctx_interp_cons.
     iDestruct "H" as "[Hty Htyl]". iDestruct "Hty" as (v) "[Hp Hty]".
@@ -86,7 +86,7 @@ Section product_split.
     tctx_incl E L [p ◁ own_ptr n $ product2 ty1 ty2]
                   [p ◁ own_ptr n ty1; p +ₗ #ty1.(ty_size) ◁ own_ptr n ty2].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as ([[]|]) "[#Hp H]"; try done.
     iDestruct "H" as "[H >H†]". iDestruct "H" as (vl) "[>H↦ H]".
@@ -104,7 +104,7 @@ Section product_split.
     tctx_incl E L [p ◁ own_ptr n ty1; p +ₗ #ty1.(ty_size) ◁ own_ptr n ty2]
                   [p ◁ own_ptr n $ product2 ty1 ty2].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "(Hp1 & H1)"; try done.
     iDestruct "H1" as "(H↦1 & H†1)".
@@ -141,7 +141,7 @@ Section product_split.
     tctx_incl E L [p ◁ &uniq{κ}(product2 ty1 ty2)]
                   [p ◁ &uniq{κ} ty1; p +ₗ #ty1.(ty_size) ◁ &uniq{κ} ty2].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as ([[]|]) "[Hp H]"; try done. iDestruct "Hp" as %Hp.
     rewrite /= split_prod_mt. iMod (bor_sep with "LFT H") as "[H1 H2]"; first solve_ndisj.
@@ -153,7 +153,7 @@ Section product_split.
     tctx_incl E L [p ◁ &uniq{κ} ty1; p +ₗ #ty1.(ty_size) ◁ &uniq{κ} ty2]
                   [p ◁ &uniq{κ}(product2 ty1 ty2)].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "[Hp1 H1]"; try done.
     iDestruct "Hp1" as %Hp1. iDestruct "H2" as (v2) "(Hp2 & H2)". rewrite /= Hp1.
@@ -190,7 +190,7 @@ Section product_split.
     tctx_incl E L [p ◁ &shr{κ}(product2 ty1 ty2)]
                   [p ◁ &shr{κ} ty1; p +ₗ #ty1.(ty_size) ◁ &shr{κ} ty2].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as ([[]|]) "[Hp H]"; try iDestruct "H" as "[]".
     iDestruct "H" as "[H1 H2]". iDestruct "Hp" as %Hp.
@@ -201,7 +201,7 @@ Section product_split.
     tctx_incl E L [p ◁ &shr{κ} ty1; p +ₗ #ty1.(ty_size) ◁ &shr{κ} ty2]
                   [p ◁ &shr{κ}(product2 ty1 ty2)].
   Proof.
-    iIntros (tid q) "#LFT _ $ H".
+    iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "[Hp1 Hown1]"; try done.
     iDestruct "Hp1" as %Hp1. iDestruct "H2" as ([[]|]) "[Hp2 Hown2]"; try done.

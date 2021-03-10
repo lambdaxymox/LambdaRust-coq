@@ -30,10 +30,11 @@ Section shr_bor.
     Proper (flip (lctx_lft_incl E L) ==> subtype E L ==> subtype E L) shr_bor.
   Proof.
     intros κ1 κ2 Hκ ty1 ty2 Hty.
-    iIntros (?) "/= HL". iDestruct (Hκ with "HL") as "#Hincl".
+    iIntros (??) "/= HL". iDestruct (Hκ with "HL") as "#Hincl".
     iDestruct (Hty with "HL") as "#Hty". iIntros "!# #HE".
+    iDestruct ("Hincl" with "HE") as "%".
     iApply shr_type_incl.
-    - by iApply "Hincl".
+    - by iApply lft_incl_syn_sem.
     - by iApply "Hty".
   Qed.
   Global Instance shr_mono_flip E L :
@@ -74,10 +75,11 @@ Section typing.
     lctx_lft_incl E L κ' κ →
     tctx_incl E L [p ◁ &shr{κ}ty] [p ◁ &shr{κ'}ty; p ◁{κ} &shr{κ}ty].
   Proof.
-    iIntros (Hκκ' tid ?) "#LFT #HE HL [H _]". iDestruct (Hκκ' with "HL HE") as "#Hκκ'".
+    iIntros (Hκκ' tid ??) "#LFT #HE HL [H _]". iDestruct (Hκκ' with "HL HE") as "%".
     iFrame. rewrite /tctx_interp /=.
     iDestruct "H" as ([[]|]) "[% #Hshr]"; try done. iModIntro. iSplit.
-    - iExists _. iSplit. done. by iApply (ty_shr_mono with "Hκκ' Hshr").
+    - iExists _. iSplit. done. iApply (ty_shr_mono with "[] Hshr").
+      by iApply lft_incl_syn_sem.
     - iSplit=> //. iExists _. auto.
   Qed.
 
@@ -85,7 +87,7 @@ Section typing.
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&shr{κ}ty) ty (&shr{κ}ty).
   Proof.
     rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
-    iIntros ([[]|] tid F qL ?) "#LFT #HE Htl HL #Hshr"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "#LFT #HE Htl HL #Hshr"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (copy_shr_acc with "LFT Hshr Htl Hκ") as (q') "(Htl & H↦ & Hcl)"; first solve_ndisj.
     { rewrite ->shr_locsE_shrN. solve_ndisj. }

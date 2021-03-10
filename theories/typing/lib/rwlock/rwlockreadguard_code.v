@@ -24,7 +24,7 @@ Section rwlockreadguard_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
-    iIntros (tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
     iDestruct "Hx'" as (l') "#[Hfrac Hshr]".
@@ -32,12 +32,13 @@ Section rwlockreadguard_functions.
     iMod (frac_bor_acc with "LFT Hfrac Hα") as (qlx') "[H↦ Hcloseα]". done.
     rewrite heap_mapsto_vec_singleton. wp_read. wp_op. wp_let.
     iMod ("Hcloseα" with "[$H↦]") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl α β with "HL HE") as %?; [solve_typing..|].
     iApply (type_type _ _ _ [ x ◁ box (&shr{α}(rwlockreadguard β ty));
                               #(l' +ₗ 1) ◁ &shr{α}ty]
       with "[] LFT HE Hna HL Hk"); first last.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
-      iFrame. iApply (ty_shr_mono with "[] Hshr"). iApply lft_incl_glb; first done.
+      iFrame. iApply (ty_shr_mono with "[] Hshr").
+      iApply lft_incl_glb; first by iApply lft_incl_syn_sem.
       by iApply lft_incl_refl. }
     iApply (type_letalloc_1 (&shr{α}ty)); [solve_typing..|].
     iIntros (r). simpl_subst. iApply type_delete; [solve_typing..|].
@@ -67,7 +68,7 @@ Section rwlockreadguard_functions.
       [iIntros (loop)|iIntros "/= !#"; iIntros (loop arg); inv_vec arg];
       simpl_subst.
     { iApply type_jump; solve_typing. }
-    iIntros (tid) "#LFT #HE Hna HL Hk HT".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']".
     destruct x' as [[|lx'|]|]; try done. simpl.

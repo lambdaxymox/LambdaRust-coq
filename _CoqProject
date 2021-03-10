@@ -68,6 +68,7 @@ theories/typing/lib/rc/rc.v
 theories/typing/lib/rc/weak.v
 theories/typing/lib/arc.v
 theories/typing/lib/swap.v
+theories/typing/lib/diverging_static.v
 theories/typing/lib/mutex/mutex.v
 theories/typing/lib/mutex/mutexguard.v
 theories/typing/lib/refcell/refcell.v
@@ -88,4 +89,3 @@ theories/typing/examples/unbox.v
 theories/typing/examples/init_prod.v
 theories/typing/examples/lazy_lft.v
 theories/typing/examples/nonlexical.v
-theories/typing/examples/diverging_static.v

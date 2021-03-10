@@ -42,7 +42,7 @@ Section join_handle.
   Global Instance join_handle_mono E L :
     Proper (subtype E L ==> subtype E L) join_handle.
   Proof.
-    iIntros (ty1 ty2 Hsub ?) "HL". iDestruct (Hsub with "HL") as "#Hsub".
+    iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
     iIntros "!# #HE". iApply join_handle_subtype. iApply "Hsub"; done.
   Qed.
   Global Instance join_handle_proper E L :
@@ -88,7 +88,7 @@ Section spawn.
     iApply (type_let _ _ _ _ ([f' ◁ _; env ◁ _])
                      (λ j, [j ◁ join_handle retty])); try solve_typing; [|].
     { (* The core of the proof: showing that spawn is safe. *)
-      iIntros (tid) "#LFT #HE $ $ [Hf' [Henv _]]". rewrite !tctx_hasty_val [fn _]lock.
+      iIntros (tid qmax) "#LFT #HE $ $ [Hf' [Henv _]]". rewrite !tctx_hasty_val [fn _]lock.
       iApply (spawn_spec _ (join_inv retty) with "[-]"); last first.
       { iIntros "!> *". rewrite tctx_interp_singleton tctx_hasty_val.
         iIntros "?". by iFrame. }
@@ -121,7 +121,7 @@ Section spawn.
     iApply type_deref; [solve_typing..|]. iIntros (c'); simpl_subst.
     iApply (type_let _ _ _ _ ([c' ◁ _])
                              (λ r, [r ◁ box retty])); try solve_typing; [|].
-    { iIntros (tid) "#LFT _ $ $".
+    { iIntros (tid qmax) "#LFT _ $ $".
       rewrite tctx_interp_singleton tctx_hasty_val. iIntros "Hc".
       destruct c' as [[|c'|]|]; try done.
       iApply (join_spec with "Hc"). iNext. iIntros "* Hret".

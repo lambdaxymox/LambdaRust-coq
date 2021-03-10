@@ -24,7 +24,7 @@ Section rwlock_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new (S ty.(ty_size))); [solve_typing..|].
-    iIntros (r tid) "#LFT HE Hna HL Hk HT". simpl_subst.
+    iIntros (r tid qmax) "#LFT HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hr Hx]". destruct x as [[|lx|]|]; try done.
     iDestruct "Hx" as "[Hx Hx†]". iDestruct "Hx" as (vl) "[Hx↦ Hx]".
@@ -59,7 +59,7 @@ Section rwlock_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|].
-    iIntros (r tid) "#LFT HE Hna HL Hk HT". simpl_subst.
+    iIntros (r tid qmax) "#LFT HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hr Hx]". destruct x as [[|lx|]|]; try done.
     iDestruct "Hx" as "[Hx Hx†]".
@@ -92,7 +92,7 @@ Section rwlock_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
-    iIntros (tid) "#LFT HE Hna HL HC HT".
+    iIntros (tid qmax) "#LFT HE Hna HL HC HT".
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|];  try iDestruct "Hx'" as "[]".
     iAssert (&{α} (∃ (z : Z), lx' ↦ #z ∗ ⌜-1 ≤ z⌝) ∗
@@ -154,7 +154,7 @@ Section rwlock_functions.
       [iIntros (loop)|iIntros "/= !#"; iIntros (loop arg); inv_vec arg];
       simpl_subst.
     { iApply type_jump; solve_typing. }
-    iIntros (tid) "#LFT #HE Hna HL Hk HT".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "(Hx & Hx' & Hr)". destruct x' as [[|lx|]|]; try done.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".
@@ -262,7 +262,7 @@ Section rwlock_functions.
     { iApply type_delete; [solve_typing..|]. iApply type_jump; solve_typing. }
     iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
     iApply type_deref; [solve_typing..|].
-    iIntros (x' tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (x' tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "(Hx & Hx' & Hr)". destruct x' as [[|lx|]|]; try done.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".

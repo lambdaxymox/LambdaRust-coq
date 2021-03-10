@@ -106,7 +106,7 @@ Section own.
   Global Instance own_mono E L n :
     Proper (subtype E L ==> subtype E L) (own_ptr n).
   Proof.
-    intros ty1 ty2 Hincl. iIntros (qL) "HL".
+    intros ty1 ty2 Hincl. iIntros (qmax qL) "HL".
     iDestruct (Hincl with "HL") as "#Hincl".
     iClear "∗". iIntros "!# #HE".
     iApply own_type_incl; first by auto. iApply "Hincl"; auto.
@@ -160,7 +160,7 @@ Section box.
   Global Instance box_mono E L :
     Proper (subtype E L ==> subtype E L) box.
   Proof.
-    intros ty1 ty2 Hincl. iIntros (qL) "HL".
+    intros ty1 ty2 Hincl. iIntros (qmax qL) "HL".
     iDestruct (Hincl with "HL") as "#Hincl".
     iClear "∗". iIntros "!# #HE".
     iApply box_type_incl. iApply "Hincl"; auto.
@@ -221,7 +221,7 @@ Section typing.
     ty.(ty_size) = ty'.(ty_size) → ⊢ typed_write E L (own_ptr n ty') ty (own_ptr n ty).
   Proof.
     rewrite typed_write_eq. iIntros (Hsz) "!#".
-    iIntros ([[]|] tid F qL ?) "_ _ $ Hown"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "_ _ $ Hown"; try done.
     rewrite /= Hsz. iDestruct "Hown" as "[H↦ $]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%". iExists _, _. iFrame "H↦". auto.
   Qed.
@@ -230,7 +230,7 @@ Section typing.
     Copy ty → ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n ty).
   Proof.
     rewrite typed_read_eq. iIntros (Hsz) "!#".
-    iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ #Hown]".
     iExists l, _, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !>".
     iExists _. auto.
@@ -240,7 +240,7 @@ Section typing.
     ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
   Proof.
     rewrite typed_read_eq. iModIntro.
-    iIntros ([[]|] tid F qL ?) "_ _ $ $ Hown"; try done.
+    iIntros ([[]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%".
     iExists l, vl, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !> !>".
@@ -252,7 +252,7 @@ Section typing.
     ⊢ let n' := Z.to_nat n in
       typed_instruction_ty E L [] (new [ #n ]%E) (own_ptr n' (uninit n')).
   Proof.
-    iIntros (? tid) "#LFT #HE $ $ _".
+    iIntros (? tid qmax) "#LFT #HE $ $ _".
     iApply wp_new; try done. iModIntro.
     iIntros (l) "(H† & Hlft)". rewrite tctx_interp_singleton tctx_hasty_val.
     iNext. rewrite freeable_sz_full Z2Nat.id //. iFrame.
@@ -285,7 +285,7 @@ Section typing.
     Z.of_nat (ty.(ty_size)) = n →
     ⊢ typed_instruction E L [p ◁ own_ptr ty.(ty_size) ty] (delete [ #n; p])%E (λ _, []).
   Proof.
-    iIntros (<- tid) "#LFT #HE $ $ Hp". rewrite tctx_interp_singleton.
+    iIntros (<- tid qmax) "#LFT #HE $ $ Hp". rewrite tctx_interp_singleton.
     wp_bind p. iApply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hown"; try done.
     iDestruct "Hown" as "[H↦: >H†]". iDestruct "H↦:" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>EQ".

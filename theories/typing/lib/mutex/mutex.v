@@ -89,7 +89,7 @@ Section mutex.
 
   Global Instance mutex_mono E L : Proper (eqtype E L ==> subtype E L) mutex.
   Proof.
-    move=>ty1 ty2 /eqtype_unfold EQ. iIntros (?) "HL".
+    move=>ty1 ty2 /eqtype_unfold EQ. iIntros (??) "HL".
     iDestruct (EQ with "HL") as "#EQ". iIntros "!# #HE". clear EQ.
     iDestruct ("EQ" with "HE") as "(% & #Howni & _) {EQ}".
     iSplit; last iSplit.
@@ -146,7 +146,7 @@ Section code.
     (* FIXME: The following should work.  We could then go into Iris later.
     iApply (type_memcpy ty); [solve_typing..|]. *)
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hm [Hx _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hm [Hx _]]".
     rewrite !tctx_hasty_val /=.
     iDestruct (ownptr_uninit_own with "Hm") as (lm vlm) "(% & Hm & Hm†)".
     subst m. inv_vec vlm=>m vlm. simpl. iDestruct (heap_mapsto_vec_cons with "Hm") as "[Hm0 Hm]".
@@ -181,7 +181,7 @@ Section code.
       iIntros (_ ϝ ret arg). inv_vec arg=>m. simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|]; iIntros (x); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hm _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hm _]]".
     rewrite !tctx_hasty_val /=.
     iDestruct (ownptr_uninit_own with "Hx") as (lx vlx) "(% & Hx & Hx†)".
     subst x. simpl.
@@ -220,7 +220,7 @@ Section code.
       iIntros (α ϝ ret arg); inv_vec arg=>m; simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (m'); simpl_subst.
     (* Go to Iris *)
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hm [Hm' _]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hm [Hm' _]]".
     rewrite !tctx_hasty_val [[m]]lock.
     destruct m' as [[|lm'|]|]; try done. simpl.
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose1)";
