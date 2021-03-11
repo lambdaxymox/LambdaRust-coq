@@ -69,6 +69,7 @@ theories/typing/lib/rc/weak.v
 theories/typing/lib/arc.v
 theories/typing/lib/swap.v
 theories/typing/lib/diverging_static.v
+theories/typing/lib/brandedvec.v
 theories/typing/lib/mutex/mutex.v
 theories/typing/lib/mutex/mutexguard.v
 theories/typing/lib/refcell/refcell.v

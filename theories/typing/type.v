@@ -615,6 +615,20 @@ Section subtyping.
     iDestruct (llctx_interp_acc_noend with "HL") as "[$ _]".
   Qed.
 
+  Lemma lft_invariant_subtype E L T :
+    Proper (lctx_lft_eq E L ==> subtype E L) T.
+  Proof.
+    iIntros (x y [Hxy Hyx] qmax qL) "L".
+    iPoseProof (Hxy with "L") as "#Hxy".
+    iPoseProof (Hyx with "L") as "#Hyx".
+    iIntros "!> #E". clear Hxy Hyx.
+    iDestruct ("Hxy" with "E") as %Hxy.
+    iDestruct ("Hyx" with "E") as %Hyx.
+    iClear "Hyx Hxy".
+    rewrite (anti_symm _ _ _ Hxy Hyx).
+    iApply type_incl_refl.
+  Qed.
+
   Lemma type_equal_incl ty1 ty2 :
     type_equal ty1 ty2 ⊣⊢ type_incl ty1 ty2 ∗ type_incl ty2 ty1.
   Proof.
@@ -643,6 +657,10 @@ Section subtyping.
     - iApply (type_incl_trans _ ty2); done.
     - iApply (type_incl_trans _ ty2); done.
   Qed.
+
+  Lemma lft_invariant_eqtype E L T :
+    Proper (lctx_lft_eq E L ==> eqtype E L) T.
+  Proof. split; by apply lft_invariant_subtype. Qed.
 
   Lemma equiv_subtype E L ty1 ty2 : ty1 ≡ ty2 → subtype E L ty1 ty2.
   Proof. unfold subtype, type_incl=>EQ. setoid_rewrite EQ. apply subtype_refl. Qed.
