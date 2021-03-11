@@ -119,8 +119,21 @@ Section typing_rules.
     typed_body E L C T e -∗ typed_body E L C T e.
   Proof. done. Qed.
 
-  (** This version is *weaker* than what was in the original paper;
-  it had to be adjusted for GhostCell. *)
+  (** This lemma can replace [κ1] by [κ2] and vice versa in positions that
+  respect "semantic lifetime equivalence"; in particular, lifetimes of
+  references can be adjusted this way.  However, it cannot replace lifetimes in
+  other type constructors, as those might only respect *syntactic* lifetime
+  equivalence. This lemma is *weaker* than what was in the original paper where
+  lifetimes could be replaced everywhere; it had to be adjusted for GhostCell.
+  See [typing.lib.diverging_static] for an example of how
+  [type_equivalize_lft_static] without this restriction ciuld be used to subvert
+  branding.
+
+  This is technically not a proper typing rule since the type system has no way
+  to express "subtyping wrt semantic lifetime inclusion".  However, there is no
+  fundamental reason that we could not also reflect all these semantic facts on
+  the syntactic side, it would just be very clunky (and note that in Coq we do
+  not reflect this syntactic side anway). *)
   Lemma type_equivalize_lft E L C T1 T2 κ1 κ2 e :
     (∀ tid, lft_ctx -∗ κ1 ⊑ κ2 -∗ κ2 ⊑ κ1 -∗ tctx_interp tid T1 -∗ tctx_interp tid T2) →
     (⊢ typed_body E L C T2 e) →

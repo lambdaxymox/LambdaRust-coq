@@ -116,7 +116,9 @@ Section non_lexical.
             iIntros (unwrap'). simpl_subst.
           iApply (type_letcall ()); [solve_typing..|]. iIntros (r). simpl_subst.
           iApply type_jump; solve_typing.
-        - iApply (type_equivalize_lft _ _ _ _ [_; _; _; _; _; _; _; _]).
+        - (* Use lifetime equalization to replace one lifetime by another:
+             [&uniq{κ} V] becomes [&uniq{m} V] in the type of [o +ₗ #1]. *)
+          iApply (type_equivalize_lft _ _ _ _ [_; _; _; _; _; _; _; _]).
           { iIntros (tid) "#LFT #Hκ1 #Hκ2 ($ & Href & $ & $ & $ & $ & $ & $ & _)".
             rewrite -tctx_interp_singleton.
             iApply (type_incl_tctx_incl with "[] Href").
