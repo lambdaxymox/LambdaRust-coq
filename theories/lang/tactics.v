@@ -157,7 +157,7 @@ Definition is_atomic (e: expr) : bool :=
 Lemma is_atomic_correct e : is_atomic e → Atomic WeaklyAtomic (to_expr e).
 Proof.
   intros He. apply ectx_language_atomic.
-  - intros σ e' σ' ef.
+  - intros σ ef e' σ'.
     destruct e; simpl; try done; repeat (case_match; try done);
     inversion 1; try (apply val_irreducible; rewrite ?language.to_of_val; naive_solver eauto); [].
     rewrite -[stuck_term](fill_empty). apply stuck_irreducible.
@@ -201,6 +201,23 @@ Ltac solve_atomic :=
      apply W.is_atomic_correct; vm_compute; exact I
   end.
 Hint Extern 0 (Atomic _ _) => solve_atomic : typeclass_instances.
+
+Global Instance skip_atomic : Atomic WeaklyAtomic Skip.
+Proof.
+  apply strongly_atomic_atomic, ectx_language_atomic.
+  - inversion 1. naive_solver.
+  - apply ectxi_language_sub_redexes_are_values. intros [] * Hskip; try naive_solver.
+    + inversion Hskip. simpl. rewrite decide_left. eauto.
+    + inversion Hskip. rename select ([Lit _] = _) into Hargs.
+      assert (length [Lit LitPoison] = 1%nat) as Hlen by done. move:Hlen.
+      rewrite Hargs. rewrite app_length fmap_length /=.
+      rename select (list val) into vl. rename select (list expr) into el.
+      destruct vl; last first.
+      { simpl. intros. exfalso. lia. }
+      destruct el; last first.
+      { simpl. intros. exfalso. lia. }
+      simpl in *. intros _. inversion Hargs. eauto.
+Qed.
 
 (** Substitution *)
 Ltac simpl_subst :=
