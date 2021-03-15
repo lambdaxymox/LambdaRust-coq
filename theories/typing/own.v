@@ -362,8 +362,8 @@ Section typing.
   Qed.
 End typing.
 
-Hint Resolve own_mono' own_proper' box_mono' box_proper'
+Global Hint Resolve own_mono' own_proper' box_mono' box_proper'
              write_own read_own_copy : lrust_typing.
 (* By setting the priority high, we make sure copying is tried before
    moving. *)
-Hint Resolve read_own_move | 100 : lrust_typing.
+Global Hint Resolve read_own_move | 100 : lrust_typing.

@@ -137,4 +137,4 @@ Section rwlockreadguard.
   Qed.
 End rwlockreadguard.
 
-Hint Resolve rwlockreadguard_mono' rwlockreadguard_proper' : lrust_typing.
+Global Hint Resolve rwlockreadguard_mono' rwlockreadguard_proper' : lrust_typing.

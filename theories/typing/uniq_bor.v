@@ -173,5 +173,5 @@ Section typing.
   Qed.
 End typing.
 
-Hint Resolve uniq_mono' uniq_proper' write_uniq read_uniq : lrust_typing.
-Hint Resolve tctx_extract_hasty_reborrow | 10 : lrust_typing.
+Global Hint Resolve uniq_mono' uniq_proper' write_uniq read_uniq : lrust_typing.
+Global Hint Resolve tctx_extract_hasty_reborrow | 10 : lrust_typing.

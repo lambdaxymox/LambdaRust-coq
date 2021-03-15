@@ -175,7 +175,7 @@ Ltac solve_closed :=
      let e' := W.of_expr e in change (Closed X (W.to_expr e'));
      apply W.is_closed_correct; vm_compute; exact I
   end.
-Hint Extern 0 (Closed _ _) => solve_closed : typeclass_instances.
+Global Hint Extern 0 (Closed _ _) => solve_closed : typeclass_instances.
 
 Ltac solve_into_val :=
   match goal with
@@ -184,7 +184,7 @@ Ltac solve_into_val :=
      apply W.to_val_Some; simpl; unfold W.to_expr;
      ((unlock; exact eq_refl) || (idtac; exact eq_refl))
   end.
-Hint Extern 10 (IntoVal _ _) => solve_into_val : typeclass_instances.
+Global Hint Extern 10 (IntoVal _ _) => solve_into_val : typeclass_instances.
 
 Ltac solve_as_val :=
   match goal with
@@ -192,7 +192,7 @@ Ltac solve_as_val :=
      let e' := W.of_expr e in change (∃ v, of_val v = W.to_expr e');
      apply W.to_val_is_Some, (bool_decide_unpack _); vm_compute; exact I
   end.
-Hint Extern 10 (AsVal _) => solve_as_val : typeclass_instances.
+Global Hint Extern 10 (AsVal _) => solve_as_val : typeclass_instances.
 
 Ltac solve_atomic :=
   match goal with
@@ -200,7 +200,7 @@ Ltac solve_atomic :=
      let e' := W.of_expr e in change (Atomic s (W.to_expr e'));
      apply W.is_atomic_correct; vm_compute; exact I
   end.
-Hint Extern 0 (Atomic _ _) => solve_atomic : typeclass_instances.
+Global Hint Extern 0 (Atomic _ _) => solve_atomic : typeclass_instances.
 
 Global Instance skip_atomic : Atomic WeaklyAtomic Skip.
 Proof.

@@ -757,6 +757,6 @@ Section type_util.
 
 End type_util.
 
-Hint Resolve ty_outlives_E_elctx_sat tyl_outlives_E_elctx_sat : lrust_typing.
-Hint Resolve subtype_refl eqtype_refl : lrust_typing.
-Hint Opaque subtype eqtype : lrust_typing.
+Global Hint Resolve ty_outlives_E_elctx_sat tyl_outlives_E_elctx_sat : lrust_typing.
+Global Hint Resolve subtype_refl eqtype_refl : lrust_typing.
+Global Hint Opaque subtype eqtype : lrust_typing.

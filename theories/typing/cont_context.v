@@ -116,4 +116,4 @@ Section cont_context.
   Qed.
 End cont_context.
 
-Hint Resolve cctx_incl_nil cctx_incl_cons : lrust_typing.
+Global Hint Resolve cctx_incl_nil cctx_incl_cons : lrust_typing.

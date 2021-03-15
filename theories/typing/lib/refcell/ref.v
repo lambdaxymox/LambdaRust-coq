@@ -113,4 +113,4 @@ Section ref.
   Proof. intros. by eapply ref_proper. Qed.
 End ref.
 
-Hint Resolve refcell_mono' refcell_proper' : lrust_typing.
+Global Hint Resolve refcell_mono' refcell_proper' : lrust_typing.

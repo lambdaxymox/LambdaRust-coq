@@ -20,18 +20,18 @@ Ltac solve_typing :=
   (typeclasses eauto with lrust_typing typeclass_instances core; fail) ||
   (typeclasses eauto with lrust_typing lrust_typing_merge typeclass_instances core; fail).
 
-Hint Constructors Forall Forall2 elem_of_list : lrust_typing.
-Hint Resolve submseteq_cons submseteq_inserts_l submseteq_inserts_r
+Global Hint Constructors Forall Forall2 elem_of_list : lrust_typing.
+Global Hint Resolve submseteq_cons submseteq_inserts_l submseteq_inserts_r
   : lrust_typing.
 
-Hint Extern 1 (@eq nat _ (Z.to_nat _)) =>
+Global Hint Extern 1 (@eq nat _ (Z.to_nat _)) =>
   (etrans; [symmetry; exact: Nat2Z.id | reflexivity]) : lrust_typing.
-Hint Extern 1 (@eq nat (Z.to_nat _) _) =>
+Global Hint Extern 1 (@eq nat (Z.to_nat _) _) =>
   (etrans; [exact: Nat2Z.id | reflexivity]) : lrust_typing.
 
-Hint Resolve <- elem_of_app : lrust_typing.
+Global Hint Resolve <- elem_of_app : lrust_typing.
 
 (* done is there to handle equalities with constants *)
-Hint Extern 100 (_ ≤ _) => simpl; first [done|lia] : lrust_typing.
-Hint Extern 100 (@eq Z _ _) => simpl; first [done|lia] : lrust_typing.
-Hint Extern 100 (@eq nat _ _) => simpl; first [done|lia] : lrust_typing.
+Global Hint Extern 100 (_ ≤ _) => simpl; first [done|lia] : lrust_typing.
+Global Hint Extern 100 (@eq Z _ _) => simpl; first [done|lia] : lrust_typing.
+Global Hint Extern 100 (@eq nat _ _) => simpl; first [done|lia] : lrust_typing.

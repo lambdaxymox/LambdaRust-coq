@@ -319,17 +319,17 @@ Section type_context.
   Qed.
 End type_context.
 
-Hint Resolve tctx_extract_hasty_here_copy | 1 : lrust_typing.
-Hint Resolve tctx_extract_hasty_here | 20 : lrust_typing.
-Hint Resolve tctx_extract_hasty_further | 50 : lrust_typing.
-Hint Resolve tctx_extract_blocked_here tctx_extract_blocked_cons
+Global Hint Resolve tctx_extract_hasty_here_copy | 1 : lrust_typing.
+Global Hint Resolve tctx_extract_hasty_here | 20 : lrust_typing.
+Global Hint Resolve tctx_extract_hasty_further | 50 : lrust_typing.
+Global Hint Resolve tctx_extract_blocked_here tctx_extract_blocked_cons
              tctx_extract_ctx_nil tctx_extract_ctx_hasty
              tctx_extract_ctx_blocked tctx_extract_ctx_incl : lrust_typing.
-Hint Opaque tctx_extract_ctx tctx_extract_hasty tctx_extract_blocked
+Global Hint Opaque tctx_extract_ctx tctx_extract_hasty tctx_extract_blocked
             tctx_incl : lrust_typing.
 
 (* In general, we want reborrowing to be tried before subtyping, so
    that we get the extraction. However, in the case the types match
    exactly, we want to NOT use reborrowing. Therefore, we add
    [tctx_extract_hasty_here_eq] as a hint with a very low cost. *)
-Hint Resolve tctx_extract_hasty_here_eq | 2 : lrust_typing.
+Global Hint Resolve tctx_extract_hasty_here_eq | 2 : lrust_typing.

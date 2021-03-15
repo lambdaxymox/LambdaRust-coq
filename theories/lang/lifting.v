@@ -47,7 +47,7 @@ Proof. by unlock. Qed.
 
 Class DoSubst (x : binder) (es : expr) (e er : expr) :=
   do_subst : subst' x es e = er.
-Hint Extern 0 (DoSubst _ _ _ _) =>
+Global Hint Extern 0 (DoSubst _ _ _ _) =>
   rewrite /DoSubst; simpl_subst; reflexivity : typeclass_instances.
 
 Class DoSubstL (xl : list binder) (esl : list expr) (e er : expr) :=

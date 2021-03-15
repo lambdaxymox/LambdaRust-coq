@@ -125,4 +125,4 @@ Section refmut.
   Proof. intros. by eapply refmut_proper. Qed.
 End refmut.
 
-Hint Resolve refmut_mono' refmut_proper' : lrust_typing.
+Global Hint Resolve refmut_mono' refmut_proper' : lrust_typing.

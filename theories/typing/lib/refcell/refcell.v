@@ -209,4 +209,4 @@ Section refcell.
   Proof. move=>???[|[[]|]]//=. Qed.
 End refcell.
 
-Hint Resolve refcell_mono' refcell_proper' : lrust_typing.
+Global Hint Resolve refcell_mono' refcell_proper' : lrust_typing.

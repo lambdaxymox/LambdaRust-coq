@@ -302,11 +302,11 @@ End product_split.
 
 (* We do not want unification to try to unify the definition of these
    types with anything in order to try splitting or merging. *)
-Hint Opaque own_ptr uniq_bor shr_bor tctx_extract_hasty : lrust_typing lrust_typing_merge.
+Global Hint Opaque own_ptr uniq_bor shr_bor tctx_extract_hasty : lrust_typing lrust_typing_merge.
 
 (* We make sure that splitting is tried before borrowing, so that not
    the entire product is borrowed when only a part is needed. *)
-Hint Resolve tctx_extract_split_own_prod tctx_extract_split_uniq_prod tctx_extract_split_shr_prod
+Global Hint Resolve tctx_extract_split_own_prod tctx_extract_split_uniq_prod tctx_extract_split_shr_prod
     | 5 : lrust_typing.
 
 (* Merging is also tried after everything, except
@@ -319,6 +319,6 @@ Hint Resolve tctx_extract_split_own_prod tctx_extract_split_uniq_prod tctx_extra
    solve_typing get slow because of that. See:
      https://coq.inria.fr/bugs/show_bug.cgi?id=5304
 *)
-Hint Resolve tctx_extract_merge_own_prod tctx_extract_merge_uniq_prod tctx_extract_merge_shr_prod
+Global Hint Resolve tctx_extract_merge_own_prod tctx_extract_merge_uniq_prod tctx_extract_merge_shr_prod
     | 40 : lrust_typing_merge.
-Hint Unfold extract_tyl : lrust_typing.
+Global Hint Unfold extract_tyl : lrust_typing.

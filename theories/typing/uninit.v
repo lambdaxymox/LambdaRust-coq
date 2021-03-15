@@ -132,7 +132,7 @@ Section uninit.
   Proof. rewrite -uninit_uninit0_eqtype=>->//. Qed.
 End uninit.
 
-Hint Resolve uninit_product_eqtype_cons_l uninit_product_eqtype_cons_r
+Global Hint Resolve uninit_product_eqtype_cons_l uninit_product_eqtype_cons_r
              uninit_product_subtype_cons_l uninit_product_subtype_cons_r
              uninit_unit_eqtype uninit_unit_eqtype'
              uninit_unit_subtype uninit_unit_subtype' : lrust_typing.

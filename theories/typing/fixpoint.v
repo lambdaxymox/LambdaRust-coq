@@ -141,11 +141,11 @@ Section subtyping.
   Proof. intros. by rewrite fixpoint_unfold_eqtype. Qed.
 End subtyping.
 
-Hint Resolve fixpoint_mono fixpoint_proper : lrust_typing.
+Global Hint Resolve fixpoint_mono fixpoint_proper : lrust_typing.
 
 (* These hints can loop if [fixpoint_mono] and [fixpoint_proper] have
    not been tried before, so we give them a high cost *)
-Hint Resolve fixpoint_unfold_subtype_l|100 : lrust_typing.
-Hint Resolve fixpoint_unfold_subtype_r|100 : lrust_typing.
-Hint Resolve fixpoint_unfold_eqtype_l|100 : lrust_typing.
-Hint Resolve fixpoint_unfold_eqtype_r|100 : lrust_typing.
+Global Hint Resolve fixpoint_unfold_subtype_l|100 : lrust_typing.
+Global Hint Resolve fixpoint_unfold_subtype_r|100 : lrust_typing.
+Global Hint Resolve fixpoint_unfold_eqtype_l|100 : lrust_typing.
+Global Hint Resolve fixpoint_unfold_eqtype_r|100 : lrust_typing.

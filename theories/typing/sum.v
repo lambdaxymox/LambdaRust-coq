@@ -240,5 +240,5 @@ End sum.
 Notation "Σ[ ty1 ; .. ; tyn ]" :=
   (sum (cons ty1%T (..(cons tyn%T nil)..))) : lrust_type_scope.
 
-Hint Opaque sum : lrust_typing lrust_typing_merge.
-Hint Resolve sum_mono' sum_proper' : lrust_typing.
+Global Hint Opaque sum : lrust_typing lrust_typing_merge.
+Global Hint Resolve sum_mono' sum_proper' : lrust_typing.

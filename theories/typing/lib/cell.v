@@ -253,4 +253,4 @@ Section typing.
   Qed.
 End typing.
 
-Hint Resolve cell_mono' cell_proper' : lrust_typing.
+Global Hint Resolve cell_mono' cell_proper' : lrust_typing.
