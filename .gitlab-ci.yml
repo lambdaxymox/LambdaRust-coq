@@ -33,10 +33,10 @@ build-coq.dev:
   variables:
     OPAM_PINS: "coq version dev"
 
-build-coq.8.12.0:
+build-coq.8.13.1:
   <<: *template
   variables:
-    OPAM_PINS: "coq version 8.12.0"
+    OPAM_PINS: "coq version 8.13.1"
     OPAM_PKG: "1"
     DENY_WARNINGS: "1"
   tags:
