@@ -286,6 +286,13 @@ Proof. by rewrite /lft_tok big_sepMS_empty. Qed.
 Lemma lft_dead_static : [† static] -∗ False.
 Proof. rewrite /lft_dead. iDestruct 1 as (Λ) "[% H']". set_solver. Qed.
 
+Lemma lft_intersect_static_cancel_l κ κ' : κ ⊓ κ' = static → κ = static.
+Proof.
+  rewrite !gmultiset_eq=>Heq Λ. move:(Heq Λ).
+  rewrite multiplicity_disj_union multiplicity_empty Nat.eq_add_0.
+  naive_solver.
+Qed.
+
 (* Fractional and AsFractional instances *)
 Global Instance lft_tok_fractional κ : Fractional (λ q, q.[κ])%I.
 Proof.

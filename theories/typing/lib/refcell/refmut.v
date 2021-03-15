@@ -85,27 +85,29 @@ Section refmut.
   Global Instance refmut_mono E L :
     Proper (flip (lctx_lft_incl E L) ==> eqtype E L ==> subtype E L) refmut.
   Proof.
-    intros α1 α2 Hα ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (q) "HL".
+    intros α1 α2 Hα ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (qmax qL) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
+    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.
       iDestruct "H" as (ν γ q' β ty') "(Hb & #H⊑ & #Hinv & Hν & Hown)".
       iExists ν, γ, q', β, ty'. iFrame "∗#". iSplit.
       + iApply bor_shorten; last iApply bor_iff; last done.
-        * iApply lft_intersect_mono; first done. iApply lft_incl_refl.
+        * iApply lft_intersect_mono; first by iApply lft_incl_syn_sem.
+          iApply lft_incl_refl.
         * iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[??]";
           iExists vl; iFrame; by iApply "Ho".
-      + by iApply lft_incl_trans.
+      + iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem.
     - iIntros (κ tid l) "H /=". iDestruct "H" as (lv lrc) "H". iExists lv, lrc.
       iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
-      { iApply lft_intersect_mono. done. iApply lft_incl_refl. }
-      iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
+      { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
+      iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
-      iApply ty_shr_mono; try done. iApply lft_intersect_mono. done. iApply lft_incl_refl.
-      by iApply "Hs".
+      iApply ty_shr_mono; try done.
+      + iApply lft_intersect_mono. by iApply lft_incl_syn_sem. iApply lft_incl_refl.
+      + by iApply "Hs".
   Qed.
   Global Instance refmut_mono_flip E L :
     Proper (lctx_lft_incl E L ==> eqtype E L ==> flip (subtype E L)) refmut.

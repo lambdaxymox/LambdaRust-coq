@@ -24,7 +24,7 @@ Section rwlockwriteguard_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
-    iIntros (tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
     iDestruct "Hx'" as (l') "#[Hfrac Hshr]".
@@ -32,7 +32,7 @@ Section rwlockwriteguard_functions.
       [solve_typing..|].
     iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]". done.
     rewrite heap_mapsto_vec_singleton.
-    iMod (lctx_lft_alive_tok β with "HE HL") as (qβ) "(Hβ & HL & Hclose')";
+    iMod (lctx_lft_alive_tok_noend β with "HE HL") as (qβ) "(Hβ & HL & Hclose')";
       [solve_typing..|].
     iDestruct (lft_intersect_acc with "Hβ Hα2") as (qβα) "[Hα2β Hcloseβα2]".
     wp_bind (!(LitV lx'))%E. iApply (wp_step_fupd with "[Hα2β]");
@@ -41,13 +41,14 @@ Section rwlockwriteguard_functions.
     iDestruct ("Hcloseβα2" with "Hα2β") as "[Hβ Hα2]".
     iMod ("Hcloseα1" with "[$H↦1 $H↦2]") as "Hα1". iMod ("Hclose'" with "Hβ HL") as "HL".
     iMod ("Hclose" with "[$] HL") as "HL".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl α β with "HL HE") as %?; [solve_typing..|].
     iApply (type_type _ _ _ [ x ◁ box (&shr{α}(rwlockwriteguard β ty));
                               #(l' +ₗ 1) ◁ &shr{α}ty]
             with "[] LFT HE Hna HL Hk"); last first.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
-      iFrame. iApply (ty_shr_mono with "[] Hshr'"). iApply lft_incl_glb; first done.
-        by iApply lft_incl_refl. }
+      iFrame. iApply (ty_shr_mono with "[] Hshr'").
+      iApply lft_incl_glb; first by iApply lft_incl_syn_sem.
+      by iApply lft_incl_refl. }
     iApply (type_letalloc_1 (&shr{α}ty)); [solve_typing..|].
     iIntros (r). simpl_subst. iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -68,7 +69,7 @@ Section rwlockwriteguard_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
-    iIntros (tid) "#LFT #HE Hna HL Hk HT". simpl_subst.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
     iMod (bor_exists with "LFT Hx'") as (vl) "H". done.
@@ -87,12 +88,13 @@ Section rwlockwriteguard_functions.
     wp_bind (!(LitV lx'))%E. iMod (bor_unnest with "LFT Hb") as "Hb"; first done.
     wp_read. wp_op. wp_let. iMod "Hb".
     iMod ("Hcloseα" with "[$H↦]") as "[_ Hα]". iMod ("Hclose" with "Hα HL") as "HL".
-    iDestruct (lctx_lft_incl_incl α β with "HL HE") as "#Hαβ"; [solve_typing..|].
+    iDestruct (lctx_lft_incl_incl α β with "HL HE") as %?; [solve_typing..|].
     iApply (type_type _ _ _ [ x ◁ box (uninit 1); #(l +ₗ 1) ◁ &uniq{α}ty]
             with "[] LFT HE Hna HL Hk"); last first.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
       iFrame. iApply (bor_shorten with "[] Hb"). iApply lft_incl_glb.
-      by iApply lft_incl_trans. by iApply lft_incl_refl. }
+      iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem.
+      by iApply lft_incl_refl. }
     iApply (type_letalloc_1 (&uniq{α}ty)); [solve_typing..|].
     iIntros (r). simpl_subst. iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -113,7 +115,7 @@ Section rwlockwriteguard_functions.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk HT".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']".
     destruct x' as [[|lx'|]|]; try done. simpl.

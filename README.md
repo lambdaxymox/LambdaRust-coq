@@ -52,6 +52,26 @@ followed by `make build-dep`.
     `thread::spawn`, `take_mut::take`, `alias::once` as well as converting `&&T`
     to `&Box<T>`.
 
+## Changes since original RustBelt publication
+
+In this section we list fundamental changes to the model that were done since
+the publication of the
+[original RustBelt paper](https://plv.mpi-sws.org/rustbelt/popl18/).
+
+### Support for branding
+
+As part of the [GhostCell paper](http://plv.mpi-sws.org/rustbelt/ghostcell/),
+the model was adjusted to support branding.
+
+* The semantic interpretation of external lifetime contexts had to be changed to use a *syntactic* form of lifetime inclusion.
+* This changed interpretation broke the proof of "lifetime equalization".
+    Instead we prove a weaker rule that only substitutes lifetimes on positions that are compatible with *semantic* lifetime inclusion.
+    This is good enough for [the example](theories/typing/examples/nonlexical.v).
+* Furthermore, we had to redo the proof of `type_call_iris'`, a key lemma involved in calling functions and ensuring that their assumptions about lifetime parameters do indeed hold.
+    The old proof exploited *semantic* lifetime inclusion in external lifetime contexts in a crucial step.
+    The proof was fixed by adjusting the semantic interpretation of the local lifetime context.
+    In particular there is a new parameter `qmax` here that has to be threaded through everywhere.
+
 ## Where to Find the Proof Rules From the Paper
 
 ### Type System Rules

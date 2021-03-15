@@ -23,18 +23,18 @@ Section code.
     typed_val call_once (fn(∅; fty, ty) → ty) →
     typed_val (take ty call_once) (fn(∀ α, ∅; &uniq{α} ty, fty) → unit).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#". iIntros (α ϝ ret arg).
-      inv_vec arg=>x env. simpl_subst.
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (α ϝ ret arg). inv_vec arg=>x env. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (x'); simpl_subst.
     iApply type_let; [apply Hf|solve_typing|]; iIntros (f'); simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|]; iIntros (t); simpl_subst.
     (* Switch to Iris. *)
-    iIntros (tid) "#LFT #HE Hna HL Hk (Ht & Hf' & Hx & Hx' & Henv & _)".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk (Ht & Hf' & Hx & Hx' & Henv & _)".
     rewrite !tctx_hasty_val [[x]]lock [[env]]lock [fn _]lock.
     iDestruct (ownptr_uninit_own with "Ht") as (tl tvl) "(% & >Htl & Htl†)". subst t. simpl.
     destruct x' as [[|lx'|]|]; try done. simpl.
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose1)"; [solve_typing..|].
-    iMod (lctx_lft_alive_tok ϝ with "HE HL") as (qϝ) "(Hϝ & HL & Hclose2)"; [solve_typing..|].
+    iMod (lctx_lft_alive_tok_noend ϝ with "HE HL") as (qϝ) "(Hϝ & HL & Hclose2)"; [solve_typing..|].
     iMod (bor_acc with "LFT Hx' Hα") as "[Hx' Hclose3]"; first done.
     iDestruct (heap_mapsto_ty_own with "Hx'") as (x'vl) "[>Hx'↦ Hx'vl]".
     wp_apply (wp_memcpy with "[$Htl $Hx'↦]"); [by auto using vec_to_list_length..|].

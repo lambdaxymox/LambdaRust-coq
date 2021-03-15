@@ -540,8 +540,14 @@ Definition type_incl `{!typeG Σ} (ty1 ty2 : type) : iProp Σ :=
 Instance: Params (@type_incl) 2 := {}.
 (* Typeclasses Opaque type_incl. *)
 
+Definition type_equal `{!typeG Σ} (ty1 ty2 : type) : iProp Σ :=
+    (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
+     (□ ∀ tid vl, ty1.(ty_own) tid vl ∗-∗ ty2.(ty_own) tid vl) ∗
+     (□ ∀ κ tid l, ty1.(ty_shr) κ tid l ∗-∗ ty2.(ty_shr) κ tid l))%I.
+Instance: Params (@type_equal) 2 := {}.
+
 Definition subtype `{!typeG Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
-  ∀ qL, llctx_interp L qL -∗ □ (elctx_interp E -∗ type_incl ty1 ty2).
+  ∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗ type_incl ty1 ty2).
 Instance: Params (@subtype) 4 := {}.
 
 (* TODO: The prelude should have a symmetric closure. *)
@@ -574,20 +580,20 @@ Section subtyping.
   Qed.
 
   Lemma subtype_refl E L ty : subtype E L ty ty.
-  Proof. iIntros (?) "_ !# _". iApply type_incl_refl. Qed.
+  Proof. iIntros (??) "_ !# _". iApply type_incl_refl. Qed.
   Global Instance subtype_preorder E L : PreOrder (subtype E L).
   Proof.
     split; first by intros ?; apply subtype_refl.
-    intros ty1 ty2 ty3 H12 H23. iIntros (?) "HL".
+    iIntros (ty1 ty2 ty3 H12 H23 ??) "HL".
     iDestruct (H12 with "HL") as "#H12".
     iDestruct (H23 with "HL") as "#H23".
     iClear "∗". iIntros "!# #HE".
     iApply (type_incl_trans with "[#]"). by iApply "H12". by iApply "H23".
   Qed.
 
-  Lemma subtype_Forall2_llctx E L tys1 tys2 qL :
+  Lemma subtype_Forall2_llctx_noend E L tys1 tys2 qmax qL :
     Forall2 (subtype E L) tys1 tys2 →
-    llctx_interp L qL -∗ □ (elctx_interp E -∗
+    llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗
            [∗ list] tys ∈ (zip tys1 tys2), type_incl (tys.1) (tys.2)).
   Proof.
     iIntros (Htys) "HL".
@@ -600,18 +606,71 @@ Section subtyping.
     iIntros "!# * % #Hincl". by iApply "Hincl".
   Qed.
 
+  Lemma subtype_Forall2_llctx E L tys1 tys2 qmax :
+    Forall2 (subtype E L) tys1 tys2 →
+    llctx_interp qmax L -∗ □ (elctx_interp E -∗
+           [∗ list] tys ∈ (zip tys1 tys2), type_incl (tys.1) (tys.2)).
+  Proof.
+    iIntros (?) "HL". iApply subtype_Forall2_llctx_noend; first done.
+    iDestruct (llctx_interp_acc_noend with "HL") as "[$ _]".
+  Qed.
+
+  Lemma lft_invariant_subtype E L T :
+    Proper (lctx_lft_eq E L ==> subtype E L) T.
+  Proof.
+    iIntros (x y [Hxy Hyx] qmax qL) "L".
+    iPoseProof (Hxy with "L") as "#Hxy".
+    iPoseProof (Hyx with "L") as "#Hyx".
+    iIntros "!> #E". clear Hxy Hyx.
+    iDestruct ("Hxy" with "E") as %Hxy.
+    iDestruct ("Hyx" with "E") as %Hyx.
+    iClear "Hyx Hxy".
+    rewrite (anti_symm _ _ _ Hxy Hyx).
+    iApply type_incl_refl.
+  Qed.
+
+  Lemma type_equal_incl ty1 ty2 :
+    type_equal ty1 ty2 ⊣⊢ type_incl ty1 ty2 ∗ type_incl ty2 ty1.
+  Proof.
+    iSplit.
+    - iIntros "#(% & Ho & Hs)".
+      iSplit; (iSplit; first done; iSplit; iModIntro).
+      + iIntros (??) "?". by iApply "Ho".
+      + iIntros (???) "?". by iApply "Hs".
+      + iIntros (??) "?". by iApply "Ho".
+      + iIntros (???) "?". by iApply "Hs".
+    - iIntros "#[(% & Ho1 & Hs1) (% & Ho2 & Hs2)]".
+      iSplit; first done. iSplit; iModIntro.
+      + iIntros (??). iSplit; [iApply "Ho1"|iApply "Ho2"].
+      + iIntros (???). iSplit; [iApply "Hs1"|iApply "Hs2"].
+  Qed.
+
+  Lemma type_equal_refl ty :
+    ⊢ type_equal ty ty.
+  Proof.
+    iApply type_equal_incl. iSplit; iApply type_incl_refl.
+  Qed.
+  Lemma type_equal_trans ty1 ty2 ty3 :
+    type_equal ty1 ty2 -∗ type_equal ty2 ty3 -∗ type_equal ty1 ty3.
+  Proof.
+    rewrite !type_equal_incl. iIntros "#[??] #[??]". iSplit.
+    - iApply (type_incl_trans _ ty2); done.
+    - iApply (type_incl_trans _ ty2); done.
+  Qed.
+
+  Lemma lft_invariant_eqtype E L T :
+    Proper (lctx_lft_eq E L ==> eqtype E L) T.
+  Proof. split; by apply lft_invariant_subtype. Qed.
+
   Lemma equiv_subtype E L ty1 ty2 : ty1 ≡ ty2 → subtype E L ty1 ty2.
   Proof. unfold subtype, type_incl=>EQ. setoid_rewrite EQ. apply subtype_refl. Qed.
 
   Lemma eqtype_unfold E L ty1 ty2 :
     eqtype E L ty1 ty2 ↔
-    (∀ qL, llctx_interp L qL -∗ □ (elctx_interp E -∗
-      (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
-      (□ ∀ tid vl, ty1.(ty_own) tid vl ↔ ty2.(ty_own) tid vl) ∗
-      (□ ∀ κ tid l, ty1.(ty_shr) κ tid l ↔ ty2.(ty_shr) κ tid l)))%I).
+    (∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗ type_equal ty1 ty2)).
   Proof.
     split.
-    - iIntros ([EQ1 EQ2] qL) "HL".
+    - iIntros ([EQ1 EQ2] qmax qL) "HL".
       iDestruct (EQ1 with "HL") as "#EQ1".
       iDestruct (EQ2 with "HL") as "#EQ2".
       iClear "∗". iIntros "!# #HE".
@@ -621,7 +680,7 @@ Section subtyping.
       + done.
       + by iIntros "!#*"; iSplit; iIntros "H"; [iApply "H1own"|iApply "H2own"].
       + by iIntros "!#*"; iSplit; iIntros "H"; [iApply "H1shr"|iApply "H2shr"].
-    - intros EQ. split; (iIntros (qL) "HL";
+    - intros EQ. split; (iIntros (qmax qL) "HL";
       iDestruct (EQ with "HL") as "#EQ";
       iClear "∗"; iIntros "!# #HE";
       iDestruct ("EQ" with "HE") as "[% [#Hown #Hshr]]";
@@ -663,11 +722,11 @@ Section subtyping.
   Qed.
 
   Lemma subtype_simple_type E L (st1 st2 : simple_type) :
-    (∀ qL, llctx_interp L qL -∗ □ (elctx_interp E -∗
+    (∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗
        ∀ tid vl, st1.(st_own) tid vl -∗ st2.(st_own) tid vl)) →
     subtype E L st1 st2.
   Proof.
-    intros Hst. iIntros (qL) "HL". iDestruct (Hst with "HL") as "#Hst".
+    intros Hst. iIntros (qmax qL) "HL". iDestruct (Hst with "HL") as "#Hst".
     iClear "∗". iIntros "!# #HE". iApply type_incl_simple_type.
     iIntros "!#" (??) "?". by iApply "Hst".
   Qed.
@@ -676,7 +735,7 @@ Section subtyping.
     E1 ⊆+ E2 → L1 ⊆+ L2 →
     subtype E1 L1 ty1 ty2 → subtype E2 L2 ty1 ty2.
   Proof.
-    iIntros (HE12 ? Hsub qL) "HL". iDestruct (Hsub with "[HL]") as "#Hsub".
+    iIntros (HE12 ? Hsub qmax qL) "HL". iDestruct (Hsub with "[HL]") as "#Hsub".
     { rewrite /llctx_interp. by iApply big_sepL_submseteq. }
     iClear "∗". iIntros "!# #HE". iApply "Hsub".
     rewrite /elctx_interp. by iApply big_sepL_submseteq.

@@ -60,9 +60,9 @@ Section rwlock_inv.
     intros n ???. eapply rwlock_inv_type_ne, type_dist_dist2. done.
   Qed.
 
-  Lemma rwlock_inv_proper E L ty1 ty2 q :
+  Lemma rwlock_inv_proper E L ty1 ty2 qmax qL :
     eqtype E L ty1 ty2 →
-    llctx_interp L q -∗ ∀ tid_own tid_shr l γ α, □ (elctx_interp E -∗
+    llctx_interp_noend qmax L qL -∗ ∀ tid_own tid_shr l γ α, □ (elctx_interp E -∗
     rwlock_inv tid_own tid_shr l γ α ty1 -∗
     rwlock_inv tid_own tid_shr l γ α ty2).
   Proof.
@@ -190,7 +190,7 @@ Section rwlock.
   Proof.
     (* TODO : this proof is essentially [solve_proper], but within the logic.
               It would easily gain from some automation. *)
-    iIntros (ty1 ty2 EQ qL) "HL". generalize EQ. rewrite eqtype_unfold=>EQ'.
+    iIntros (ty1 ty2 EQ qmax qL) "HL". generalize EQ. rewrite eqtype_unfold=>EQ'.
     iDestruct (EQ' with "HL") as "#EQ'".
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.

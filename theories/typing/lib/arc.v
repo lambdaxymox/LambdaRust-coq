@@ -194,7 +194,7 @@ Section arc.
   Global Instance arc_mono E L :
     Proper (subtype E L ==> subtype E L) arc.
   Proof.
-    iIntros (ty1 ty2 Hsub ?) "HL". iDestruct (Hsub with "HL") as "#Hsub".
+    iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
     iIntros "!# #HE". iApply arc_subtype. by iApply "Hsub".
   Qed.
   Global Instance arc_proper E L :
@@ -303,7 +303,7 @@ Section arc.
   Global Instance weak_mono E L :
     Proper (subtype E L ==> subtype E L) weak.
   Proof.
-    iIntros (ty1 ty2 Hsub ?) "HL". iDestruct (Hsub with "HL") as "#Hsub".
+    iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
     iIntros "!# #HE". iApply weak_subtype. by iApply "Hsub".
   Qed.
   Global Instance weak_proper E L :
@@ -344,7 +344,7 @@ Section arc.
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new (2 + ty.(ty_size))); [solve_typing..|]; iIntros (rcbox); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (rc); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrc [Hrcbox [Hx _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrc [Hrcbox [Hx _]]]".
     rewrite !tctx_hasty_val.
     iDestruct (ownptr_own with "Hx") as (lx vlx) "(% & Hx↦ & Hx & Hx†)". subst x.
     iDestruct (ownptr_uninit_own with "Hrcbox")
@@ -386,7 +386,7 @@ Section arc.
       iIntros (_ ϝ ret arg). inv_vec arg. simpl_subst.
     iApply (type_new (2 + ty.(ty_size))); [solve_typing..|]; iIntros (rcbox); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (rc); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrc [Hrcbox _]]". rewrite !tctx_hasty_val.
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrc [Hrcbox _]]". rewrite !tctx_hasty_val.
     iDestruct (ownptr_uninit_own with "Hrcbox")
       as (lrcbox vlrcbox) "(% & Hrcbox↦ & Hrcbox†)". subst rcbox. inv_vec vlrcbox=>??? /=.
     iDestruct (heap_mapsto_vec_cons with "Hrcbox↦") as "[Hrcbox↦0 Hrcbox↦1]".
@@ -427,7 +427,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (x); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrcx [#Hrc' [Hx _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrcx [#Hrc' [Hx _]]]".
     rewrite !tctx_hasty_val [[rcx]]lock.
     iDestruct (ownptr_uninit_own with "Hx") as (lrc2 vlrc2) "(% & Hx & Hx†)".
     subst x. inv_vec vlrc2=>?. rewrite heap_mapsto_vec_singleton.
@@ -471,7 +471,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -514,7 +514,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -559,7 +559,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -603,7 +603,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -647,7 +647,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -694,7 +694,7 @@ Section arc.
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 2); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[x]]lock [[r]]lock.
     destruct rc' as [[|lrc|]|]; try done. iDestruct "Hrc'" as (l') "[#Hlrc #Hshr]".
     (* All right, we are done preparing our context. Let's get going. *)
@@ -753,7 +753,7 @@ Section arc.
     iApply (type_new (option ty).(ty_size)); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
     iApply (type_sum_unit (option ty)); [solve_typing..|].
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hr [Hrcx [Hrc' _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hr [Hrcx [Hrc' _]]]".
     rewrite !tctx_hasty_val. destruct rc' as [[|rc'|]|]=>//=.
     iAssert (shared_arc_own rc' ty tid)%I with "[>Hrc']" as "Hrc'".
     { iDestruct "Hrc'" as "[?|$]"; last done. iApply arc_own_share; solve_ndisj. }
@@ -815,7 +815,7 @@ Section arc.
     iIntros (_ ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 0); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[rcx]]lock [[r]]lock. destruct rc' as [[|rc'|]|]=>//=.
     iDestruct "Hrc'" as (γ ν) "[#Hpersist Htok]". wp_bind (drop_weak _).
     iApply (drop_weak_spec with "[] [Htok]"); [by iDestruct "Hpersist" as "[$?]"|by auto|].
@@ -859,7 +859,7 @@ Section arc.
     iApply (type_new (Σ[ ty; arc ty ]).(ty_size));
       [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[rcx]]lock [[r]]lock. destruct rc' as [[|rc'|]|]=>//=.
     iAssert (shared_arc_own rc' ty tid)%I with "[>Hrc']" as "Hrc'".
     { iDestruct "Hrc'" as "[?|$]"; last done. iApply arc_own_share; solve_ndisj. }
@@ -932,7 +932,7 @@ Section arc.
     iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 2); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[rcx]]lock [[r]]lock. destruct rc' as [[|rc'|]|]=>//=.
     iMod (lctx_lft_alive_tok α with "HE HL") as (q) "(Hα & HL & Hclose1)";
       [solve_typing..|].
@@ -1020,7 +1020,7 @@ Section arc.
     iIntros "/= !#". iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk [Hrcx [Hrc' [Hr _]]]".
     rewrite !tctx_hasty_val [[rcx]]lock [[r]]lock. destruct rc' as [[|rc'|]|]=>//=.
     iMod (lctx_lft_alive_tok α with "HE HL") as (q) "([Hα1 Hα2] & HL & Hclose1)";
       [solve_typing..|].
@@ -1080,7 +1080,7 @@ Section arc.
       rewrite heap_mapsto_vec_singleton. wp_write. wp_let.
       wp_bind (of_val clone).
       iApply (wp_wand with "[Hna]").
-      { iApply (Hclone _ [] with "LFT HE Hna"); rewrite /llctx_interp /tctx_interp //. }
+      { iApply (Hclone _ [] $! _ 1%Qp with "LFT HE Hna"); rewrite /llctx_interp /tctx_interp //. }
       clear Hclone clone. iIntros (clone) "(Hna & _ & [Hclone _])". rewrite tctx_hasty_val.
       iDestruct "Hs" as "[Hs|Hν']"; last by iDestruct (lft_tok_dead with "Hν Hν'") as "[]".
       iDestruct (lft_intersect_acc with "Hα2 Hν") as (q'') "[Hαν Hclose3]".

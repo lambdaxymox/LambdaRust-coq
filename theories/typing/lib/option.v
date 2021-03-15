@@ -32,8 +32,8 @@ Section option.
     typed_val
       option_as_mut (fn(∀ α, ∅; &uniq{α} (option τ)) → option (&uniq{α}τ)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#". iIntros (α ϝ ret p).
-      inv_vec p=>o. simpl_subst.
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (α ϝ ret p). inv_vec p=>o. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (o'). simpl_subst.
     iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []] (λ _, [o ◁ _; r ◁ _])) ; [solve_typing..| |].

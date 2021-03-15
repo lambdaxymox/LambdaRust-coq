@@ -23,7 +23,7 @@ Section fn.
     {| st_own tid vl := tc_opaque (∃ fb kb xb e H,
          ⌜vl = [@RecV fb (kb::xb) e H]⌝ ∗ ⌜length xb = n⌝ ∗
          ▷ ∀ (x : A) (ϝ : lft) (k : val) (xl : vec val (length xb)),
-            □ typed_body ((fp x).(fp_E)  ϝ) [ϝ ⊑ₗ []]
+            □ typed_body ((fp x).(fp_E) ϝ) [ϝ ⊑ₗ []]
                          [k◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [(v!!!0%fin:val) ◁ box (fp x).(fp_ty)])]
                          (zip_with (TCtx_hasty ∘ of_val) xl
                                    (box <$> (vec_to_list (fp x).(fp_tys))))
@@ -81,7 +81,8 @@ Section fn.
     (* TODO: 'f_equiv' is slow here because reflexivity is slow. *)
     (* The clean way to do this would be to have a metric on type contexts. Oh well. *)
     intros tid vl. unfold typed_body.
-    do 12 f_equiv. f_contractive. do 16 ((eapply fp_E_proper; try reflexivity) || exact: Hfp || f_equiv).
+    do 12 f_equiv. f_contractive.
+    do 18 ((eapply fp_E_proper; try reflexivity) || exact: Hfp || f_equiv).
     - rewrite !cctx_interp_singleton /=. do 5 f_equiv.
       rewrite !tctx_interp_singleton /tctx_elt_interp /=.
       do 5 f_equiv. apply type_dist2_dist. apply Hfp.
@@ -150,7 +151,7 @@ Section typing.
             subtype EE L0 (fp x).(fp_ty) (fp' x).(fp_ty)) →
     subtype E0 L0 (fn fp) (fn fp').
   Proof.
-    intros Hcons. apply subtype_simple_type=>//= qL. iIntros "HL0".
+    intros Hcons. apply subtype_simple_type=>//= qmax qL. iIntros "HL0".
     (* We massage things so that we can throw away HL0 before going under the box. *)
     iAssert (∀ x ϝ, let EE := E0 ++ (fp' x).(fp_E) ϝ in □ (elctx_interp EE -∗
                  elctx_interp ((fp x).(fp_E) ϝ) ∗
@@ -158,7 +159,7 @@ Section typing.
                  type_incl (fp x).(fp_ty) (fp' x).(fp_ty)))%I as "#Hcons".
     { iIntros (x ϝ). destruct (Hcons x ϝ) as (HE &Htys &Hty). clear Hcons.
       iDestruct (HE with "HL0") as "#HE".
-      iDestruct (subtype_Forall2_llctx with "HL0") as "#Htys"; first done.
+      iDestruct (subtype_Forall2_llctx_noend with "HL0") as "#Htys"; first done.
       iDestruct (Hty with "HL0") as "#Hty".
       iClear "∗". iIntros "!# #HEE".
       iSplit; last iSplit.
@@ -167,7 +168,7 @@ Section typing.
       - by iApply "Hty". }
     iClear "∗". clear Hcons. iIntros "!# #HE0 * Hf".
     iDestruct "Hf" as (fb kb xb e ?) "[% [% #Hf]]". subst.
-    iExists fb, kb, xb, e, _. iSplit. done. iSplit. done. iNext.
+    iExists fb, kb, xb, e, _. iSplit; first done. iSplit; first done. iNext.
     rewrite /typed_body. iIntros (x ϝ k xl) "!# * #LFT #HE' Htl HL HC HT".
     iDestruct ("Hcons" with "[$]") as "#(HE & Htys & Hty)".
     iApply ("Hf" with "LFT HE Htl HL [HC] [HT]").
@@ -227,31 +228,31 @@ Section typing.
   Lemma fn_subtype_specialize {A B n} (σ : A → B) E0 L0 fp :
     subtype E0 L0 (fn (n:=n) fp) (fn (fp ∘ σ)).
   Proof.
-    apply subtype_simple_type=>//= qL.
+    apply subtype_simple_type=>//= qmax qL.
     iIntros "_ !# _ * Hf". iDestruct "Hf" as (fb kb xb e ?) "[% [% #Hf]]". subst.
-    iExists fb, kb, xb, e, _. iSplit. done. iSplit. done.
+    iExists fb, kb, xb, e, _. iSplit; first done. iSplit; first done.
     rewrite /typed_body. iNext. iIntros "*". iApply "Hf".
   Qed.
 
   (* In principle, proving this hard-coded to an empty L would be sufficient --
      but then we would have to require elctx_sat as an Iris assumption. *)
-  Lemma type_call_iris' E L (κs : list lft) {A} x (ps : list path) qκs qL tid
+  Lemma type_call_iris' E L (κs : list lft) {A} x (ps : list path) qκs qmax qL tid
         p (k : expr) (fp : A → fn_params (length ps)) :
     (∀ ϝ, elctx_sat (((λ κ, ϝ ⊑ₑ κ) <$> κs) ++ E) L ((fp x).(fp_E) ϝ)) →
     AsVal k →
-    lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp L qL -∗
+    lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp_noend qmax L qL -∗
     qκs.[lft_intersect_list κs] -∗
     tctx_elt_interp tid (p ◁ fn fp) -∗
     ([∗ list] y ∈ zip_with TCtx_hasty ps (box <$> vec_to_list (fp x).(fp_tys)),
                    tctx_elt_interp tid y) -∗
-    (∀ ret, na_own tid top -∗ llctx_interp L qL -∗ qκs.[lft_intersect_list κs] -∗
+    (∀ ret, na_own tid top -∗ llctx_interp_noend qmax L qL -∗ qκs.[lft_intersect_list κs] -∗
              (box (fp x).(fp_ty)).(ty_own) tid [ret] -∗
              WP k [of_val ret] {{ _, cont_postcondition }}) -∗
     WP (call: p ps → k) {{ _, cont_postcondition }}.
   Proof.
     iIntros (HE [k' <-]) "#LFT #HE Htl HL Hκs Hf Hargs Hk".
     wp_apply (wp_hasty with "Hf"). iIntros (v) "% Hf".
-    iApply (wp_app_vec _ _ (_::_) ((λ v, ⌜v = (λ: ["_r"], (#☠ ;; #☠) ;; k' ["_r"])%V⌝):::
+    iApply (wp_app_vec _ _ (_::_) ((λ v, ⌜v = (λ: ["_r"], k' ["_r"])%V⌝):::
                vmap (λ ty (v : val), tctx_elt_interp tid (v ◁ box ty)) (fp x).(fp_tys))%I
             with "[Hargs]").
     - rewrite /=. iSplitR "Hargs".
@@ -267,28 +268,37 @@ Section typing.
       iIntros "[-> Hvl]". iDestruct "Hf" as (fb kb xb e ?) "[EQ [EQl #Hf]]".
       iDestruct "EQ" as %[=->]. iDestruct "EQl" as %EQl.
       revert vl fp HE. rewrite /= -EQl=>vl fp HE. wp_rec.
-      iMod (lft_create with "LFT") as (ϝ) "[Htk #Hinh]"; first done.
+      iMod (lft_create with "LFT") as (ϝ_inner) "[Htk #Hend]"; first done.
+      set (ϝ := ϝ_inner ⊓ lft_intersect_list κs).
       iSpecialize ("Hf" $! x ϝ _ vl). iDestruct (HE ϝ with "HL") as "#HE'".
-      iMod (bor_create _ ϝ with "LFT Hκs") as "[Hκs HκsI]"; first done.
-      iDestruct (frac_bor_lft_incl with "LFT [>Hκs]") as "#Hκs".
-      { iApply (bor_fracture with "LFT"); first done. by rewrite Qp_mul_1_r. }
-      iApply ("Hf" with "LFT [] Htl [Htk] [Hk HκsI HL]").
-      + iApply "HE'". iIntros "{$# Hf Hinh HE' LFT HE %}".
-        iInduction κs as [|κ κs] "IH"=> //=. iSplitL.
-        { iApply lft_incl_trans; first done. iApply lft_intersect_incl_l. }
-        iApply "IH". iModIntro. iApply lft_incl_trans; first done.
-        iApply lft_intersect_incl_r.
-      + iSplitL; last done. iExists ϝ. iSplit; first by rewrite /= left_id.
-        iFrame "#∗".
-      + iIntros (y) "IN". iDestruct "IN" as %->%elem_of_list_singleton.
+      destruct (Qp_lower_bound qκs 1) as (q0 & q'1 & q'2 & -> & Hsum1).
+      rewrite Hsum1. assert (q0 < 1)%Qp as Hq0.
+      { apply Qp_lt_sum. eauto. }
+      clear Hsum1.
+      iDestruct "Htk" as "[Htk1 Htk2]".
+      iDestruct "Hκs" as "[Hκs1 Hκs2]".
+      iApply ("Hf" $! _ q0 with "LFT [] Htl [Hκs1 Htk1 Htk2] [Hk HL Hκs2]").
+      + iApply "HE'". iFrame "HE".
+        iIntros "{$# Hf Hend HE' LFT HE %}". subst ϝ.
+        iApply big_sepL_forall.
+        iIntros (i [κ1 κ2] [κ [Hpair Helem]]%elem_of_list_lookup_2%elem_of_list_fmap).
+        injection Hpair as -> ->. iPureIntro. simpl.
+        eapply lft_incl_syn_trans; first by apply lft_intersect_incl_syn_r.
+        apply lft_intersect_list_elem_of_incl_syn.
+        done.
+      + iSplitL; last done. iExists ϝ. rewrite left_id. iSplit; first done.
+        rewrite decide_False; last first.
+        { apply Qp_lt_nge. done. }
+        subst ϝ. rewrite -!lft_tok_sep. iFrame. iIntros "[Htk1 _]".
+        rewrite -lft_dead_or. rewrite -bi.or_intro_l. iApply "Hend". iFrame.
+      + iIntros (y) "IN {Hend}". iDestruct "IN" as %->%elem_of_list_singleton.
         iIntros (args) "Htl [Hϝ _] [Hret _]". inv_vec args=>r.
         iDestruct "Hϝ" as  (κ') "(EQ & Htk & _)". iDestruct "EQ" as %EQ.
-        rewrite /= left_id in EQ. subst κ'. simpl. wp_rec. wp_bind Endlft.
-        iSpecialize ("Hinh" with "Htk"). iClear "Hκs".
-        iApply (wp_mask_mono _ (↑lftN ∪ ↑lft_userN)); first done.
-        iApply (wp_step_fupd with "Hinh"); [set_solver-..|]. wp_seq.
-        iIntros "#Htok !>". wp_seq. iMod ("HκsI" with "Htok") as ">Hκs".
-        iApply ("Hk" with "Htl HL Hκs"). rewrite tctx_hasty_val. done.
+        rewrite /= left_id in EQ. subst κ' ϝ.
+        rewrite decide_False; last first.
+        { apply Qp_lt_nge. done. }
+        rewrite -lft_tok_sep. iDestruct "Htk" as "[_ Hκs1]". wp_rec.
+        iApply ("Hk" with "Htl HL [$Hκs1 $Hκs2]"). rewrite tctx_hasty_val. done.
       + rewrite /tctx_interp vec_to_list_map !zip_with_fmap_r
                 (zip_with_zip (λ v ty, (v, _))) zip_with_zip !big_sepL_fmap.
         iApply (big_sepL_mono' with "Hvl"); last done. by iIntros (i [v ty']).
@@ -310,7 +320,7 @@ Section typing.
   Proof.
     iIntros (HE Hk') "#LFT #HE Htl Hκs Hf Hargs Hk". rewrite -tctx_hasty_val.
     iApply (type_call_iris' with "LFT HE Htl [] Hκs Hf Hargs [Hk]"); [done..| |].
-    - instantiate (1 := 1%Qp). by rewrite /llctx_interp.
+    - instantiate (1 := 1%Qp). instantiate (1 := 1%Qp). by rewrite /llctx_interp_noend.
     - iIntros "* Htl _". iApply "Hk". done.
   Qed.
 
@@ -324,7 +334,7 @@ Section typing.
                 T)
                (call: p ps → k).
   Proof.
-    iIntros (Hκs HE tid) "#LFT #HE Htl HL HC (Hf & Hargs & HT)".
+    iIntros (Hκs HE tid qmax) "#LFT #HE Htl HL HC (Hf & Hargs & HT)".
     iMod (lctx_lft_alive_tok_list _ _ κs with "HE HL") as (q) "(Hκs & HL & Hclose)"; [done..|].
     iApply (type_call_iris' with "LFT HE Htl HL Hκs Hf Hargs"); [done|].
     iIntros (r) "Htl HL Hκs Hret". iMod ("Hclose" with "Hκs HL") as "HL".
@@ -348,8 +358,9 @@ Section typing.
   Proof.
     intros Hfn HL HE HTT' HC HT'T''.
     rewrite -typed_body_mono /flip; last done; first by eapply type_call'.
-    - etrans. eapply (incl_cctx_incl _ [_]); first by intros ? ->%elem_of_list_singleton.
-      apply cctx_incl_cons; first done. intros args. by inv_vec args.
+    - etrans.
+      + eapply (incl_cctx_incl _ [_]); by intros ? ->%elem_of_list_singleton.
+      + apply cctx_incl_cons; first done. intros args. by inv_vec args.
     - etrans; last by apply (tctx_incl_frame_l [_]).
       apply copy_elem_of_tctx_incl; last done. apply _.
   Qed.
@@ -376,12 +387,14 @@ Section typing.
         intros. eapply Is_true_eq_true, is_closed_weaken=>//. set_solver+.
     - iIntros (k).
       (* TODO : make [simpl_subst] work here. *)
-      change (subst' "_k" k (p ((λ: ["_r"], (#☠ ;; #☠) ;; "_k" ["_r"])%E :: ps))) with
-             ((subst "_k" k p) ((λ: ["_r"], (#☠ ;; #☠) ;; k ["_r"])%E :: map (subst "_k" k) ps)).
+      change (subst' "_k" k (p ((λ: ["_r"], "_k" ["_r"])%E :: ps))) with
+             ((subst "_k" k p) ((λ: ["_r"], k ["_r"])%E :: map (subst "_k" k) ps)).
       rewrite is_closed_nil_subst //.
       assert (map (subst "_k" k) ps = ps) as ->.
       { clear -Hpsc. induction Hpsc=>//=. rewrite is_closed_nil_subst //. congruence. }
-      iApply type_call; try done. constructor. done.
+      iApply type_call; try done.
+      + constructor.
+      + done.
     - simpl. iIntros (k ret). inv_vec ret=>ret. rewrite /subst_v /=.
       rewrite ->(is_closed_subst []); last set_solver+; last first.
       { apply subst'_is_closed; last done. apply is_closed_of_val. }
@@ -402,11 +415,11 @@ Section typing.
                      (subst_v (fb :: BNamed "return" :: argsb) (f ::: k ::: args) e)) -∗
     typed_instruction_ty E L T ef (fn fp).
   Proof.
-    iIntros (<- ->) "#Hbody /=". iIntros (tid) "#LFT _ $ $ #HT". iApply wp_value.
+    iIntros (<- ->) "#Hbody /=". iIntros (tid qmax) "#LFT _ $ $ #HT". iApply wp_value.
     rewrite tctx_interp_singleton. iLöb as "IH". iExists _. iSplit.
     { simpl. rewrite decide_left. done. }
-    iExists fb, _, argsb, e, _. iSplit. done. iSplit. done. iNext.
-    iIntros (x ϝ k args) "!#". iIntros (tid') "_ HE Htl HL HC HT'".
+    iExists fb, _, argsb, e, _. iSplit; first done. iSplit; first done. iNext.
+    iIntros (x ϝ k args) "!#". iIntros (tid' qmax') "_ HE Htl HL HC HT'".
     iApply ("Hbody" with "LFT HE Htl HL HC").
     rewrite tctx_interp_cons tctx_interp_app. iFrame "HT' IH".
     by iApply sendc_change_tid.
@@ -417,7 +430,8 @@ Section typing.
     IntoVal ef (funrec: <> argsb := e) →
     n = length argsb →
     □ (∀ x ϝ k (args : vec val (length argsb)),
-        typed_body ((fp x).(fp_E) ϝ) [ϝ ⊑ₗ []]
+        typed_body ((fp x).(fp_E) ϝ)
+                   [ϝ ⊑ₗ []]
                    [k ◁cont([ϝ ⊑ₗ []], λ v : vec _ 1, [(v!!!0%fin:val) ◁ box (fp x).(fp_ty)])]
                    (zip_with (TCtx_hasty ∘ of_val) args
                              (box <$> vec_to_list (fp x).(fp_tys)) ++ T)

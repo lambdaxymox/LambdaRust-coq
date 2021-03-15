@@ -80,22 +80,22 @@ Section ref.
   Global Instance ref_mono E L :
     Proper (flip (lctx_lft_incl E L) ==> subtype E L ==> subtype E L) ref.
   Proof.
-    iIntros (α1 α2 Hα ty1 ty2 Hty q) "HL".
+    iIntros (α1 α2 Hα ty1 ty2 Hty qmax qL) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as "Hα1α2".
+    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.
       iDestruct "H" as (ν q' γ β ty') "(#Hshr & #H⊑ & #Hinv & Htok & Hown)".
       iExists ν, q', γ, β, ty'. iFrame "∗#". iSplit.
       + iApply ty_shr_mono; last by iApply "Hs".
-        iApply lft_intersect_mono. done. iApply lft_incl_refl.
-      + by iApply lft_incl_trans.
+        iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
+      + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
     - iIntros (κ tid l) "H /=". iDestruct "H" as (ν q' γ β ty' lv lrc) "H".
       iExists ν, q', γ, β, ty', lv, lrc. iDestruct "H" as "#($&$&?&?&$&$)". iSplit.
       + iApply ty_shr_mono; last by iApply "Hs".
-        iApply lft_intersect_mono. done. iApply lft_incl_refl.
-      + by iApply lft_incl_trans.
+        iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
+      + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
   Qed.
   Global Instance ref_mono_flip E L :
     Proper (lctx_lft_incl E L ==> flip (subtype E L) ==> flip (subtype E L)) ref.

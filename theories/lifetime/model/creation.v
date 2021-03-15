@@ -108,13 +108,16 @@ Definition kill_set (I : gmap lft lft_names) (Λ : atomic_lft) : gset lft :=
 Lemma elem_of_kill_set I Λ κ : κ ∈ kill_set I Λ ↔ Λ ∈ κ ∧ is_Some (I !! κ).
 Proof. by rewrite /kill_set elem_of_filter elem_of_dom. Qed.
 
-Lemma lft_create E :
-  ↑lftN ⊆ E →
-  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+Lemma lft_create_strong P E :
+  pred_infinite P → ↑lftN ⊆ E →
+  lft_ctx ={E}=∗
+  ∃ p : positive, let κ := positive_to_lft p in ⌜P p⌝ ∗
+       (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
 Proof.
-  iIntros (?) "#LFT".
+  iIntros (HP ?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
-  destruct (exist_fresh (dom (gset atomic_lft) A)) as [Λ HΛ%not_elem_of_dom].
+  rewrite ->pred_infinite_set in HP.
+  destruct (HP (dom (gset _) A)) as [Λ [HPx HΛ%not_elem_of_dom]].
   iMod (own_update with "HA") as "[HA HΛ]".
   { apply auth_update_alloc, (alloc_singleton_local_update _ Λ (Cinl 1%Qp))=>//.
     by rewrite lookup_fmap HΛ. }
@@ -125,8 +128,8 @@ Proof.
     iModIntro. rewrite /lft_inv. iIntros (κ ?) "[[Hκ %]|[Hκ %]]".
     - iLeft. iFrame "Hκ". iPureIntro. by apply lft_alive_in_insert.
     - iRight. iFrame "Hκ". iPureIntro. by apply lft_dead_in_insert. }
-  iModIntro; iExists {[ Λ ]}.
-  rewrite {1}/lft_tok big_sepMS_singleton. iFrame "HΛ".
+  iModIntro; iExists Λ.
+  rewrite {1}/lft_tok big_sepMS_singleton. iSplit; first done. iFrame "HΛ".
   clear I A HΛ. iIntros "!# HΛ".
   iApply (step_fupd_mask_mono (↑lftN ∪ ↑lft_userN) _ ((↑lftN ∪ ↑lft_userN)∖↑mgmtN)).
   { (* FIXME solve_ndisj should really handle this... *)

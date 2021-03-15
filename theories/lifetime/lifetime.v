@@ -22,9 +22,22 @@ Instance lft_inhabited : Inhabited lft := populate static.
 
 Canonical lftO := leibnizO lft.
 
+Definition lft_incl_syntactic (κ κ' : lft) : Prop := ∃ κ'', κ'' ⊓ κ' = κ.
+Infix "⊑ˢʸⁿ" := lft_incl_syntactic (at level 40) : stdpp_scope.
+
 Section derived.
 Context `{!invG Σ, !lftG Σ}.
 Implicit Types κ : lft.
+
+Lemma lft_create E :
+  ↑lftN ⊆ E →
+  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+Proof.
+  iIntros (?) "#LFT".
+  iMod (lft_create_strong (λ _, True) with "LFT") as (κ _) "H"=>//;
+    [by apply pred_infinite_True|].
+  by auto.
+Qed.
 
 (* Deriving this just to prove that it can be derived.
 (It is in the signature only for code sharing reasons.) *)
@@ -221,6 +234,64 @@ Proof.
     iModIntro. iExists _. iFrame. iIntros "_". done.
   - iIntros "H†". iInv lftN as ">Hκ" "_". iDestruct "Hκ" as (q'') "Hκ".
     iDestruct (lft_tok_dead with "Hκ H†") as "[]".
+Qed.
+
+(** Syntactic lifetime inclusion *)
+Lemma lft_incl_syn_sem κ κ' :
+  κ ⊑ˢʸⁿ κ' → ⊢ κ ⊑ κ'.
+Proof. intros [z Hxy]. rewrite -Hxy. by apply lft_intersect_incl_r. Qed.
+
+Lemma lft_intersect_incl_syn_l κ κ' : κ ⊓ κ' ⊑ˢʸⁿ κ.
+Proof. by exists κ'; rewrite (comm _ κ κ'). Qed.
+
+Lemma lft_intersect_incl_syn_r κ κ' : κ ⊓ κ' ⊑ˢʸⁿ κ'.
+Proof. by exists κ. Qed.
+
+Lemma lft_incl_syn_refl κ : κ ⊑ˢʸⁿ κ.
+Proof. exists static; by rewrite left_id. Qed.
+
+Lemma lft_incl_syn_trans κ κ' κ'' :
+  κ ⊑ˢʸⁿ κ' → κ' ⊑ˢʸⁿ κ'' → κ ⊑ˢʸⁿ κ''.
+Proof.
+  intros [κ0 Hκ0] [κ'0 Hκ'0].
+  rewrite -Hκ0 -Hκ'0 assoc.
+  by apply lft_intersect_incl_syn_r.
+Qed.
+
+Lemma lft_intersect_mono_syn κ1 κ1' κ2 κ2' :
+  κ1 ⊑ˢʸⁿ κ1' → κ2 ⊑ˢʸⁿ κ2' → (κ1 ⊓ κ2) ⊑ˢʸⁿ (κ1' ⊓ κ2').
+Proof.
+  intros [κ1'' Hκ1] [κ2'' Hκ2].
+  exists (κ1'' ⊓ κ2'').
+  rewrite -!assoc (comm _ κ2'' _).
+  rewrite -assoc assoc (comm _ κ2' _).
+  by f_equal.
+Qed.
+
+Lemma lft_incl_syn_static κ : κ ⊑ˢʸⁿ static.
+Proof.
+  exists κ; by apply lft_intersect_right_id.
+Qed.
+
+Lemma lft_intersect_list_elem_of_incl_syn κs κ :
+  κ ∈ κs → lft_intersect_list κs ⊑ˢʸⁿ κ.
+Proof.
+  induction 1 as [κ|κ κ' κs Hin IH].
+  - apply lft_intersect_incl_syn_l.
+  - eapply lft_incl_syn_trans; last done.
+    apply lft_intersect_incl_syn_r.
+Qed.
+
+Global Instance lft_incl_syn_anti_symm : AntiSymm eq (λ x y, x ⊑ˢʸⁿ y).
+Proof.
+  intros κ1 κ2 [κ12 Hκ12] [κ21 Hκ21].
+  assert (κ21 = static) as Hstatic.
+  { apply (lft_intersect_static_cancel_l _ κ12).
+    eapply (inj (κ1 ⊓.)).
+    rewrite assoc right_id.
+    eapply (inj (.⊓ κ2)).
+    rewrite (comm _ κ1 κ21) -assoc Hκ21 Hκ12 (comm _ κ2). done. }
+  by rewrite Hstatic left_id in Hκ21.
 Qed.
 
 End derived.

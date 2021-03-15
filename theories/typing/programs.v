@@ -9,8 +9,8 @@ Section typing.
   (* This is an iProp because it is also used by the function type. *)
   Definition typed_body (E : elctx) (L : llctx) (C : cctx) (T : tctx)
                         (e : expr) : iProp Σ :=
-    (∀ tid, lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp L 1 -∗
-               cctx_interp tid C -∗ tctx_interp tid T -∗
+    (∀ tid (qmax : Qp), lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗ llctx_interp qmax L -∗
+               cctx_interp tid qmax C -∗ tctx_interp tid T -∗
                WP e {{ _, cont_postcondition }})%I.
   Global Arguments typed_body _ _ _ _ _%E.
 
@@ -33,10 +33,20 @@ Section typing.
            (typed_body E L).
   Proof.
     intros C1 C2 HC T1 T2 HT e ? <-. iIntros "H".
-    iIntros (tid) "#LFT #HE Htl HL HC HT".
+    iIntros (tid qmax) "#LFT #HE Htl HL HC HT".
+    iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (HT with "LFT HE HL HT") as "(HL & HT)".
+    iDestruct ("HLclose" with "HL") as "HL".
     iApply ("H" with "LFT HE Htl HL [HC] HT").
     by iApply (HC with "LFT HE HC").
+  Qed.
+
+  Lemma typed_body_tctx_incl E L T2 T1 C e :
+    tctx_incl E L T1 T2 →
+    (⊢ typed_body E L C T2 e) →
+    ⊢ typed_body E L C T1 e.
+  Proof.
+    intros Hincl He2. iApply typed_body_mono; last done; done.
   Qed.
 
   Global Instance typed_body_mono_flip E L:
@@ -47,19 +57,19 @@ Section typing.
   (** Instruction *)
   Definition typed_instruction (E : elctx) (L : llctx)
              (T1 : tctx) (e : expr) (T2 : val → tctx) : iProp Σ :=
-    (∀ tid, lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗
-              llctx_interp L 1 -∗ tctx_interp tid T1 -∗
+    (∀ tid qmax, lft_ctx -∗ elctx_interp E -∗ na_own tid ⊤ -∗
+              llctx_interp qmax L -∗ tctx_interp tid T1 -∗
               WP e {{ v, na_own tid ⊤ ∗
-                         llctx_interp L 1 ∗ tctx_interp tid (T2 v) }})%I.
+                         llctx_interp qmax L ∗ tctx_interp tid (T2 v) }})%I.
   Global Arguments typed_instruction _ _ _ _%E _.
 
   (** Writing and Reading **)
   Definition typed_write_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
-    (□ ∀ v tid F qL, ⌜lftE ∪ (↑lrustN) ⊆ F⌝ →
-      lft_ctx -∗ elctx_interp E -∗ llctx_interp L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
+    (□ ∀ v tid F qmax qL, ⌜lftE ∪ (↑lrustN) ⊆ F⌝ →
+      lft_ctx -∗ elctx_interp E -∗ llctx_interp_noend qmax L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl, ⌜length vl = ty.(ty_size) ∧ v = #l⌝ ∗ l ↦∗ vl ∗
           (▷ l ↦∗: ty.(ty_own) tid ={F}=∗
-            llctx_interp L qL ∗ ty2.(ty_own) tid [v]))%I.
+            llctx_interp_noend qmax L qL ∗ ty2.(ty_own) tid [v]))%I.
   Definition typed_write_aux : seal (@typed_write_def). by eexists. Qed.
   Definition typed_write := typed_write_aux.(unseal).
   Definition typed_write_eq : @typed_write = @typed_write_def := typed_write_aux.(seal_eq).
@@ -75,12 +85,12 @@ Section typing.
      that nobody could possibly have changed the vl (because only half the
      fraction was given). So we go with the definition that is easier to prove. *)
   Definition typed_read_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
-    (□ ∀ v tid F qL, ⌜lftE ∪ ↑lrustN ⊆ F⌝ →
+    (□ ∀ v tid F qmax qL, ⌜lftE ∪ ↑lrustN ⊆ F⌝ →
       lft_ctx -∗ elctx_interp E -∗ na_own tid F -∗
-      llctx_interp L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
+      llctx_interp_noend qmax L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl q, ⌜v = #l⌝ ∗ l ↦∗{q} vl ∗ ▷ ty.(ty_own) tid vl ∗
               (l ↦∗{q} vl ={F}=∗ na_own tid F ∗
-                              llctx_interp L qL ∗ ty2.(ty_own) tid [v]))%I.
+                              llctx_interp_noend qmax L qL ∗ ty2.(ty_own) tid [v]))%I.
   Definition typed_read_aux : seal (@typed_read_def). by eexists. Qed.
   Definition typed_read := typed_read_aux.(unseal).
   Definition typed_read_eq : @typed_read = @typed_read_def := typed_read_aux.(seal_eq).
@@ -109,25 +119,40 @@ Section typing_rules.
     typed_body E L C T e -∗ typed_body E L C T e.
   Proof. done. Qed.
 
-  (* TODO: Proof a version of this that substitutes into a compatible context...
-     if we really want to do that. *)
-  Lemma type_equivalize_lft E L C T κ1 κ2 e :
-    (⊢ typed_body ((κ1 ⊑ₑ κ2) :: (κ2 ⊑ₑ κ1) :: E) L C T e) →
-    ⊢ typed_body E ((κ1 ⊑ₗ [κ2]) :: L) C T e.
+  (** This lemma can replace [κ1] by [κ2] and vice versa in positions that
+  respect "semantic lifetime equivalence"; in particular, lifetimes of
+  references can be adjusted this way.  However, it cannot replace lifetimes in
+  other type constructors, as those might only respect *syntactic* lifetime
+  equivalence. This lemma is *weaker* than what was in the original paper where
+  lifetimes could be replaced everywhere; it had to be adjusted for GhostCell.
+  See [typing.lib.diverging_static] for an example of how
+  [type_equivalize_lft_static] without this restriction ciuld be used to subvert
+  branding.
+
+  This is technically not a proper typing rule since the type system has no way
+  to express "subtyping wrt semantic lifetime inclusion".  However, there is no
+  fundamental reason that we could not also reflect all these semantic facts on
+  the syntactic side, it would just be very clunky (and note that in Coq we do
+  not reflect this syntactic side anway). *)
+  Lemma type_equivalize_lft E L C T1 T2 κ1 κ2 e :
+    (∀ tid, lft_ctx -∗ κ1 ⊑ κ2 -∗ κ2 ⊑ κ1 -∗ tctx_interp tid T1 -∗ tctx_interp tid T2) →
+    (⊢ typed_body E L C T2 e) →
+    ⊢ typed_body E ((κ1 ⊑ₗ [κ2]) :: L) C T1 e.
   Proof.
-    iIntros (He tid) "#LFT #HE Htl [Hκ HL] HC HT".
-    iMod (lctx_equalize_lft with "LFT Hκ") as "[Hκ1 Hκ2]".
-    iApply (He with "LFT [Hκ1 Hκ2 HE] Htl HL HC HT").
-    rewrite /elctx_interp /=. by iFrame.
+    iIntros (Hswitch He tid qmax) "#LFT #HE Htl [Hκ HL] HC HT".
+    iMod (lctx_equalize_lft_sem with "LFT Hκ") as "[Hκ1 Hκ2]".
+    iApply (He with "LFT HE Htl HL HC [-]").
+    iApply (Hswitch with "LFT Hκ1 Hκ2"). done.
   Qed.
-  Lemma type_equivalize_lft_static E L C T κ e :
-    (⊢ typed_body ((static ⊑ₑ κ) :: E) L C T e) →
-    ⊢ typed_body E ((κ ⊑ₗ []) :: L) C T e.
+  Lemma type_equivalize_lft_static E L C T1 T2 κ e :
+    (∀ tid, lft_ctx -∗ static ⊑ κ -∗ tctx_interp tid T1 -∗ tctx_interp tid T2) →
+    (⊢ typed_body E L C T2 e) →
+    ⊢ typed_body E ((κ ⊑ₗ []) :: L) C T1 e.
   Proof.
-    iIntros (He tid) "#LFT #HE Htl [Hκ HL] HC HT".
-    iMod (lctx_equalize_lft_static with "LFT Hκ") as "Hκ_static".
-    iApply (He with "LFT [Hκ_static HE] Htl HL HC HT").
-    rewrite /elctx_interp /=. by iFrame.
+    iIntros (Hswitch He tid qmax) "#LFT #HE Htl [Hκ HL] HC HT".
+    iMod (lctx_equalize_lft_sem_static with "LFT Hκ") as "Hκ".
+    iApply (He with "LFT HE Htl HL HC [-]").
+    iApply (Hswitch with "LFT Hκ"). done.
   Qed.
 
   Lemma type_let' E L T1 T2 (T : tctx) C xb e e' :
@@ -136,7 +161,7 @@ Section typing_rules.
     (∀ v : val, typed_body E L C (T2 v ++ T) (subst' xb v e')) -∗
     typed_body E L C (T1 ++ T) (let: xb := e in e').
   Proof.
-    iIntros (Hc) "He He'". iIntros (tid) "#LFT #HE Htl HL HC HT". rewrite tctx_interp_app.
+    iIntros (Hc) "He He'". iIntros (tid qmax) "#LFT #HE Htl HL HC HT". rewrite tctx_interp_app.
     iDestruct "HT" as "[HT1 HT]". wp_bind e. iApply (wp_wand with "[He HL HT1 Htl]").
     { iApply ("He" with "LFT HE Htl HL HT1"). }
     iIntros (v) "/= (Htl & HL & HT2)". wp_let.
@@ -173,12 +198,16 @@ Section typing_rules.
     (∀ κ, typed_body E ((κ ⊑ₗ κs) :: L) C T e) -∗
     typed_body E L C T (Newlft ;; e).
   Proof.
-    iIntros (Hc) "He". iIntros (tid) "#LFT #HE Htl HL HC HT".
+    iIntros (Hc) "He". iIntros (tid qmax) "#LFT #HE Htl HL HC HT".
     iMod (lft_create with "LFT") as (Λ) "[Htk #Hinh]"; first done.
     set (κ' := lft_intersect_list κs). wp_seq.
     iApply ("He" $! (κ' ⊓ Λ) with "LFT HE Htl [HL Htk] HC HT").
     rewrite /llctx_interp /=. iFrame "HL".
-    iExists Λ. iSplit; first done. iFrame. done.
+    iExists Λ. iSplit; first done.
+    destruct (decide (1 ≤ qmax)%Qp) as [_|Hlt%Qp_lt_nge].
+    - by iFrame "#∗".
+    - apply Qp_lt_sum in Hlt as [q' ->]. iDestruct "Htk" as "[$ Htk]".
+      iIntros "Htk'". iApply "Hinh". iFrame.
   Qed.
 
   (* TODO: It should be possible to show this while taking only one step.
@@ -187,8 +216,8 @@ Section typing_rules.
     Closed [] e → UnblockTctx κ T1 T2 →
     typed_body E L C T2 e -∗ typed_body E ((κ ⊑ₗ κs) :: L) C T1 (Endlft ;; e).
   Proof.
-    iIntros (Hc Hub) "He". iIntros (tid) "#LFT #HE Htl [Hκ HL] HC HT".
-    iDestruct "Hκ" as (Λ) "(% & Htok & #Hend)".
+    iIntros (Hc Hub) "He". iIntros (tid qmax) "#LFT #HE Htl [Hκ HL] HC HT".
+    iDestruct "Hκ" as (Λ) "(% & Htok & Hend)".
     iSpecialize ("Hend" with "Htok"). wp_bind Endlft.
     iApply (wp_mask_mono _ (↑lftN ∪ ↑lft_userN)); first done.
     iApply (wp_step_fupd with "Hend"); first set_solver-. wp_seq.
@@ -199,7 +228,7 @@ Section typing_rules.
   Lemma type_path_instr {E L} p ty :
     ⊢ typed_instruction_ty E L [p ◁ ty] p ty.
   Proof.
-    iIntros (?) "_ _ $$ [? _]".
+    iIntros (??) "_ _ $$ [? _]".
     iApply (wp_hasty with "[-]"). done. iIntros (v) "_ Hv".
     rewrite tctx_interp_singleton. iExists v. iFrame. by rewrite eval_path_of_val.
   Qed.
@@ -215,18 +244,20 @@ Section typing_rules.
     (⊢ typed_write E L ty1 ty ty1') →
     (⊢ typed_instruction E L [p1 ◁ ty1; p2 ◁ ty] (p1 <- p2) (λ _, [p1 ◁ ty1'])).
   Proof.
-    iIntros (Hwrt tid) "#LFT #HE $ HL".
+    iIntros (Hwrt tid ?) "#LFT #HE $ HL".
     rewrite tctx_interp_cons tctx_interp_singleton. iIntros "[Hp1 Hp2]".
     wp_bind p1. iApply (wp_hasty with "Hp1"). iIntros (v1) "% Hown1".
     wp_bind p2. iApply (wp_hasty with "Hp2"). iIntros (v2) "_ Hown2".
     rewrite typed_write_eq in Hwrt.
+    iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Hwrt with "[] LFT HE HL Hown1") as (l vl) "([% %] & Hl & Hclose)"; first done.
     subst v1. iDestruct (ty_size_eq with "Hown2") as "#Hsz". iDestruct "Hsz" as %Hsz.
     rewrite <-Hsz in *. destruct vl as [|v[|]]; try done.
     rewrite heap_mapsto_vec_singleton. iApply wp_fupd. wp_write.
     rewrite -heap_mapsto_vec_singleton.
-    iMod ("Hclose" with "[Hl Hown2]") as "($ & Hown)".
+    iMod ("Hclose" with "[Hl Hown2]") as "(HL & Hown)".
     { iExists _. iFrame. }
+    iDestruct ("HLclose" with "HL") as "$".
     rewrite tctx_interp_singleton tctx_hasty_val' //.
   Qed.
 
@@ -242,16 +273,18 @@ Section typing_rules.
     ty.(ty_size) = 1%nat → (⊢ typed_read E L ty1 ty ty1') →
     (⊢ typed_instruction E L [p ◁ ty1] (!p) (λ v, [p ◁ ty1'; v ◁ ty])).
   Proof.
-    iIntros (Hsz Hread tid) "#LFT #HE Htl HL Hp".
+    iIntros (Hsz Hread tid qmax) "#LFT #HE Htl HL Hp".
     rewrite tctx_interp_singleton. wp_bind p. iApply (wp_hasty with "Hp").
     iIntros (v) "% Hown".
     rewrite typed_read_eq in Hread.
+    iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Hread with "[] LFT HE Htl HL Hown") as
         (l vl q) "(% & Hl & Hown & Hclose)"; first done.
     subst v. iDestruct (ty_size_eq with "Hown") as "#>%". rewrite ->Hsz in *.
     destruct vl as [|v [|]]; try done.
     rewrite heap_mapsto_vec_singleton. iApply wp_fupd. wp_read.
-    iMod ("Hclose" with "Hl") as "($ & $ & Hown2)".
+    iMod ("Hclose" with "Hl") as "($ & HL & Hown2)".
+    iDestruct ("HLclose" with "HL") as "$".
     rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
     by iFrame.
   Qed.
@@ -265,13 +298,13 @@ Section typing_rules.
     typed_body E L C T (let: x := !p in e).
   Proof. iIntros. by iApply type_let; [apply type_deref_instr|solve_typing|]. Qed.
 
-  Lemma type_memcpy_iris E L qL tid ty ty1 ty1' ty2 ty2' (n : Z) p1 p2 :
+  Lemma type_memcpy_iris E L qmax qL tid ty ty1 ty1' ty2 ty2' (n : Z) p1 p2 :
     Z.of_nat (ty.(ty_size)) = n →
     typed_write E L ty1 ty ty1' -∗ typed_read E L ty2 ty ty2' -∗
-    {{{ lft_ctx ∗ elctx_interp E ∗ na_own tid ⊤ ∗ llctx_interp L qL ∗
+    {{{ lft_ctx ∗ elctx_interp E ∗ na_own tid ⊤ ∗ llctx_interp_noend qmax L qL ∗
         tctx_elt_interp tid (p1 ◁ ty1) ∗ tctx_elt_interp tid (p2 ◁ ty2) }}}
       (p1 <-{n} !p2)
-    {{{ RET #☠; na_own tid ⊤ ∗ llctx_interp L qL ∗
+    {{{ RET #☠; na_own tid ⊤ ∗ llctx_interp_noend qmax L qL ∗
                  tctx_elt_interp tid (p1 ◁ ty1') ∗ tctx_elt_interp tid (p2 ◁ ty2') }}}.
   Proof.
     iIntros (<-) "#Hwrt #Hread !#".
@@ -298,10 +331,12 @@ Section typing_rules.
     ⊢ typed_instruction E L [p1 ◁ ty1; p2 ◁ ty2] (p1 <-{n} !p2)
                       (λ _, [p1 ◁ ty1'; p2 ◁ ty2']).
   Proof.
-    iIntros (Hsz Hwrt Hread tid) "#LFT #HE Htl HL HT".
+    iIntros (Hsz Hwrt Hread tid qmax) "#LFT #HE Htl HL HT".
+    iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iApply (type_memcpy_iris with "[] [] [$LFT $Htl $HE $HL HT]"); try done.
     { by rewrite tctx_interp_cons tctx_interp_singleton. }
-    rewrite tctx_interp_cons tctx_interp_singleton. auto.
+    rewrite tctx_interp_cons tctx_interp_singleton.
+    iIntros "!> ($ & HL & $ & $)". by iApply "HLclose".
   Qed.
 
   Lemma type_memcpy {E L} ty ty1 ty2 (n : Z) C T T' ty1' ty2' p1 p2 e:

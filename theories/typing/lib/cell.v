@@ -34,7 +34,7 @@ Section cell.
 
   Global Instance cell_mono E L : Proper (eqtype E L ==> subtype E L) cell.
   Proof.
-    move=>?? /eqtype_unfold EQ. iIntros (?) "HL".
+    move=>?? /eqtype_unfold EQ. iIntros (??) "HL".
     iDestruct (EQ with "HL") as "#EQ". iIntros "!# #HE".
     iDestruct ("EQ" with "HE") as "(% & #Hown & #Hshr)".
     iSplit; [done|iSplit; iIntros "!# * H"].
@@ -91,7 +91,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   (* The other direction: getting ownership out of a cell. *)
@@ -103,7 +103,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   Definition cell_get_mut : val :=
@@ -115,7 +115,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   Definition cell_from_mut : val :=
@@ -127,7 +127,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   Definition cell_into_box : val :=
@@ -139,7 +139,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   Definition cell_from_box : val :=
@@ -151,7 +151,7 @@ Section typing.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_jump; [solve_typing..|].
-    iIntros (??) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
+    iIntros (???) "#LFT _ $ Hty". rewrite !tctx_interp_singleton /=. done.
   Qed.
 
   (** Reading from a cell *)
@@ -192,7 +192,7 @@ Section typing.
     iIntros (c'); simpl_subst.
     iApply type_new; [solve_typing..|]; iIntros (r); simpl_subst.
     (* Drop to Iris level. *)
-    iIntros (tid) "#LFT #HE Htl HL HC".
+    iIntros (tid qmax) "#LFT #HE Htl HL HC".
     rewrite 3!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iIntros "(Hr & Hc & #Hc' & Hx)".
     destruct c' as [[|c'|]|]; try done. destruct x as [[|x|]|]; try done.
@@ -241,7 +241,7 @@ Section typing.
   Proof.
     intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk HT".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite tctx_interp_singleton tctx_hasty_val.
     iApply (type_type _ _ _ [ x ◁ box (&uniq{α}(cell ty)) ]
             with "[] LFT HE Hna HL Hk [HT]"); last first.

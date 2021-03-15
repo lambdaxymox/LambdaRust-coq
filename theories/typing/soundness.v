@@ -38,7 +38,7 @@ Section type_soundness.
     iMod lft_init as (?) "#LFT". done.
     iMod na_alloc as (tid) "Htl". set (Htype := TypeG _ _ _ _ _).
     wp_bind (of_val main). iApply (wp_wand with "[Htl]").
-    iApply (Hmain Htype [] [] $! tid with "LFT [] Htl [] []").
+    iApply (Hmain Htype [] [] $! tid 1%Qp with "LFT [] Htl [] []").
     { by rewrite /elctx_interp big_sepL_nil. }
     { by rewrite /llctx_interp big_sepL_nil. }
     { by rewrite tctx_interp_nil. }
@@ -48,10 +48,13 @@ Section type_soundness.
     iDestruct "Hmain" as (f k x e ?) "(EQ & % & Hmain)". iDestruct "EQ" as %[= ->].
     destruct x; try done. wp_rec.
     iMod (lft_create with "LFT") as (ϝ) "Hϝ"; first done.
-    iApply ("Hmain" $! () ϝ exit_cont [#] tid with "LFT [] Htl [Hϝ] []");
+    iApply ("Hmain" $! () ϝ exit_cont [#] tid 1%Qp with "LFT [] Htl [Hϝ] []");
       last by rewrite tctx_interp_nil.
     { by rewrite /elctx_interp /=. }
-    { rewrite /llctx_interp /=. iSplit; last done. iExists ϝ. iFrame. by rewrite /= left_id. }
+    { rewrite /llctx_interp /=. iSplit; last done. iExists ϝ.
+      rewrite /= left_id. iSplit; first done.
+      rewrite decide_True //.
+      by iDestruct "Hϝ" as "[$ #$]". }
     rewrite cctx_interp_singleton. simpl. iIntros (args) "_ _".
     inv_vec args. iIntros (x) "_ /=". by wp_lam.
   Qed.

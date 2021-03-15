@@ -21,7 +21,7 @@ Section swap.
       inv_vec p=>p1 p2. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (p1'). simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (p2'). simpl_subst.
-    iIntros (tid) "#LFT #HE Hna HL Hk (H2 & H2' & H1 & H1' & _)".
+    iIntros (tid qmax) "#LFT #HE Hna HL Hk (H2 & H2' & H1 & H1' & _)".
     rewrite !tctx_hasty_val.
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose)";
       [solve_typing..|].

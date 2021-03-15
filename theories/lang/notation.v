@@ -35,6 +35,8 @@ Notation "e1 - e2" := (BinOp MinusOp e1%E e2%E)
   (at level 50, left associativity) : expr_scope.
 Notation "e1 ≤ e2" := (BinOp LeOp e1%E e2%E)
   (at level 70) : expr_scope.
+Notation "e1 < e2" := (e1+#1 ≤ e2)%E
+  (at level 70) : expr_scope.
 Notation "e1 = e2" := (BinOp EqOp e1%E e2%E)
   (at level 70) : expr_scope.
 (* The unicode ← is already part of the notation "_ ← _; _" for bind. *)
@@ -84,7 +86,7 @@ Notation "'withcont:' k1 ':' e1 'cont:' k2 xl := e2" :=
   ((Lam (@cons binder k1%binder nil) e1%E) [Rec k2%binder ((fun _ : eq k1%binder k2%binder => xl%binder) eq_refl) e2%E])
   (only parsing, at level 151, k1, k2, xl at level 1, e2 at level 150) : expr_scope.
 
-Notation "'call:' f args → k" := (f (@cons expr (λ: ["_r"], Endlft ;; k ["_r"]) args))%E
+Notation "'call:' f args → k" := (f (@cons expr (λ: ["_r"], k ["_r"]) args))%E
   (only parsing, at level 102, f, args, k at level 1) : expr_scope.
 Notation "'letcall:' x := f args 'in' e" :=
   (letcont: "_k" [ x ] := e in call: f args → "_k")%E
