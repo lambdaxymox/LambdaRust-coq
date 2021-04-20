@@ -175,7 +175,8 @@ Proof.
     split; last done. by eapply gmultiset_elem_of_subseteq. }
   { intros κ ???. rewrite elem_of_difference elem_of_filter elem_of_dom. auto. }
   iModIntro. iMod ("Hclose" with "[-]") as "_"; last first.
-  { iModIntro. rewrite /lft_dead. iExists Λ. rewrite elem_of_singleton. auto. }
+  { iModIntro. rewrite /lft_dead. iExists Λ.
+    rewrite gmultiset_elem_of_singleton. auto. }
   iNext. iExists (<[Λ:=false]>A), I.
   rewrite /own_alft_auth /to_alftUR fmap_insert. iFrame "HA HI".
   rewrite HI !big_sepS_union //.

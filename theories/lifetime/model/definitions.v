@@ -19,7 +19,7 @@ End lft_notation.
 Definition static : lft := (∅ : gmultiset _).
 Instance lft_intersect : Meet lft := λ κ κ', κ ⊎ κ'.
 
-Definition positive_to_lft (p : positive) : lft := {[ p ]}.
+Definition positive_to_lft (p : positive) : lft := {[+ p +]}.
 
 Inductive bor_state :=
   | Bor_in
@@ -341,7 +341,7 @@ Proof. rewrite /lft_ctx. apply _. Qed.
 Global Instance positive_to_lft_inj : Inj eq eq positive_to_lft.
 Proof.
   unfold positive_to_lft. intros x y Hxy.
-  apply (elem_of_singleton_1 (C := lft)). rewrite -Hxy.
+  apply gmultiset_elem_of_singleton. rewrite -Hxy.
   set_solver.
 Qed.
 End basic_properties.
