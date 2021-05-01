@@ -9,7 +9,7 @@ Section code.
   Context `{!typeG Σ}.
 
   Definition take ty (call_once : val) : val :=
-    funrec: <> ["x"; "f"] :=
+    fn: ["x"; "f"] :=
       let: "x'" := !"x" in
       let: "call_once" := call_once in
       letalloc: "t" <-{ty.(ty_size)} !"x'" in

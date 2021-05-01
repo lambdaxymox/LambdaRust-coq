@@ -404,7 +404,7 @@ Section typing.
 
   Lemma type_rec {A} E L fb (argsb : list binder) ef e n
         (fp : A → fn_params n) T `{!CopyC T, !SendC T, !Closed _ e} :
-    IntoVal ef (funrec: fb argsb := e) →
+    IntoVal ef (fnrec: fb argsb := e) →
     n = length argsb →
     □ (∀ x ϝ (f : val) k (args : vec val (length argsb)),
           typed_body ((fp x).(fp_E) ϝ) [ϝ ⊑ₗ []]
@@ -427,7 +427,7 @@ Section typing.
 
   Lemma type_fn {A} E L (argsb : list binder) ef e n
         (fp : A → fn_params n) T `{!CopyC T, !SendC T, !Closed _ e} :
-    IntoVal ef (funrec: <> argsb := e) →
+    IntoVal ef (fn: argsb := e) →
     n = length argsb →
     □ (∀ x ϝ k (args : vec val (length argsb)),
         typed_body ((fp x).(fp_E) ϝ)

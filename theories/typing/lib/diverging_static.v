@@ -9,7 +9,7 @@ Section diverging_static.
   (* Show that we can convert any live borrow to 'static with an infinite
      loop. *)
   Definition diverging_static_loop (call_once : val) : val :=
-    funrec: <> ["x"; "f"] :=
+    fn: ["x"; "f"] :=
       let: "call_once" := call_once in
       letcall: "ret" := "call_once" ["f"; "x"]%E in
     withcont: "loop":

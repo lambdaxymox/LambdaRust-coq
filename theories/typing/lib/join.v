@@ -14,7 +14,7 @@ Section join.
      One of the closures is executed in another thread, and the
      closures can refer to on-stack data (no 'static' bound). *)
   Definition join (call_once_A call_once_B : val) (R_A R_B : type) : val :=
-    funrec: <> ["fA"; "fB"] :=
+    fn: ["fA"; "fB"] :=
       let: "call_once_A" := call_once_A in
       let: "call_once_B" := call_once_B in
       let: "join" := spawn [λ: ["c"],

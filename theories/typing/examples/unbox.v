@@ -6,7 +6,7 @@ Section unbox.
   Context `{!typeG Σ}.
 
   Definition unbox : val :=
-    funrec: <> ["b"] :=
+    fn: ["b"] :=
        let: "b'" := !"b" in let: "bx" := !"b'" in
        letalloc: "r" <- "bx" +ₗ #0 in
        delete [ #1; "b"] ;; return: ["r"].

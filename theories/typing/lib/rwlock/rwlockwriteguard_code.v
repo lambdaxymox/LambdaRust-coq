@@ -11,7 +11,7 @@ Section rwlockwriteguard_functions.
 
   (* Turning a rwlockwriteguard into a shared borrow. *)
   Definition rwlockwriteguard_deref : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "r'" := !"x'" +ₗ #1 in
       letalloc: "r" <- "r'" in
@@ -56,7 +56,7 @@ Section rwlockwriteguard_functions.
 
   (* Turning a rwlockwriteguard into a unique borrow. *)
   Definition rwlockwriteguard_derefmut : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "r'" := !"x'" +ₗ #1 in
       letalloc: "r" <- "r'" in
@@ -102,7 +102,7 @@ Section rwlockwriteguard_functions.
 
   (* Drop a rwlockwriteguard and release the lock. *)
   Definition rwlockwriteguard_drop : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       "x'" <-ˢᶜ #0;;
       delete [ #1; "x"];;

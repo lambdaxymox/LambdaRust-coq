@@ -6,7 +6,7 @@ Section rebor.
   Context `{!typeG Σ}.
 
   Definition rebor : val :=
-    funrec: <> ["t1"; "t2"] :=
+    fn: ["t1"; "t2"] :=
        Newlft;;
        letalloc: "x" <- "t1" in
        let: "x'" := !"x" in let: "y" := "x'" +ₗ #0 in

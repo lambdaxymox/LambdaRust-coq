@@ -383,7 +383,7 @@ Section code.
   Qed.
 
   Definition rc_strong_count : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #1 ] in
       let: "rc'" := !"rc" in
       let: "rc''" := !"rc'" in
@@ -440,7 +440,7 @@ Section code.
   Qed.
 
   Definition rc_weak_count : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #1 ] in
       let: "rc'" := !"rc" in
       let: "rc''" := !"rc'" in
@@ -501,7 +501,7 @@ Section code.
   Qed.
 
   Definition rc_new ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "rcbox" := new [ #(2 + ty.(ty_size))%nat ] in
       let: "rc" := new [ #1 ] in
       "rcbox" +ₗ #0 <- #1;;
@@ -544,7 +544,7 @@ Section code.
   Qed.
 
   Definition rc_clone : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #1 ] in
       let: "rc'" := !"rc" in
       let: "rc''" := !"rc'" in
@@ -609,7 +609,7 @@ Section code.
   Qed.
 
   Definition rc_deref : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "x" := new [ #1 ] in
       let: "rc'" := !"rc" in
       "x" <- (!"rc'" +ₗ #2);;
@@ -651,7 +651,7 @@ Section code.
   Qed.
 
   Definition rc_try_unwrap ty : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #(Σ[ ty; rc ty ]).(ty_size) ] in
     withcont: "k":
       let: "rc'" := !"rc" in
@@ -749,7 +749,7 @@ Section code.
   Qed.
 
   Definition rc_drop ty : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #(option ty).(ty_size) ] in
     withcont: "k":
       let: "rc'" := !"rc" in
@@ -843,7 +843,7 @@ Section code.
   Qed.
 
   Definition rc_get_mut : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #2 ] in
     withcont: "k":
       let: "rc'" := !"rc" in
@@ -934,7 +934,7 @@ Section code.
   (* TODO : it is not nice that we have to inline the definition of
      rc_new and of rc_deref. *)
   Definition rc_make_mut (ty : type) (clone : val) : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #1 ] in
     withcont: "k":
       let: "rc'" := !"rc" in

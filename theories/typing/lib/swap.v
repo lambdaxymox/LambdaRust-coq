@@ -7,7 +7,7 @@ Section swap.
   Context `{!typeG Σ}.
 
   Definition swap ty : val :=
-    funrec: <> ["p1"; "p2"] :=
+    fn: ["p1"; "p2"] :=
       let: "p1'" := !"p1" in
       let: "p2'" := !"p2" in
       swap ["p1'"; "p2'"; #ty.(ty_size)];;

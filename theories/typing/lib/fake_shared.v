@@ -6,7 +6,7 @@ Section fake_shared.
   Context `{!typeG Σ}.
 
   Definition fake_shared_box : val :=
-    funrec: <> ["x"] := Skip ;; return: ["x"].
+    fn: ["x"] := Skip ;; return: ["x"].
 
   Lemma fake_shared_box_type ty `{!TyWf ty} :
     typed_val fake_shared_box
@@ -36,7 +36,7 @@ Section fake_shared.
   Qed.
 
   Definition fake_shared_uniq : val :=
-    funrec: <> ["x"] := Skip ;; return: ["x"].
+    fn: ["x"] := Skip ;; return: ["x"].
 
   Lemma fake_shared_uniq_type ty `{!TyWf ty} :
     typed_val fake_shared_box
