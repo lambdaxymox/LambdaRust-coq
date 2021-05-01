@@ -1,6 +1,7 @@
 From iris.proofmode Require Import tactics.
 From iris.algebra Require Import list.
 From iris.bi Require Import fractional.
+From lrust.typing Require Import lft_contexts.
 From lrust.typing Require Export type.
 Set Default Proof Using "Type".
 
@@ -126,7 +127,7 @@ Section sum.
     Proper (Forall2 (subtype E L) ==> subtype E L) sum.
   Proof.
     iIntros (tyl1 tyl2 Htyl qmax qL) "HL".
-    iAssert (□ (lft_contexts.elctx_interp E -∗ ⌜max_list_with ty_size tyl1 = max_list_with ty_size tyl2⌝))%I with "[#]" as "#Hleq".
+    iAssert (□ (elctx_interp E -∗ ⌜max_list_with ty_size tyl1 = max_list_with ty_size tyl2⌝))%I with "[#]" as "#Hleq".
     { iInduction Htyl as [|???? Hsub] "IH".
       { iClear "∗". iIntros "!# _". done. }
       iDestruct (Hsub with "HL") as "#Hsub". iDestruct ("IH" with "HL") as "{IH} #IH".
