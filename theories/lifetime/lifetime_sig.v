@@ -6,15 +6,14 @@ From iris.bi Require Import fractional.
 Set Default Proof Using "Type".
 
 Definition lftN : namespace := nroot .@ "lft".
-(** A (disjoint) mask that is available in the "consequence" view shift of
-    borrow accessors. *)
-Definition lft_userN : namespace := nroot .@ "lft_usr".
 
 Module Type lifetime_sig.
   (** CMRAs needed by the lifetime logic  *)
   (* We can't instantie the module parameters with inductive types, so we
      have aliases here. *)
-  Parameter lftG' : gFunctors → Set.
+  (** userE is a (disjoint) mask that is available in the "consequence" view
+      shift of borrow accessors. *)
+  Parameter lftG' : ∀ (Σ : gFunctors) (userE : coPset), Set.
   Global Notation lftG := lftG'.
   Existing Class lftG'.
   Parameter lftPreG' : gFunctors → Set.
@@ -26,17 +25,17 @@ Module Type lifetime_sig.
   Parameter static : lft.
   Declare Instance lft_intersect : Meet lft.
 
-  Parameter lft_ctx : ∀ `{!invG Σ, !lftG Σ}, iProp Σ.
+  Parameter lft_ctx : ∀ `{!invG Σ, !lftG Σ userE}, iProp Σ.
 
-  Parameter lft_tok : ∀ `{!lftG Σ} (q : Qp) (κ : lft), iProp Σ.
-  Parameter lft_dead : ∀ `{!lftG Σ} (κ : lft), iProp Σ.
+  Parameter lft_tok : ∀ `{!lftG Σ userE} (q : Qp) (κ : lft), iProp Σ.
+  Parameter lft_dead : ∀ `{!lftG Σ userE} (κ : lft), iProp Σ.
 
-  Parameter lft_incl : ∀ `{!invG Σ, !lftG Σ} (κ κ' : lft), iProp Σ.
-  Parameter bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (P : iProp Σ), iProp Σ.
+  Parameter lft_incl : ∀ `{!invG Σ, !lftG Σ userE} (κ κ' : lft), iProp Σ.
+  Parameter bor : ∀ `{!invG Σ, !lftG Σ userE} (κ : lft) (P : iProp Σ), iProp Σ.
 
   Parameter bor_idx : Type.
-  Parameter idx_bor_own : ∀ `{!lftG Σ} (q : frac) (i : bor_idx), iProp Σ.
-  Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
+  Parameter idx_bor_own : ∀ `{!lftG Σ userE} (q : frac) (i : bor_idx), iProp Σ.
+  Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ userE} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
 
   (** Our lifetime creation lemma offers allocating a lifetime that is defined
   by a [positive] in some given infinite set. This operation converts the
@@ -54,7 +53,7 @@ Module Type lifetime_sig.
   Infix "⊑" := lft_incl (at level 70) : bi_scope.
 
   Section properties.
-  Context `{!invG Σ, !lftG Σ}.
+  Context `{!invG Σ, !lftG Σ userE}.
 
   (** * Instances *)
   Global Declare Instance lft_inhabited : Inhabited lft.
@@ -109,7 +108,7 @@ Module Type lifetime_sig.
   Parameter lft_create_strong : ∀ P E, pred_infinite P → ↑lftN ⊆ E →
     lft_ctx ={E}=∗
     ∃ p : positive, let κ := positive_to_lft p in ⌜P p⌝ ∗
-         (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+         (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ userE}[userE]▷=∗ [†κ]).
   Parameter bor_create : ∀ E κ P,
     ↑lftN ⊆ E → lft_ctx -∗ ▷ P ={E}=∗ &{κ} P ∗ ([†κ] ={E}=∗ ▷ P).
   Parameter bor_fake : ∀ E κ P,
@@ -143,11 +142,11 @@ Module Type lifetime_sig.
      shift, we cannot turn [†κ'] into [†κ]. *)
   Parameter bor_acc_strong : ∀ E q κ P, ↑lftN ⊆ E →
     lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
+      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={userE}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
   Parameter bor_acc_atomic_strong : ∀ E κ P, ↑lftN ⊆ E →
     lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗
       (∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-         ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
+         ∀ Q, ▷ (▷ Q -∗ [†κ'] ={userE}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
            ([†κ] ∗ |={E∖↑lftN,E}=> True).
 
   (* Because Coq's module system is horrible, we have to repeat properties of lft_incl here
@@ -173,6 +172,7 @@ Module Type lifetime_sig.
   Parameter lftΣ : gFunctors.
   Global Declare Instance subG_lftPreG Σ : subG lftΣ Σ → lftPreG Σ.
 
-  Parameter lft_init : ∀ `{!invG Σ, !lftPreG Σ} E, ↑lftN ⊆ E →
-    ⊢ |={E}=> ∃ _ : lftG Σ, lft_ctx.
+  Parameter lft_init : ∀ `{!invG Σ, !lftPreG Σ} E userE,
+    ↑lftN ⊆ E → ↑lftN ## userE →
+    ⊢ |={E}=> ∃ _ : lftG Σ userE, lft_ctx.
 End lifetime_sig.

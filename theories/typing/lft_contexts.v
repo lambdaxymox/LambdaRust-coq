@@ -23,7 +23,7 @@ Notation llctx := (list llctx_elt).
 Notation "κ ⊑ₗ κl" := (@pair lft (list lft) κ κl) (at level 70).
 
 Section lft_contexts.
-  Context `{!invG Σ, !lftG Σ}.
+  Context `{!invG Σ, !lftG Σ lft_userE}.
   Implicit Type (κ : lft).
 
   (* External lifetime contexts. *)
@@ -52,7 +52,7 @@ Section lft_contexts.
     std++ we use here does not yet have [min] on [Qp].
     We do the cap so that we never need to have more than [1] of this token. *)
     let qeff := (if decide (1 ≤ qmax) then 1 else qmax)%Qp in
-    (∃ κ0, ⌜x.1 = κ' ⊓ κ0⌝ ∗ qeff.[κ0] ∗ (qeff.[κ0] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ0]))%I.
+    (∃ κ0, ⌜x.1 = κ' ⊓ κ0⌝ ∗ qeff.[κ0] ∗ (qeff.[κ0] ={↑lftN ∪ lft_userE}[lft_userE]▷=∗ [†κ0]))%I.
   (* Local lifetime contexts without the "ending a lifetime" viewshifts -- these
   are fractional. *)
   Definition llctx_elt_interp_noend (qmax : Qp) (x : llctx_elt) (q : Qp) : iProp Σ :=
@@ -415,7 +415,7 @@ Arguments lctx_lft_incl_incl_noend {_ _ _ _} _ _.
 Arguments lctx_lft_alive_tok {_ _ _ _ _} _ _ _.
 Arguments lctx_lft_alive_tok_noend {_ _ _ _ _} _ _ _.
 
-Lemma elctx_sat_submseteq `{!invG Σ, !lftG Σ} E E' L :
+Lemma elctx_sat_submseteq `{!invG Σ, !lftG Σ lft_userE} E E' L :
   E' ⊆+ E → elctx_sat E L E'.
 Proof. iIntros (HE' ??) "_ !> H". by iApply big_sepL_submseteq. Qed.
 

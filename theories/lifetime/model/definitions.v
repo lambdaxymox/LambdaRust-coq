@@ -40,7 +40,7 @@ Definition ilftUR := gmapUR lft (agreeR lft_namesO).
 Definition borUR := gmapUR slice_name (prodR fracR (agreeR bor_stateO)).
 Definition inhUR := gset_disjUR slice_name.
 
-Class lftG Σ := LftG {
+Class lftG Σ (userE : coPset) := LftG {
   lft_box :> boxG Σ;
   alft_inG :> inG Σ (authR alftUR);
   alft_name : gname;
@@ -49,6 +49,7 @@ Class lftG Σ := LftG {
   lft_bor_inG :> inG Σ (authR borUR);
   lft_cnt_inG :> inG Σ (authR natUR);
   lft_inh_inG :> inG Σ (authR inhUR);
+  userE_lftN_disj : ↑lftN ## userE;
 }.
 Definition lftG' := lftG.
 
@@ -79,7 +80,7 @@ Definition to_ilftUR : gmap lft lft_names → ilftUR := fmap to_agree.
 Definition to_borUR : gmap slice_name bor_state → borUR := fmap ((1%Qp,.) ∘ to_agree).
 
 Section defs.
-  Context `{!invG Σ, !lftG Σ}.
+  Context `{!invG Σ, !lftG Σ userE}.
 
   Definition lft_tok (q : Qp) (κ : lft) : iProp Σ :=
     ([∗ mset] Λ ∈ κ, own alft_name (◯ {[ Λ := Cinl q ]}))%I.
@@ -142,7 +143,7 @@ Section defs.
        own_cnt κ (● n) ∗
        ∀ I : gmap lft lft_names,
          lft_vs_inv_go κ lft_inv_alive I -∗ ▷ Pb -∗ lft_dead κ
-           ={↑lft_userN ∪ ↑borN}=∗
+           ={userE ∪ ↑borN}=∗
          lft_vs_inv_go κ lft_inv_alive I ∗ ▷ Pi ∗ own_cnt κ (◯ n))%I.
 
   Definition lft_inv_alive_go (κ : lft)
@@ -223,7 +224,7 @@ Typeclasses Opaque lft_tok lft_dead bor_cnt lft_bor_alive lft_bor_dead
   idx_bor_own idx_bor raw_bor bor.
 
 Section basic_properties.
-Context `{!invG Σ, !lftG Σ}.
+Context `{!invG Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 (* Unfolding lemmas *)
@@ -270,7 +271,7 @@ Lemma lft_vs_unfold κ Pb Pi :
   lft_vs κ Pb Pi ⊣⊢ ∃ n : nat,
     own_cnt κ (● n) ∗
     ∀ I : gmap lft lft_names,
-      lft_vs_inv κ I -∗ ▷ Pb -∗ lft_dead κ ={↑lft_userN ∪ ↑borN}=∗
+      lft_vs_inv κ I -∗ ▷ Pb -∗ lft_dead κ ={userE ∪ ↑borN}=∗
       lft_vs_inv κ I ∗ ▷ Pi ∗ own_cnt κ (◯ n).
 Proof. done. Qed.
 

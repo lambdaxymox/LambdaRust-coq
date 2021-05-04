@@ -49,7 +49,7 @@ Section refcell_inv.
         (* Not borrowed. *)
         &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)
       | Some (ν, rw, q, _) =>
-        (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
+        (1.[ν] ={↑lftN ∪ lft_userE}[lft_userE]▷=∗ &{α}((l +ₗ 1) ↦∗: ty.(ty_own) tid)) ∗
         (∃ q', ⌜(q + q')%Qp = 1%Qp⌝ ∗ q'.[ν]) ∗
         if rw then (* Mutably borrowed. *) True
         else       (* Immutably borrowed. *) ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1)

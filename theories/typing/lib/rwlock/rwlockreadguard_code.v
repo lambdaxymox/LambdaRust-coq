@@ -83,7 +83,7 @@ Section rwlockreadguard_functions.
     iMod (at_bor_acc_tok with "LFT Hinv Hβ") as "[INV Hcloseβ]"; [done..|].
     iDestruct "INV" as (st') "(Hlx & >H● & Hst)".
     destruct (decide (Z_of_rwlock_st st = Z_of_rwlock_st st')) as [->|?].
-    + iAssert (|={⊤ ∖ ↑rwlockN}[⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ ↑lft_userN]▷=>
+    + iAssert (|={⊤ ∖ ↑rwlockN}[⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ lft_userE]▷=>
                (lx' ↦ #(Z_of_rwlock_st st'-1) ==∗ rwlock_inv tid_own tid lx' γ β ty))%I
         with "[H● H◯ Hx' Hν Hst H†]" as "INV".
       { iDestruct (own_valid_2 with "H● H◯") as %[[[=]| (? & st0 & [=<-] & -> & [Heq|Hle])]
@@ -94,8 +94,8 @@ Section rwlockreadguard_functions.
           iDestruct "Hst" as (ν' q') "(>EQν & _ & Hh & _ & >Hq & >Hν')".
           rewrite -EQ. iDestruct "EQν" as %<-%(inj to_agree)%leibniz_equiv.
           iCombine "Hν" "Hν'" as "Hν". iDestruct "Hq" as %->.
-          iApply (step_fupd_mask_mono ((↑lftN ∪ ↑lft_userN) ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ ↑lft_userN)));
-            last iApply (step_fupd_mask_frame_r _ (↑lft_userN)).
+          iApply (step_fupd_mask_mono ((↑lftN ∪ lft_userE) ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ lft_userE)));
+            last iApply (step_fupd_mask_frame_r _ (lft_userE)).
           { set_solver-. }
           { solve_ndisj. }
           { rewrite difference_difference. apply: disjoint_difference_r1. done. }

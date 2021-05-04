@@ -1,3 +1,4 @@
+From stdpp Require Import namespaces.
 From lrust.lang Require Export proofmode.
 
 (* Last, so that we make sure we shadow the defintion of delete for
@@ -5,6 +6,19 @@ From lrust.lang Require Export proofmode.
 From lrust.lang.lib Require Export new_delete.
 
 Open Scope Z_scope.
+
+Definition lft_userN : namespace := nroot .@ "lft_usr".
+
+(* The "user mask" of the lifetime logic. This needs to be disjoint with ↑lftN.
+
+   If a client library desires to put invariants in lft_userE, then it is
+   encouraged to place it in the already defined lft_userN. On the other hand,
+   extensions to the model of RustBelt itself (such as gpfsl for
+   the weak-mem extension) can require extending [lft_userE] with the relevant
+   namespaces. In that case all client libraries need to be re-checked to
+   ensure disjointness of [lft_userE] with their masks is maintained where
+   necessary. *)
+Definition lft_userE : coPset := ↑lft_userN.
 
 Create HintDb lrust_typing.
 Create HintDb lrust_typing_merge.

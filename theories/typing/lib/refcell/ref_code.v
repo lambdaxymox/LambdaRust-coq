@@ -14,7 +14,7 @@ Section ref_functions.
     own γ (◯ reading_stR q ν) -∗
     ∃ (q' : Qp) n, l ↦ #(Zpos n) ∗ ⌜(q ≤ q')%Qp⌝ ∗
             own γ (● (refcell_st_to_R $ Some (ν, false, q', n)) ⋅ ◯ reading_stR q ν) ∗
-            ((1).[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ &{α}((l +ₗ 1) ↦∗: ty_own ty tid)) ∗
+            ((1).[ν] ={↑lftN ∪ lft_userE}[lft_userE]▷=∗ &{α}((l +ₗ 1) ↦∗: ty_own ty tid)) ∗
             (∃ q'', ⌜(q' + q'' = 1)%Qp⌝ ∗ q''.[ν]) ∗
             ty.(ty_shr) (α ⊓ ν) tid (l +ₗ 1).
   Proof.
@@ -161,7 +161,7 @@ Section ref_functions.
       as (q' n) "(H↦lrc & >% & H●◯ & H† & Hq' & Hshr)".
     iDestruct "Hq'" as (q'') ">[% Hν']".
     wp_read. wp_let. wp_op. wp_write.
-    iAssert (|={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=> refcell_inv tid lrc γ β ty')%I
+    iAssert (|={↑lftN ∪ lft_userE}[lft_userE]▷=> refcell_inv tid lrc γ β ty')%I
       with "[H↦lrc H●◯ Hν Hν' Hshr H†]" as "INV".
     { iDestruct (own_valid with "H●◯") as
           %[[[[_ ?]?]|[[_ [q0 Hq0]]%prod_included [n' Hn']]%prod_included]
@@ -181,7 +181,7 @@ Section ref_functions.
           apply (cancel_local_update_unit (reading_stR q ν)), _. }
         iApply step_fupd_intro; first set_solver-. iExists (q+q'')%Qp. iFrame.
         by rewrite assoc (comm _ q0 q). }
-    wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ ↑lft_userN)); first done.
+    wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ lft_userE)); first done.
     iApply (wp_step_fupd with "INV"); [set_solver-..|]. wp_seq.
     iIntros "INV !>". wp_seq. iMod ("Hcloseβ" with "[$INV] Hna") as "[Hβ Hna]".
     iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".

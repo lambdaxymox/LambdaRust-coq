@@ -26,7 +26,7 @@ Section arc.
      (*    because [weak_new] cannot prove ty_shr, even for a dead *)
      (*    lifetime. *)
      (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-     □ (1.[ν] ={↑lftN ∪ ↑lft_userN ∪ ↑arc_endN}[↑lft_userN]▷=∗
+     □ (1.[ν] ={↑lftN ∪ lft_userE ∪ ↑arc_endN}[lft_userE]▷=∗
           [†ν] ∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ † l…(2 + ty.(ty_size))))%I.
 
   Global Instance arc_persist_ne tid ν γ l n :
@@ -86,9 +86,9 @@ Section arc.
       first by iRight; iApply "H". iIntros "!> !> Hν".
     iMod (inv_acc with "INV") as "[[H†|[$ Hvs]] Hclose]";
       [set_solver|iDestruct (lft_tok_dead with "Hν H†") as ">[]"|].
-    rewrite difference_union_distr_l_L difference_diag_L right_id_L
+    rewrite difference_union_distr_l_L difference_diag_L (right_id_L ∅)
             difference_disjoint_L; last first.
-    { apply disjoint_union_l. split; solve_ndisj. }
+    { apply disjoint_union_l; solve_ndisj. }
     iMod ("Hν†" with "Hν") as "H". iModIntro. iNext. iApply fupd_trans.
     iMod "H" as "#Hν".
     iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hvs" with "Hν") as "$".

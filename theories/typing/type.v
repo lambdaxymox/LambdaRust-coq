@@ -8,7 +8,7 @@ Set Default Proof Using "Type".
 
 Class typeG Σ := TypeG {
   type_lrustG :> lrustG Σ;
-  type_lftG :> lftG Σ;
+  type_lftG :> lftG Σ lft_userE;
   type_na_invG :> na_invG Σ;
   type_frac_borrowG :> frac_borG Σ
 }.
