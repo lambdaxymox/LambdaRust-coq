@@ -83,7 +83,7 @@ Section rwlockreadguard.
     iDestruct (proj1 Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
+    iIntros "!> #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
@@ -93,7 +93,7 @@ Section rwlockreadguard.
         iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
       + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
       + iApply (at_bor_iff with "[] Hinv").
-        iIntros "!> !#"; iSplit; iIntros "H". by iApply "Hty1ty2". by iApply "Hty2ty1".
+        iIntros "!> !>"; iSplit; iIntros "H". by iApply "Hty1ty2". by iApply "Hty2ty1".
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "[Hf Hshr]". iExists l'.
       iFrame. iApply ty_shr_mono; last by iApply "Hs".
       iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.

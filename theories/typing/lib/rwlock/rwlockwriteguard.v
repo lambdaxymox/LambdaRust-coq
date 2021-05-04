@@ -54,7 +54,7 @@ Section rwlockwriteguard.
     iIntros (??????) "#? H". iDestruct "H" as (l') "[#Hf #H]".
     iExists _. iSplit.
     - by iApply frac_bor_shorten.
-    - iIntros "!# * % Htok".
+    - iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
       iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
@@ -82,7 +82,7 @@ Section rwlockwriteguard.
     iDestruct (Hty' with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
+    iIntros "!> #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][]]) "H"; try done.
@@ -93,9 +93,9 @@ Section rwlockwriteguard.
         iExists vl; iFrame; by iApply "Ho".
       + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
       + iApply at_bor_iff; try done.
-        iIntros "!>!#"; iSplit; iIntros "H". by iApply "Hty1ty2". by iApply "Hty2ty1".
+        iIntros "!>!>"; iSplit; iIntros "H". by iApply "Hty1ty2". by iApply "Hty2ty1".
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "H". iExists l'.
-      iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
+      iDestruct "H" as "[$ #H]". iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
       iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.

@@ -75,7 +75,7 @@ Section non_lexical.
     Lemma get_default_type :
       typed_val get_default (fn(∀ m, ∅; &uniq{m} hashmap, K) → &uniq{m} V).
     Proof.
-      intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+      intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
         iIntros (m ϝ ret p). inv_vec p=>map key. simpl_subst.
       iApply type_let; [iApply get_mut_type|solve_typing|].
         iIntros (get_mut'). simpl_subst.
@@ -129,7 +129,7 @@ Section non_lexical.
           iApply (type_letalloc_n (&uniq{m}V) (own_ptr _ (&uniq{m}V))); [solve_typing..|].
             iIntros (r). simpl_subst.
           iApply type_jump; solve_typing. }
-      iIntros "!# *". inv_vec args=>r. simpl_subst.
+      iIntros "!> *". inv_vec args=>r. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_delete; [solve_typing..|].
       iApply type_delete; [solve_typing..|].

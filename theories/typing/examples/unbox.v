@@ -14,7 +14,7 @@ Section unbox.
   Lemma ubox_type :
     typed_val unbox (fn(∀ α, ∅; &uniq{α}(box(Π[int; int]))) → &uniq{α}int).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret b). inv_vec b=>b. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (b'); simpl_subst.
     iApply type_deref_uniq_own; [solve_typing..|]. iIntros (bx); simpl_subst.

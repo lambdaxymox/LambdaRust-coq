@@ -21,7 +21,7 @@ Section rwlockreadguard_functions.
     typed_val rwlockreadguard_deref
       (fn(∀ '(α, β), ∅; &shr{α}(rwlockreadguard β ty)) → &shr{α} ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -61,11 +61,11 @@ Section rwlockreadguard_functions.
   Lemma rwlockreadguard_drop_type ty `{!TyWf ty} :
     typed_val rwlockreadguard_drop (fn(∀ α, ∅; rwlockreadguard α ty) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []] (λ _, [x ◁ _; x' ◁ _]));
-      [iIntros (loop)|iIntros "/= !#"; iIntros (loop arg); inv_vec arg];
+      [iIntros (loop)|iIntros "/= !>"; iIntros (loop arg); inv_vec arg];
       simpl_subst.
     { iApply type_jump; solve_typing. }
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".

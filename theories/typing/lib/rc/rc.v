@@ -140,7 +140,7 @@ Section rc.
     set (C := (∃ _ _ _, _ ∗ _ ∗ &na{_,_,_} _)%I).
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ C)%I
           with "[Hpbown]") as "#Hinv"; first by iLeft.
-    iIntros "!> !# * % Htok".
+    iIntros "!> !> * % Htok".
     iMod (inv_acc with "Hinv") as "[INV Hclose1]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iAssert (&{κ} _)%I with "[Hbtok]" as "Hb".
@@ -218,7 +218,7 @@ Section rc.
       iDestruct "Hvl" as (γ ν q) "(#Hpersist & Htk & Hν)".
       iRight. iExists _, _, _. iFrame "#∗". by iApply rc_persist_type_incl.
     - iIntros "* #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
-      iIntros "{$Hfrac} !# * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
+      iIntros "{$Hfrac} !> * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
       iModIntro. iNext. iMod "H" as "[$ H]".
       iDestruct "H" as (γ ν q') "(Hlft & Hpersist & Hna)".
       iExists _, _, _. iFrame. by iApply rc_persist_type_incl.
@@ -228,7 +228,7 @@ Section rc.
     Proper (subtype E L ==> subtype E L) rc.
   Proof.
     iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
-    iIntros "!# #HE". iApply rc_subtype. by iApply "Hsub".
+    iIntros "!> #HE". iApply rc_subtype. by iApply "Hsub".
   Qed.
   Global Instance rc_proper E L :
     Proper (eqtype E L ==> eqtype E L) rc.
@@ -394,7 +394,7 @@ Section code.
   Lemma rc_strong_count_type ty `{!TyWf ty} :
     typed_val rc_strong_count (fn(∀ α, ∅; &shr{α}(rc ty)) → int).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
@@ -453,7 +453,7 @@ Section code.
   Lemma rc_weak_count_type ty `{!TyWf ty} :
     typed_val rc_weak_count (fn(∀ α, ∅; &shr{α}(rc ty)) → int).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
@@ -513,7 +513,7 @@ Section code.
   Lemma rc_new_type ty `{!TyWf ty} :
     typed_val (rc_new ty) (fn(∅; ty) → rc ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new (2 + ty.(ty_size))); [solve_typing..|]; iIntros (rcbox); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (rc); simpl_subst.
@@ -556,7 +556,7 @@ Section code.
   Lemma rc_clone_type ty `{!TyWf ty} :
     typed_val rc_clone (fn(∀ α, ∅; &shr{α}(rc ty)) → rc ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
@@ -618,7 +618,7 @@ Section code.
   Lemma rc_deref_type ty `{!TyWf ty} :
     typed_val rc_deref (fn(∀ α, ∅; &shr{α}(rc ty)) → &shr{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (x); simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (rc'); simpl_subst.
@@ -681,7 +681,7 @@ Section code.
     typed_val (rc_try_unwrap ty) (fn(∅; rc ty) → Σ[ ty; rc ty ]).
   Proof.
     (* TODO: There is a *lot* of duplication between this proof and the one for drop. *)
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (_ ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new (Σ[ ty; rc ty ]).(ty_size)); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []]
@@ -776,7 +776,7 @@ Section code.
   Lemma rc_drop_type ty `{!TyWf ty} :
     typed_val (rc_drop ty) (fn(∅; rc ty) → option ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (_ ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new (option ty).(ty_size)); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []]
@@ -866,7 +866,7 @@ Section code.
   Lemma rc_get_mut_type ty `{!TyWf ty} :
     typed_val rc_get_mut (fn(∀ α, ∅; &uniq{α}(rc ty)) → option (&uniq{α}ty)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 2); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []]
@@ -999,7 +999,7 @@ Section code.
   Proof.
     intros Hclone E L. iApply type_fn; [solve_typing..|].
     rewrite [(2 + ty_size ty)%nat]lock.
-    iIntros "/= !#".  iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
+    iIntros "/= !>".  iIntros (α ϝ ret arg). inv_vec arg=>rcx. simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []]
                       (λ _, [rcx ◁ box (uninit 1); r ◁ box (&uniq{α}ty)]));

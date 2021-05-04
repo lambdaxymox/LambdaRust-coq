@@ -222,7 +222,7 @@ Section arc.
     is_arc P1 P2 N γ l -∗ arc_tok_acc γ P (⊤ ∖ ↑N) -∗
     {{{ P }}} strong_count [ #l] {{{ (c : nat), RET #c; P ∗ ⌜(c > 0)%nat⌝ }}}.
   Proof using HP1.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec.
     iInv N as (st) "[>H● H]" "Hclose1".
     iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?& strong &?&?&[-> _]).
@@ -238,7 +238,7 @@ Section arc.
     is_arc P1 P2 N γ l -∗ arc_tok_acc γ P (⊤ ∖ ↑N) -∗
     {{{ P }}} weak_count [ #l] {{{ (c : Z), RET #c; P ∗ ⌜c >= -1⌝ }}}.
   Proof using HP1.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec. wp_op.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec. wp_op.
     iInv N as (st) "[>H● H]" "Hclose1".
     iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?& strong &wl&?&[-> _]).
@@ -257,7 +257,7 @@ Section arc.
     {{{ P }}} clone_arc [ #l]
     {{{ q', RET #☠; P ∗ arc_tok γ q' ∗ P1 q' }}}.
   Proof using HP1.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec. wp_bind (!ˢᶜ_)%E.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec. wp_bind (!ˢᶜ_)%E.
     iInv N as (st) "[>H● H]" "Hclose1".
     iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?& strong &?&?&[-> _]).
@@ -292,7 +292,7 @@ Section arc.
     is_arc P1 P2 N γ l -∗ arc_tok_acc γ P (⊤ ∖ ↑N) -∗
     {{{ P }}} downgrade [ #l] {{{ RET #☠; P ∗ weak_tok γ }}}.
   Proof.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
     iInv N as (st) "[>H● H]" "Hclose1".
     iApply fupd_wp. iMod ("Hacc" with "HP") as (?) "[Hown Hclose2]".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?&?& wlock & weak &[-> _]).
@@ -343,11 +343,11 @@ Section arc.
     is_arc P1 P2 N γ l -∗ weak_tok_acc γ P (⊤ ∖ ↑N) -∗
     {{{ P }}} clone_weak [ #l] {{{ RET #☠; P ∗ weak_tok γ }}}.
   Proof.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
     iAssert (□ (P ={⊤,⊤∖↑N}=∗ ∃ w : Z, (l +ₗ 1) ↦ #w ∗
               ((l +ₗ 1) ↦ #(w + 1) ={⊤∖↑N,⊤}=∗ P ∗ weak_tok γ) ∧
               ((l +ₗ 1) ↦ #w ={⊤∖↑N,⊤}=∗ P)))%I as "#Hproto".
-    { iIntros "!# HP". iInv N as (st) "[>H● H]" "Hclose1".
+    { iIntros "!> HP". iInv N as (st) "[>H● H]" "Hclose1".
       iMod ("Hacc" with "HP") as "[Hown Hclose2]".
       iDestruct (weak_tok_auth_val with "H● Hown") as %(st' & weak & -> & Hval).
       iMod ("Hclose2" with "Hown") as "HP".
@@ -391,11 +391,11 @@ Section arc.
     {{{ P }}} upgrade [ #l]
     {{{ (b : bool) q, RET #b; P ∗ if b then arc_tok γ q ∗ P1 q else True }}}.
   Proof using HP1.
-    iIntros "#INV #Hacc !# * HP HΦ". iLöb as "IH". wp_rec. wp_bind (!ˢᶜ_)%E.
+    iIntros "#INV #Hacc !> * HP HΦ". iLöb as "IH". wp_rec. wp_bind (!ˢᶜ_)%E.
     iAssert (□ (P ={⊤,∅}=∗ ∃ s : Z, l ↦ #s ∗
               (⌜s ≠ 0⌝ -∗ l ↦ #(s + 1) ={∅,⊤}=∗ ∃ q, P ∗ arc_tok γ q ∗ ▷ P1 q) ∧
               (l ↦ #s ={∅,⊤}=∗ P)))%I as "#Hproto".
-    { iIntros "!# HP". iInv N as (st) "[>H● H]" "Hclose1".
+    { iIntros "!> HP". iInv N as (st) "[>H● H]" "Hclose1".
       iMod ("Hacc" with "HP") as "[Hown Hclose2]".
       iDestruct (weak_tok_auth_val with "H● Hown") as %(st' & weak & -> & Hval).
       destruct st' as [[[[??]?]| |]|]; try done; iExists _.
@@ -437,12 +437,12 @@ Section arc.
     {{{ weak_tok γ }}} drop_weak [ #l]
     {{{ (b : bool), RET #b ; if b then P2 ∗ l ↦ #0 ∗ (l +ₗ 1) ↦ #0 else True }}}.
   Proof.
-    iIntros "#INV !# * Hown HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
+    iIntros "#INV !> * Hown HΦ". iLöb as "IH". wp_rec. wp_op. wp_bind (!ˢᶜ_)%E.
     iAssert (□ (weak_tok γ ={⊤,⊤ ∖ ↑N}=∗ ∃ w : Z, (l +ₗ 1) ↦ #w ∗
               ((l +ₗ 1) ↦ #(w - 1) ={⊤ ∖ ↑N,⊤}=∗ ⌜w ≠ 1⌝ ∨
                ▷ P2 ∗ l ↦ #0 ∗ (l +ₗ 1) ↦ #0) ∧
               ((l +ₗ 1) ↦ #w ={⊤ ∖ ↑N,⊤}=∗ weak_tok γ)))%I as "#Hproto".
-    { iIntros "!# Hown". iInv N as (st) "[>H● H]" "Hclose1".
+    { iIntros "!> Hown". iInv N as (st) "[>H● H]" "Hclose1".
       iDestruct (weak_tok_auth_val with "H● Hown") as %(st' & weak & -> & Hval).
       destruct st' as [[[[??][?|]]| |]|]; try done; [|iExists _..].
       - by iDestruct "H" as (?) "(_ & _ & _ & _ & >%)".
@@ -503,7 +503,7 @@ Section arc.
     {{{ arc_tok γ q ∗ P1 q }}} drop_arc  [ #l]
     {{{ (b : bool), RET #b ; if b then P1 1 ∗ (P2 ={⊤}=∗ weak_tok γ) else True }}}.
   Proof using HP1.
-    iIntros "#INV !# * [Hown HP1] HΦ". iLöb as "IH".
+    iIntros "#INV !> * [Hown HP1] HΦ". iLöb as "IH".
     wp_rec. wp_bind (!ˢᶜ_)%E. iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(?& s &?&?&[-> _]).
     iDestruct "H" as (x') "(? & ? & ? & ?)". wp_read.
@@ -543,7 +543,7 @@ Section arc.
     {{{ (b : bool), RET #b ;
         if b then P1 1 ∗ (P2 ={⊤}=∗ weak_tok γ) else arc_tok γ q ∗ P1 q }}}.
   Proof using HP1.
-    iIntros "#INV !# * [Hown HP1] HΦ". wp_rec. iInv N as (st) "[>H● H]" "Hclose".
+    iIntros "#INV !> * [Hown HP1] HΦ". wp_rec. iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(q' & s & wl & w &[-> Hqq']).
     iDestruct "H" as (q'') "(>Hq'' & HP1' & Hs & Hw)". iDestruct "Hq''" as %Hq''.
     destruct (decide (s = xH)) as [->|?].
@@ -566,7 +566,7 @@ Section arc.
         if b then l ↦ #1 ∗ (l +ₗ 1) ↦ #1 ∗ P1 1
         else arc_tok γ q ∗ P1 q }}}.
   Proof using HP1.
-    iIntros "#INV !# * [Hown HP1] HΦ". wp_rec. wp_bind (CAS _ _ _). wp_op.
+    iIntros "#INV !> * [Hown HP1] HΦ". wp_rec. wp_bind (CAS _ _ _). wp_op.
     iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(? & ? & wl & w &[-> _]).
     iDestruct "H" as (?) "(>Hq'' & HP1' & >Hs & >Hw)".
@@ -633,7 +633,7 @@ Section arc.
         | _ (* 2 *) => arc_tok γ q ∗ P1 q
         end }}}.
   Proof using HP1.
-    iIntros "#INV !# * [Hown HP1] HΦ". wp_rec. wp_bind (CAS _ _ _).
+    iIntros "#INV !> * [Hown HP1] HΦ". wp_rec. wp_bind (CAS _ _ _).
     iInv N as (st) "[>H● H]" "Hclose".
     iDestruct (arc_tok_auth_val with "H● Hown") as %(q' & s & wl & w &[-> Hqq']).
     iDestruct "H" as (q'') "(>Hq'' & HP1' & Hs & Hw)". iDestruct "Hq''" as %Hq''.

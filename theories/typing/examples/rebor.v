@@ -19,7 +19,7 @@ Section rebor.
   Lemma rebor_type :
     typed_val rebor (fn(∅; Π[int; int], Π[int; int]) → int).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([] ϝ ret p). inv_vec p=>t1 t2. simpl_subst.
     iApply (type_newlft []). iIntros (α).
     iApply (type_letalloc_1 (&uniq{α}(Π[int; int]))); [solve_typing..|]. iIntros (x). simpl_subst.

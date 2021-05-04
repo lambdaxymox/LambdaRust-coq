@@ -21,7 +21,7 @@ Section rwlockwriteguard_functions.
     typed_val rwlockwriteguard_deref
       (fn(∀ '(α, β), ∅; &shr{α}(rwlockwriteguard β ty)) → &shr{α} ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -66,7 +66,7 @@ Section rwlockwriteguard_functions.
     typed_val rwlockwriteguard_derefmut
       (fn(∀ '(α, β), ∅; &uniq{α}(rwlockwriteguard β ty)) → &uniq{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -112,7 +112,7 @@ Section rwlockwriteguard_functions.
     typed_val rwlockwriteguard_drop
               (fn(∀ α, ∅; rwlockwriteguard α ty) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".

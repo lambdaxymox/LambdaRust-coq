@@ -82,7 +82,7 @@ Section ref.
   Proof.
     iIntros (α1 α2 Hα ty1 ty2 Hty qmax qL) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
+    iIntros "!> #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.

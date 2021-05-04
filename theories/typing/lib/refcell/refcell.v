@@ -76,11 +76,11 @@ Section refcell_inv.
     (* TODO : this proof is essentially [solve_proper], but within the logic. *)
     (*             It would easily gain from some automation. *)
     rewrite eqtype_unfold. iIntros (Hty) "HL".
-    iDestruct (Hty with "HL") as "#Hty". iIntros "* !# #HE H".
+    iDestruct (Hty with "HL") as "#Hty". iIntros "* !> #HE H".
     iDestruct ("Hty" with "HE") as "(% & #Hown & #Hshr)".
     iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid) -∗
                 &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid)))%I as "#Hb".
-    { iIntros "!# H". iApply bor_iff; last done.
+    { iIntros "!> H". iApply bor_iff; last done.
       iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
       iFrame; by iApply "Hown". }
     iDestruct "H" as (st) "H"; iExists st;
@@ -187,8 +187,8 @@ Section refcell.
     iDestruct (EQ' with "HL") as "#EQ'".
     iDestruct (refcell_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (refcell_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
-    iIntros "!# #HE". iDestruct ("EQ'" with "HE") as "(% & #Hown & #Hshr)".
-    iSplit; [|iSplit; iIntros "!# * H"].
+    iIntros "!> #HE". iDestruct ("EQ'" with "HE") as "(% & #Hown & #Hshr)".
+    iSplit; [|iSplit; iIntros "!> * H"].
     - iPureIntro. simpl. congruence.
     - destruct vl as [|[[]|]]=>//=. by iApply "Hown".
     - simpl. iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.

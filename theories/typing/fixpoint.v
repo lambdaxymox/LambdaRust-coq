@@ -93,7 +93,7 @@ Section fixpoint.
   Proof.
     unfold eqtype, subtype, type_incl.
     setoid_rewrite <-fixpointK_unfold; [| by apply type_contractive_ne, _..].
-    split; iIntros (qmax qL) "_ !# _"; (iSplit; first done); iSplit; iIntros "!#*$".
+    split; iIntros (qmax qL) "_ !> _"; (iSplit; first done); iSplit; iIntros "!>*$".
   Qed.
 End fixpoint.
 

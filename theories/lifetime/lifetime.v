@@ -123,7 +123,7 @@ Qed.
 
 Lemma bor_iff_proper κ P P': ▷ □ (P ↔ P') -∗ □ (&{κ}P ↔ &{κ}P').
 Proof.
-  iIntros "#HP !#". iSplit; iIntros "?"; iApply bor_iff; try done.
+  iIntros "#HP !>". iSplit; iIntros "?"; iApply bor_iff; try done.
   iNext. iModIntro. iSplit; iIntros "?"; iApply "HP"; done.
 Qed.
 
@@ -209,7 +209,7 @@ Qed.
 
 Lemma lft_incl_static κ : ⊢ κ ⊑ static.
 Proof.
-  iApply lft_incl_intro. iIntros "!#". iSplitR.
+  iApply lft_incl_intro. iIntros "!>". iSplitR.
   - iIntros (q) "?". iExists 1%Qp. iSplitR. by iApply lft_tok_static. auto.
   - iIntros "Hst". by iDestruct (lft_dead_static with "Hst") as "[]".
 Qed.
@@ -228,7 +228,7 @@ Lemma lft_eternalize E q κ :
 Proof.
   iIntros "Hκ". iMod (inv_alloc lftN _ (∃ q, q.[κ])%I with "[Hκ]") as "#Hnv".
   { iExists _. done. }
-  iApply lft_incl_intro. iIntros "!> !#". iSplitL.
+  iApply lft_incl_intro. iIntros "!> !>". iSplitL.
   - iIntros (q') "$". iInv lftN as ">Hκ" "Hclose". iDestruct "Hκ" as (q'') "[Hκ1 Hκ2]".
     iMod ("Hclose" with "[Hκ2]") as "_". { iExists _. done. }
     iModIntro. iExists _. iFrame. iIntros "_". done.

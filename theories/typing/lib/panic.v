@@ -18,7 +18,7 @@ Section panic.
 
   Lemma panic_type : typed_val panic (fn(∅) → ∅).
   Proof.
-    intros E L. iApply type_fn; [done|]. iIntros "!# *".
+    intros E L. iApply type_fn; [done|]. iIntros "!> *".
     inv_vec args. iIntros (tid qmax) "LFT HE Hna HL Hk HT /=". simpl_subst.
     by iApply wp_value.
   Qed.

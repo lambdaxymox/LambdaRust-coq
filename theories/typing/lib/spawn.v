@@ -33,7 +33,7 @@ Section join_handle.
     iIntros "#Hincl". iSplit; first done. iSplit; iModIntro.
     - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       simpl. iApply (join_handle_impl with "[] Hvl"). clear tid.
-      iIntros "!# * Hown" (tid).
+      iIntros "!> * Hown" (tid).
       iDestruct (box_type_incl with "Hincl") as "{Hincl} (_ & Hincl & _)".
       iApply "Hincl". done.
     - iIntros "* _". auto.
@@ -43,7 +43,7 @@ Section join_handle.
     Proper (subtype E L ==> subtype E L) join_handle.
   Proof.
     iIntros (ty1 ty2 Hsub ??) "HL". iDestruct (Hsub with "HL") as "#Hsub".
-    iIntros "!# #HE". iApply join_handle_subtype. iApply "Hsub"; done.
+    iIntros "!> #HE". iApply join_handle_subtype. iApply "Hsub"; done.
   Qed.
   Global Instance join_handle_proper E L :
     Proper (eqtype E L ==> eqtype E L) join_handle.
@@ -82,7 +82,7 @@ Section spawn.
     let E ϝ := ty_outlives_E fty static ++ ty_outlives_E retty static in
     typed_val (spawn call_once) (fn(E; fty) → join_handle retty).
   Proof.
-    intros Hf ? E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf ? E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>env. simpl_subst.
     iApply type_let; [apply Hf|solve_typing|]. iIntros (f'). simpl_subst.
     iApply (type_let _ _ _ _ ([f' ◁ _; env ◁ _])
@@ -116,7 +116,7 @@ Section spawn.
   Lemma join_type retty `{!TyWf retty} :
     typed_val join (fn(∅; join_handle retty) → retty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>c. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (c'); simpl_subst.
     iApply (type_let _ _ _ _ ([c' ◁ _])

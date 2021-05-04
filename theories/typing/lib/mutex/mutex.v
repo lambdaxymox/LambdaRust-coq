@@ -90,13 +90,13 @@ Section mutex.
   Global Instance mutex_mono E L : Proper (eqtype E L ==> subtype E L) mutex.
   Proof.
     move=>ty1 ty2 /eqtype_unfold EQ. iIntros (??) "HL".
-    iDestruct (EQ with "HL") as "#EQ". iIntros "!# #HE". clear EQ.
+    iDestruct (EQ with "HL") as "#EQ". iIntros "!> #HE". clear EQ.
     iDestruct ("EQ" with "HE") as "(% & #Howni & _) {EQ}".
     iSplit; last iSplit.
     - simpl. iPureIntro. f_equiv. done.
-    - iIntros "!# * Hvl". destruct vl as [|[[| |n]|]vl]; try done.
+    - iIntros "!> * Hvl". destruct vl as [|[[| |n]|]vl]; try done.
       simpl. iDestruct "Hvl" as "[$ Hvl]". by iApply "Howni".
-    - iIntros "!# * Hshr". iDestruct "Hshr" as (κ') "[Hincl Hshr]".
+    - iIntros "!> * Hshr". iDestruct "Hshr" as (κ') "[Hincl Hshr]".
       iExists _. iFrame "Hincl". iApply (at_bor_iff with "[] Hshr"). iNext.
       iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
       iApply heap_mapsto_pred_iff_proper.
@@ -138,7 +138,7 @@ Section code.
   Lemma mutex_new_type ty `{!TyWf ty} :
     typed_val (mutex_new ty) (fn(∅; ty) → mutex ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     (* FIXME: It should be possible to infer the `S ty.(ty_size)` here.
        This should be done in the @eq external hints added in lft_contexts.v. *)
@@ -177,7 +177,7 @@ Section code.
   Lemma mutex_into_inner_type ty `{!TyWf ty} :
     typed_val (mutex_into_inner ty) (fn(∅; mutex ty) → ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>m. simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|]; iIntros (x); simpl_subst.
     (* Switch to Iris. *)
@@ -216,7 +216,7 @@ Section code.
   Lemma mutex_get_mut_type ty `{!TyWf ty} :
     typed_val mutex_get_mut (fn(∀ α, ∅; &uniq{α}(mutex ty)) → &uniq{α} ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg); inv_vec arg=>m; simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (m'); simpl_subst.
     (* Go to Iris *)

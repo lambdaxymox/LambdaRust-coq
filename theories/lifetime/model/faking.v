@@ -63,7 +63,7 @@ Proof.
       { by iDestruct "Hdeadandalive" as "[? _]". }
       iPureIntro. exists Λ. rewrite lookup_insert; auto. }
     iNext. iApply (@big_sepS_impl with "[$Hinv]").
-    rewrite /lft_inv. iIntros "!#"; iIntros (κ' ?%elem_of_dom)
+    rewrite /lft_inv. iIntros "!>"; iIntros (κ' ?%elem_of_dom)
       "[[HA HA']|[HA HA']]"; iDestruct "HA'" as %HA.
     + iLeft. iFrame "HA". iPureIntro. by apply lft_alive_in_insert.
     + iRight. iFrame "HA". iPureIntro. by apply lft_dead_in_insert.

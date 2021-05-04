@@ -175,7 +175,7 @@ Section typing.
     typed_val call_once (fn(∀ α, ∅; F, brandvec α) → R_F) →
     typed_val (brandvec_new call_once R_F) (fn(∅; F) → R_F).
   Proof.
-    iIntros (Hf E L). iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (Hf E L). iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (_ ϝ ret args). inv_vec args=> env. simpl_subst.
     iApply type_let; [apply Hf|solve_typing|]. iIntros (f); simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hc (Hf & Henv & _)".
@@ -249,7 +249,7 @@ Section typing.
   Lemma brandvec_get_index_type :
     typed_val brandvec_get_index (fn(∀ '(α, β), ∅; &shr{β} (brandvec α), int) → option (brandidx α))%T.
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=>v i. simpl_subst.
     iApply (type_new 2); [solve_typing..|]; iIntros (r); simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (v'); simpl_subst.
@@ -322,7 +322,7 @@ Section typing.
   Lemma brandidx_get_type :
     typed_val brandidx_get (fn(∀ '(α, β), ∅; &shr{β} (brandvec α), &shr{β} (brandidx α)) → unit)%T.
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=> s c. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (n); simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (m); simpl_subst.
@@ -372,7 +372,7 @@ Section typing.
   Lemma brandvec_push_type :
     typed_val brandvec_push (fn(∀ '(α, β), ∅; &uniq{β} (brandvec α)) → brandidx α).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=>(*n *)s. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (n); simpl_subst.
     iApply type_delete; [solve_typing..|].

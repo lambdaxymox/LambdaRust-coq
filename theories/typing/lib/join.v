@@ -38,7 +38,7 @@ Section join.
     typed_val call_once_B (fn(∅; B) → R_B) →
     typed_val (join call_once_A call_once_B R_A R_B) (fn(∅; A, B) → Π[R_A; R_B]).
   Proof using Type*.
-    intros HfA HfB E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros HfA HfB E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>envA envB. simpl_subst.
     iApply type_let; [apply HfA|solve_typing|]. iIntros (fA); simpl_subst.
     iApply type_let; [apply HfB|solve_typing|]. iIntros (fB); simpl_subst.

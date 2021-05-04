@@ -123,10 +123,10 @@ Section ghostcell.
     iIntros (α1 α2 [EQ1 EQ2] qmax qL) "HL".
     iDestruct (EQ1 with "HL") as "#EQ1'".
     iDestruct (EQ2 with "HL") as "#EQ2'".
-    iIntros "!# #HE".
+    iIntros "!> #HE".
     iDestruct ("EQ1'" with "HE") as %EQ1'.
     iDestruct ("EQ2'" with "HE") as %EQ2'.
-    iSplit; [|iSplit; iIntros "!# * H"]; simpl.
+    iSplit; [|iSplit; iIntros "!> * H"]; simpl.
     - iPureIntro; congruence.
     - solve_proper_prepare.
       iDestruct "H" as "[$ H]".
@@ -201,13 +201,13 @@ Section ghostcell.
     iDestruct (Hty with "HL") as "#Hty".
     iDestruct (Hlft1 with "HL") as "#Hlft1".
     iDestruct (Hlft2 with "HL") as "#Hlft2".
-    iIntros (tid l β) "!# #HE H".
+    iIntros (tid l β) "!> #HE H".
     iDestruct ("Hty" with "HE") as "(% & #Hown & #Hshr)".
     iDestruct ("Hlft1" with "HE") as %Hκ1.
     iDestruct ("Hlft2" with "HE") as %Hκ2.
     iAssert (□ (&{β}(l ↦∗: ty_own ty1 tid) -∗
                 &{β}(l ↦∗: ty_own ty2 tid)))%I as "#Hb".
-    { iIntros "!# H". iApply bor_iff; last done.
+    { iIntros "!> H". iApply bor_iff; last done.
       iNext; iModIntro; iSplit; iIntros "H"; iDestruct "H" as (vl) "[Hf H]"; iExists vl;
       iFrame; by iApply "Hown". }
     iDestruct "H" as (rw) "H"; iExists rw; destruct rw as [rw|]; iFrame "∗";
@@ -303,8 +303,8 @@ Section ghostcell.
     iDestruct (EQ'2 with "HL") as "#EQ'".
     iDestruct (ghostcell_inv_proper _ _ κ κ' with "HL") as "#Hty1ty2"; [done|done|].
     iDestruct (ghostcell_inv_proper _ _ κ' κ with "HL") as "#Hty2ty1"; [done|by symmetry|].
-    iIntros "!# #HE". iDestruct ("EQ'" with "HE") as "(% & #Hown & #Hshr)".
-    iSplit; [|iSplit; iIntros "!# * H"]; simpl.
+    iIntros "!> #HE". iDestruct ("EQ'" with "HE") as "(% & #Hown & #Hshr)".
+    iSplit; [|iSplit; iIntros "!> * H"]; simpl.
     - iPureIntro; congruence.
     - by iApply "Hown".
     - iDestruct "H" as (a) "H".
@@ -363,7 +363,7 @@ Section ghostcell.
     typed_val call_once (fn(∀ α, ∅; F, ghosttoken α) → R_F) →
     typed_val (ghosttoken_new call_once R_F) (fn(∅; F) → R_F).
   Proof.
-    iIntros (Hf E L). iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    iIntros (Hf E L). iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (_ ϝ ret args). inv_vec args=>env. simpl_subst.
     iApply type_let; [apply Hf|solve_typing|]. iIntros (f); simpl_subst.
     iApply type_new_subtype; [solve_typing..|].
@@ -412,7 +412,7 @@ Section ghostcell.
   Lemma ghostcell_new_type `{!TyWf ty} :
     typed_val ghostcell_new (fn(∀ α, ∅; ty) → (ghostcell α ty))%T.
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret args). inv_vec args=>n. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk Hn".
     rewrite tctx_interp_singleton tctx_hasty_val.
@@ -467,7 +467,7 @@ Section ghostcell.
               (fn(∀ '(α, β), ∅; &shr{β} (ghostcell α ty), &shr{β} (ghosttoken α)) →
                   &shr{β} ty)%T.
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=>c s. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL HC (Hc & Hs & _)".
     rewrite !tctx_hasty_val.
@@ -593,7 +593,7 @@ Section ghostcell.
               (fn(∀ '(α, β), ∅; &shr{β} (ghostcell α ty), &uniq{β} (ghosttoken α)) →
                   &uniq{β} ty)%T.
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=>c s. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL HC (Hc & Hs & _)".
     rewrite !tctx_hasty_val.
@@ -693,7 +693,7 @@ Section ghostcell.
     typed_val ghostcell_as_mut (fn(∀ '(α, β), ∅; &uniq{β} (ghostcell α ty)) →
                                   &uniq{β} ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros ([α β] ϝ ret args). inv_vec args=>c. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk Hc".
     rewrite tctx_interp_singleton tctx_hasty_val.

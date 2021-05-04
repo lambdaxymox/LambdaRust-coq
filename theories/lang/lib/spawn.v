@@ -119,7 +119,7 @@ Lemma join_handle_impl (Ψ1 Ψ2 : val → iProp Σ) c :
   □ (∀ v, Ψ1 v -∗ Ψ2 v) -∗ join_handle c Ψ1 -∗ join_handle c Ψ2.
 Proof.
   iIntros "#HΨ Hhdl". iDestruct "Hhdl" as (γf γj Ψ') "(Hj & H† & #? & #HΨ')".
-  iExists γf, γj, Ψ'. iFrame "#∗". iIntros "!# * ?".
+  iExists γf, γj, Ψ'. iFrame "#∗". iIntros "!> * ?".
   iApply "HΨ". iApply "HΨ'". done.
 Qed.
 

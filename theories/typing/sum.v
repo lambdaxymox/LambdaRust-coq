@@ -129,12 +129,12 @@ Section sum.
     iIntros (tyl1 tyl2 Htyl qmax qL) "HL".
     iAssert (□ (elctx_interp E -∗ ⌜max_list_with ty_size tyl1 = max_list_with ty_size tyl2⌝))%I with "[#]" as "#Hleq".
     { iInduction Htyl as [|???? Hsub] "IH".
-      { iClear "∗". iIntros "!# _". done. }
+      { iClear "∗". iIntros "!> _". done. }
       iDestruct (Hsub with "HL") as "#Hsub". iDestruct ("IH" with "HL") as "{IH} #IH".
       iModIntro. iIntros "#HE". iDestruct ("Hsub" with "HE") as "(% & _ & _)".
       iDestruct ("IH" with "HE") as %IH. iPureIntro. simpl. inversion_clear IH. by f_equal. }
     iDestruct (subtype_Forall2_llctx_noend with "HL") as "#Htyl"; first done.
-    iClear "HL". iIntros "!# #HE".
+    iClear "HL". iIntros "!> #HE".
     iDestruct ("Hleq" with "HE") as %Hleq. iSpecialize ("Htyl" with "HE"). iClear "Hleq HE".
     iAssert (∀ i, type_incl (nth i tyl1 emp0) (nth i tyl2 emp0))%I with "[#]" as "#Hty".
       { iIntros (i). edestruct (nth_lookup_or_length tyl1 i) as [Hl1|Hl]; last first.

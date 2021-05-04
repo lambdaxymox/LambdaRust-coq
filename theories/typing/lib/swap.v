@@ -17,7 +17,7 @@ Section swap.
   Lemma swap_type τ `{!TyWf τ} :
     typed_val (swap τ) (fn(∀ α, ∅; &uniq{α} τ, &uniq{α} τ) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#". iIntros (α ϝ ret p).
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>". iIntros (α ϝ ret p).
       inv_vec p=>p1 p2. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (p1'). simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (p2'). simpl_subst.

@@ -91,7 +91,7 @@ Section product.
   Proof.
     iIntros (ty11 ty12 H1 ty21 ty22 H2). iIntros (qmax qL) "HL".
     iDestruct (H1 with "HL") as "#H1". iDestruct (H2 with "HL") as "#H2".
-    iClear "∗". iIntros "!# #HE".
+    iClear "∗". iIntros "!> #HE".
     iDestruct ("H1" with "HE") as "#(% & #Ho1 & #Hs1)". clear H1.
     iDestruct ("H2" with "HE") as "#(% & #Ho2 & #Hs2)". clear H2.
     iSplit; first by (iPureIntro; simpl; f_equal). iSplit; iModIntro.
@@ -199,8 +199,8 @@ Section typing.
 
   Global Instance prod2_assoc E L : Assoc (eqtype E L) product2.
   Proof.
-    intros ???. apply eqtype_unfold. iIntros (??) "_ !# _".
-    iSplit; first by rewrite /= assoc. iSplit; iIntros "!# *"; iSplit; iIntros "H".
+    intros ???. apply eqtype_unfold. iIntros (??) "_ !> _".
+    iSplit; first by rewrite /= assoc. iSplit; iIntros "!> *"; iSplit; iIntros "H".
     - iDestruct "H" as (vl1 vl') "(% & Ho1 & H)".
       iDestruct "H" as (vl2 vl3) "(% & Ho2 & Ho3)". subst.
       iExists _, _. iSplit. by rewrite assoc. iFrame. iExists _, _. by iFrame.
@@ -215,8 +215,8 @@ Section typing.
 
   Global Instance prod2_unit_leftid E L : LeftId (eqtype E L) unit product2.
   Proof.
-    intros ty. apply eqtype_unfold. iIntros (??) "_ !# _". iSplit; first done.
-    iSplit; iIntros "!# *"; iSplit; iIntros "H".
+    intros ty. apply eqtype_unfold. iIntros (??) "_ !> _". iSplit; first done.
+    iSplit; iIntros "!> *"; iSplit; iIntros "H".
     - iDestruct "H" as (? ?) "(% & % & ?)". by subst.
     - iExists [], _. eauto.
     - iDestruct "H" as "(? & ?)". rewrite shift_loc_0.
@@ -227,8 +227,8 @@ Section typing.
 
   Global Instance prod2_unit_rightid E L : RightId (eqtype E L) unit product2.
   Proof.
-    intros ty. apply eqtype_unfold. iIntros (??) "_ !# _".
-    iSplit; first by rewrite /= -plus_n_O. iSplit; iIntros "!# *"; iSplit; iIntros "H".
+    intros ty. apply eqtype_unfold. iIntros (??) "_ !> _".
+    iSplit; first by rewrite /= -plus_n_O. iSplit; iIntros "!> *"; iSplit; iIntros "H".
     - iDestruct "H" as (? ?) "(% & ? & %)". subst. by rewrite app_nil_r.
     - iExists _, []. rewrite app_nil_r. eauto.
     - iDestruct "H" as "(? & _)". done.

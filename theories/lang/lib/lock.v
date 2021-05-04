@@ -36,7 +36,7 @@ Section proof.
   Lemma lock_proto_iff_proper l R R' :
     □ (R ↔ R') -∗ □ (lock_proto l R ↔ lock_proto l R').
   Proof.
-    iIntros "#HR !#". iSplit; iIntros "Hlck"; iApply (lock_proto_iff with "[HR] Hlck").
+    iIntros "#HR !>". iSplit; iIntros "Hlck"; iApply (lock_proto_iff with "[HR] Hlck").
     - done.
     - iModIntro; iSplit; iIntros; by iApply "HR".
   Qed.
@@ -77,7 +77,7 @@ Section proof.
     {{{ P }}} try_acquire [ #l ] @ E
     {{{ b, RET #b; (if b is true then R else True) ∗ P }}}.
   Proof.
-    iIntros "#Hproto !# * HP HΦ".
+    iIntros "#Hproto !> * HP HΦ".
     wp_rec. iMod ("Hproto" with "HP") as "(Hinv & Hclose)".
     iDestruct "Hinv" as ([]) "[Hl HR]".
     - wp_apply (wp_cas_int_fail with "Hl"); [done..|]. iIntros "Hl".
@@ -92,7 +92,7 @@ Section proof.
     □ (P ={E,∅}=∗ ▷ lock_proto l R ∗ (▷ lock_proto l R ={∅,E}=∗ P)) -∗
     {{{ P }}} acquire [ #l ] @ E {{{ RET #☠; R ∗ P }}}.
   Proof.
-    iIntros "#Hproto !# * HP HΦ". iLöb as "IH". wp_rec.
+    iIntros "#Hproto !> * HP HΦ". iLöb as "IH". wp_rec.
     wp_apply (try_acquire_spec with "Hproto HP"). iIntros ([]).
     - iIntros "[HR Hown]". wp_if. iApply "HΦ"; iFrame.
     - iIntros "[_ Hown]". wp_if. iApply ("IH" with "Hown HΦ").
@@ -102,7 +102,7 @@ Section proof.
     □ (P ={E,∅}=∗ ▷ lock_proto l R ∗ (▷ lock_proto l R ={∅,E}=∗ P)) -∗
     {{{ R ∗ P }}} release [ #l ] @ E {{{ RET #☠; P }}}.
   Proof.
-    iIntros "#Hproto !# * (HR & HP) HΦ". wp_let.
+    iIntros "#Hproto !> * (HR & HP) HΦ". wp_let.
     iMod ("Hproto" with "HP") as "(Hinv & Hclose)".
     iDestruct "Hinv" as (b) "[? _]". wp_write. iApply "HΦ".
     iApply "Hclose". iExists false. by iFrame.

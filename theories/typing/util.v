@@ -34,7 +34,7 @@ Section util.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ ty_shr ty κ tid l)%I
           with "[Hpbown]") as "#Hinv"; first by eauto.
-    iIntros "!> !# * % Htok".
+    iIntros "!> !> * % Htok".
     iMod (inv_acc with "Hinv") as "[INV Hclose]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iMod (bor_later_tok with "LFT [Hbtok] Htok") as "Hdelay"; first solve_ndisj.
@@ -56,7 +56,7 @@ Section util.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".
     iMod (inv_alloc shrN _ (idx_bor_own 1 i ∨ ty_shr ty κ'' tid l)%I
           with "[Hpbown]") as "#Hinv"; first by eauto.
-    iIntros "!> !# * % Htok".
+    iIntros "!> !> * % Htok".
     iMod (inv_acc with "Hinv") as "[INV Hclose]"; first solve_ndisj.
     iDestruct "INV" as "[>Hbtok|#Hshr]".
     - iMod (bor_unnest with "LFT [Hbtok]") as "Hb"; first solve_ndisj.

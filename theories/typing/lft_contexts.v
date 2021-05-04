@@ -157,7 +157,7 @@ Section lft_contexts.
 
   Lemma lctx_lft_incl_refl κ : lctx_lft_incl κ κ.
   Proof.
-    iIntros (qmax qL) "_ !# _".
+    iIntros (qmax qL) "_ !> _".
     iPureIntro. apply lft_incl_syn_refl.
   Qed.
 
@@ -167,7 +167,7 @@ Section lft_contexts.
     iIntros (??? H1 H2 ??) "HL".
     iDestruct (H1 with "HL") as "#H1".
     iDestruct (H2 with "HL") as "#H2".
-    iClear "∗". iIntros "!# #HE".
+    iClear "∗". iIntros "!> #HE".
     iDestruct ("H1" with "HE") as "%". iDestruct ("H2" with "HE") as "%".
     iPureIntro.
     by eapply lft_incl_syn_trans.
@@ -186,7 +186,7 @@ Section lft_contexts.
   Qed.
 
   Lemma lctx_lft_incl_static κ : lctx_lft_incl κ static.
-  Proof. iIntros (qmax qL) "_ !# _". iPureIntro. apply lft_incl_syn_static. Qed.
+  Proof. iIntros (qmax qL) "_ !> _". iPureIntro. apply lft_incl_syn_static. Qed.
 
   Lemma lctx_lft_incl_local κ κ' κs :
     κ ⊑ₗ κs ∈ L → κ' ∈ κs → lctx_lft_incl κ κ'.
@@ -194,7 +194,7 @@ Section lft_contexts.
     iIntros (? Hκ'κs qmax qL) "H".
     iDestruct (big_sepL_elem_of with "H") as "H"; first done.
     iDestruct "H" as (κ'') "[EQ _]". iDestruct "EQ" as %EQ.
-    simpl in EQ; subst. iIntros "!# #HE".
+    simpl in EQ; subst. iIntros "!> #HE".
     iPureIntro.
     eapply lft_incl_syn_trans; first apply lft_intersect_incl_syn_l.
     by apply lft_intersect_list_elem_of_incl_syn.
@@ -206,7 +206,7 @@ Section lft_contexts.
 
   Lemma lctx_lft_incl_external κ κ' : κ ⊑ₑ κ' ∈ E → lctx_lft_incl κ κ'.
   Proof.
-    iIntros (???) "_ !# #HE".
+    iIntros (???) "_ !> #HE".
     rewrite /elctx_interp /elctx_elt_interp big_sepL_elem_of //. done.
   Qed.
 
@@ -221,7 +221,7 @@ Section lft_contexts.
     iIntros (Hκ' Hκ'' ??) "HL".
     iDestruct (Hκ' with "HL") as "#Hκ'".
     iDestruct (Hκ'' with "HL") as "#Hκ''".
-    iIntros "!# #HE".
+    iIntros "!> #HE".
     iDestruct ("Hκ'" with "HE") as "%".
     iDestruct ("Hκ''" with "HE") as "%".
     iPureIntro.
@@ -234,7 +234,7 @@ Section lft_contexts.
   Proof.
     iIntros (Hκ' ??) "HL".
     iDestruct (Hκ' with "HL") as "#Hκ'".
-    iIntros "!# #HE". iDestruct ("Hκ'" with "HE") as "%". iPureIntro.
+    iIntros "!> #HE". iDestruct ("Hκ'" with "HE") as "%". iPureIntro.
     eapply lft_incl_syn_trans; last eassumption.
     by apply lft_intersect_incl_syn_l.
   Qed.
@@ -245,7 +245,7 @@ Section lft_contexts.
   Proof.
     iIntros (Hκ' ??) "HL".
     iDestruct (Hκ' with "HL") as "#Hκ'".
-    iIntros "!# #HE". iDestruct ("Hκ'" with "HE") as "%". iPureIntro.
+    iIntros "!> #HE". iDestruct ("Hκ'" with "HE") as "%". iPureIntro.
     eapply lft_incl_syn_trans; last eassumption.
     by apply lft_intersect_incl_syn_r.
   Qed.
@@ -378,7 +378,7 @@ Section lft_contexts.
     ∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗ elctx_interp E').
 
   Lemma elctx_sat_nil : elctx_sat [].
-  Proof. iIntros (??) "_ !# _". by rewrite /elctx_interp /=. Qed.
+  Proof. iIntros (??) "_ !> _". by rewrite /elctx_interp /=. Qed.
 
   Lemma elctx_sat_lft_incl E' κ κ' :
     lctx_lft_incl κ κ' → elctx_sat E' → elctx_sat ((κ ⊑ₑ κ') :: E').
@@ -386,7 +386,7 @@ Section lft_contexts.
     iIntros (Hκκ' HE' qmax qL) "HL".
     iDestruct (Hκκ' with "HL") as "#Hincl".
     iDestruct (HE' with "HL") as "#HE'".
-    iClear "∗". iIntros "!# #HE". iSplit.
+    iClear "∗". iIntros "!> #HE". iSplit.
     - by iApply "Hincl".
     - by iApply "HE'".
   Qed.
@@ -397,13 +397,13 @@ Section lft_contexts.
     iIntros (HE1 HE2 ??) "HL".
     iDestruct (HE1 with "HL") as "#HE1".
     iDestruct (HE2 with "HL") as "#HE2".
-    iClear "∗". iIntros "!# #HE".
+    iClear "∗". iIntros "!> #HE".
     iDestruct ("HE1" with "HE") as "#$".
     iApply ("HE2" with "HE").
   Qed.
 
   Lemma elctx_sat_refl : elctx_sat E.
-  Proof. iIntros (??) "_ !# ?". done. Qed.
+  Proof. iIntros (??) "_ !> ?". done. Qed.
 End lft_contexts.
 
 Arguments lctx_lft_incl {_ _} _ _ _ _.
@@ -417,7 +417,7 @@ Arguments lctx_lft_alive_tok_noend {_ _ _ _ _} _ _ _.
 
 Lemma elctx_sat_submseteq `{!invG Σ, !lftG Σ} E E' L :
   E' ⊆+ E → elctx_sat E L E'.
-Proof. iIntros (HE' ??) "_ !# H". by iApply big_sepL_submseteq. Qed.
+Proof. iIntros (HE' ??) "_ !> H". by iApply big_sepL_submseteq. Qed.
 
 Global Hint Resolve
      lctx_lft_incl_refl lctx_lft_incl_static lctx_lft_incl_local'

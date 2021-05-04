@@ -34,7 +34,7 @@ Section uniq_bor.
     iDestruct "H" as (l') "[Hfb Hvs]". iAssert (κ0⊓κ' ⊑ κ0⊓κ)%I as "#Hκ0".
     { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
     iExists l'. iSplit. by iApply (frac_bor_shorten with "[]").
-    iIntros "!# * % Htok". iApply (step_fupd_mask_mono F _ (F∖↑shrN)); try solve_ndisj.
+    iIntros "!> * % Htok". iApply (step_fupd_mask_mono F _ (F∖↑shrN)); try solve_ndisj.
     iMod (lft_incl_acc with "Hκ0 Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
     iMod "Hvs'" as "[#Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
@@ -59,7 +59,7 @@ Section uniq_bor.
       iExists vl; iFrame; by iApply "Hty".
     - iIntros (κ ??) "H". iAssert (κ2 ⊓ κ ⊑ κ1 ⊓ κ)%I as "#Hincl'".
       { iApply lft_intersect_mono; first done. iApply lft_incl_refl. }
-      iDestruct "H" as (l') "[Hbor #Hupd]". iExists l'. iIntros "{$Hbor}!# %%% Htok".
+      iDestruct "H" as (l') "[Hbor #Hupd]". iExists l'. iIntros "{$Hbor}!> %%% Htok".
       iMod (lft_incl_acc with "Hincl' Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       iMod ("Hupd" with "[%] Htok") as "Hupd'"; try done. iModIntro. iNext.
       iMod "Hupd'" as "[H Htok]". iMod ("Hclose" with "Htok") as "$".
@@ -73,7 +73,7 @@ Section uniq_bor.
   Proof.
     intros κ1 κ2 Hκ ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (??) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hκ with "HL") as "#Hκ".
-    iIntros "!# #HE".
+    iIntros "!> #HE".
     iApply uniq_type_incl.
     - iDestruct ("Hκ" with "HE") as %H.
       apply lft_incl_syn_sem in H. iApply H.
@@ -147,7 +147,7 @@ Section typing.
   Lemma read_uniq E L κ ty :
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
-    rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
+    rewrite typed_read_eq. iIntros (Hcopy Halive) "!>".
     iIntros ([[]|] tid F qmax qL ?) "#LFT #HE Htl HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Hκ") as "[H↦ Hclose']"; first solve_ndisj.
@@ -161,7 +161,7 @@ Section typing.
   Lemma write_uniq E L κ ty :
     lctx_lft_alive E L κ → ⊢ typed_write E L (&uniq{κ}ty) ty (&uniq{κ}ty).
   Proof.
-    rewrite typed_write_eq. iIntros (Halive) "!#".
+    rewrite typed_write_eq. iIntros (Halive) "!>".
     iIntros ([[]|] tid F qmax qL ?) "#LFT HE HL Hown"; try done.
     iMod (Halive with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
     iMod (bor_acc with "LFT Hown Htok") as "[H↦ Hclose']"; first solve_ndisj.

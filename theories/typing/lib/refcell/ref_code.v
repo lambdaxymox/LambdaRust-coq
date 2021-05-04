@@ -48,7 +48,7 @@ Section ref_functions.
     typed_val ref_clone (fn(∀ '(α, β), ∅; &shr{α}(ref β ty)) → ref β ty).
 
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -108,7 +108,7 @@ Section ref_functions.
     typed_val ref_deref
       (fn(∀ '(α, β), ∅; &shr{α}(ref β ty)) → &shr{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -145,7 +145,7 @@ Section ref_functions.
   Lemma ref_drop_type ty `{!TyWf ty} :
     typed_val ref_drop (fn(∀ α, ∅; ref α ty) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk Hx". rewrite tctx_interp_singleton tctx_hasty_val.
     destruct x as [[|lx|]|]; try done. iDestruct "Hx" as "[Hx Hx†]".
@@ -210,7 +210,7 @@ Section ref_functions.
     typed_val call_once (fn(∀ α, ∅; fty, &shr{α}ty1) → &shr{α}ty2) →
     typed_val (ref_map call_once) (fn(∀ α, ∅; ref α ty1, fty) → ref α ty2).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret arg).
        inv_vec arg=>ref env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.
@@ -289,7 +289,7 @@ Section ref_functions.
     typed_val (ref_map_split call_once)
               (fn(∀ α, ∅; ref α ty, fty) → Π[ref α ty1; ref α ty2]).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret arg).
        inv_vec arg=>ref env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.

@@ -137,7 +137,7 @@ Section frac_bor.
     lft_ctx -∗ &frac{κ}φ -∗ q.[κ] ={E}=∗ ∃ q', ▷ φ q' ∗ (▷ φ q' ={E}=∗ q.[κ]).
   Proof.
     iIntros (?) "LFT". iApply (frac_bor_acc' with "LFT"). done.
-    iIntros "!#*". rewrite fractional. iSplit; auto.
+    iIntros "!>*". rewrite fractional. iSplit; auto.
   Qed.
 
   Lemma frac_bor_shorten κ κ' : κ ⊑ κ' -∗ &frac{κ'}φ -∗ &frac{κ}φ.

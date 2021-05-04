@@ -21,7 +21,7 @@ Section rwlock_functions.
   Lemma rwlock_new_type ty `{!TyWf ty} :
     typed_val (rwlock_new ty) (fn(∅; ty) → rwlock ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new (S ty.(ty_size))); [solve_typing..|].
     iIntros (r tid qmax) "#LFT HE Hna HL Hk HT". simpl_subst.
@@ -56,7 +56,7 @@ Section rwlock_functions.
   Lemma rwlock_into_inner_type ty `{!TyWf ty} :
     typed_val (rwlock_into_inner ty) (fn(∅; rwlock ty) → ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (_ ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_new ty.(ty_size)); [solve_typing..|].
     iIntros (r tid qmax) "#LFT HE Hna HL Hk HT". simpl_subst.
@@ -89,7 +89,7 @@ Section rwlock_functions.
   Lemma rwlock_get_mut_type ty `{!TyWf ty} :
     typed_val rwlock_get_mut (fn(∀ α, ∅; &uniq{α} (rwlock ty)) → &uniq{α} ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iIntros (tid qmax) "#LFT HE Hna HL HC HT".
@@ -140,18 +140,18 @@ Section rwlock_functions.
     typed_val rwlock_try_read
         (fn(∀ α, ∅; &shr{α}(rwlock ty)) → option (rwlockreadguard α ty)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iApply (type_cont [] [ϝ ⊑ₗ []] (λ _, [x ◁ box (&shr{α}(rwlock ty));
                                             r ◁ box (option (rwlockreadguard α ty))]));
-      [iIntros (k)|iIntros "/= !#"; iIntros (k arg); inv_vec arg];
+      [iIntros (k)|iIntros "/= !>"; iIntros (k arg); inv_vec arg];
       simpl_subst; last first.
     { iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing. }
     iApply (type_cont [] [ϝ ⊑ₗ []] (λ _, [x ◁ _; x' ◁ _; r ◁ _]));
-      [iIntros (loop)|iIntros "/= !#"; iIntros (loop arg); inv_vec arg];
+      [iIntros (loop)|iIntros "/= !>"; iIntros (loop arg); inv_vec arg];
       simpl_subst.
     { iApply type_jump; solve_typing. }
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
@@ -253,11 +253,11 @@ Section rwlock_functions.
     typed_val rwlock_try_write
         (fn(∀ α, ∅; &shr{α}(rwlock ty)) → option (rwlockwriteguard α ty)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply (type_cont [_] [ϝ ⊑ₗ []] (λ r, [x ◁ box (&shr{α}(rwlock ty));
                                         (r!!!0%fin:val) ◁ box (option (rwlockwriteguard α ty))]));
-      [iIntros (k)|iIntros "/= !#"; iIntros (k arg); inv_vec arg=>r];
+      [iIntros (k)|iIntros "/= !>"; iIntros (k arg); inv_vec arg=>r];
       simpl_subst; last first.
     { iApply type_delete; [solve_typing..|]. iApply type_jump; solve_typing. }
     iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.

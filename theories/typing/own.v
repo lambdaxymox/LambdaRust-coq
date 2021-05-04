@@ -78,7 +78,7 @@ Section own.
   Next Obligation.
     intros _ ty κ κ' tid l. iIntros "#Hκ #H".
     iDestruct "H" as (l') "[Hfb #Hvs]".
-    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]"). iIntros "!# *% Htok".
+    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]"). iIntros "!> *% Htok".
     iApply (step_fupd_mask_mono F _ (F∖↑shrN)); [solve_ndisj..|].
     iMod (lft_incl_acc with "Hκ Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
@@ -98,7 +98,7 @@ Section own.
       iDestruct "Heq" as %->. iFrame. iApply (heap_mapsto_pred_wand with "Hmt").
       iApply "Ho".
     - iIntros (???) "H". iDestruct "H" as (l') "[Hfb #Hvs]".
-      iExists l'. iFrame. iIntros "!#". iIntros (F' q) "% Htok".
+      iExists l'. iFrame. iIntros "!>". iIntros (F' q) "% Htok".
       iMod ("Hvs" with "[%] Htok") as "Hvs'". done. iModIntro. iNext.
       iMod "Hvs'" as "[Hshr $]". iApply ("Hs" with "Hshr").
   Qed.
@@ -108,7 +108,7 @@ Section own.
   Proof.
     intros ty1 ty2 Hincl. iIntros (qmax qL) "HL".
     iDestruct (Hincl with "HL") as "#Hincl".
-    iClear "∗". iIntros "!# #HE".
+    iClear "∗". iIntros "!> #HE".
     iApply own_type_incl; first by auto. iApply "Hincl"; auto.
   Qed.
   Lemma own_mono' E L n1 n2 ty1 ty2 :
@@ -162,7 +162,7 @@ Section box.
   Proof.
     intros ty1 ty2 Hincl. iIntros (qmax qL) "HL".
     iDestruct (Hincl with "HL") as "#Hincl".
-    iClear "∗". iIntros "!# #HE".
+    iClear "∗". iIntros "!> #HE".
     iApply box_type_incl. iApply "Hincl"; auto.
   Qed.
   Lemma box_mono' E L ty1 ty2 :
@@ -220,7 +220,7 @@ Section typing.
   Lemma write_own {E L} ty ty' n :
     ty.(ty_size) = ty'.(ty_size) → ⊢ typed_write E L (own_ptr n ty') ty (own_ptr n ty).
   Proof.
-    rewrite typed_write_eq. iIntros (Hsz) "!#".
+    rewrite typed_write_eq. iIntros (Hsz) "!>".
     iIntros ([[]|] tid F qmax qL ?) "_ _ $ Hown"; try done.
     rewrite /= Hsz. iDestruct "Hown" as "[H↦ $]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%". iExists _, _. iFrame "H↦". auto.
@@ -229,7 +229,7 @@ Section typing.
   Lemma read_own_copy E L ty n :
     Copy ty → ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n ty).
   Proof.
-    rewrite typed_read_eq. iIntros (Hsz) "!#".
+    rewrite typed_read_eq. iIntros (Hsz) "!>".
     iIntros ([[]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ #Hown]".
     iExists l, _, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !>".

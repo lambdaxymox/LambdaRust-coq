@@ -22,7 +22,7 @@ Section shr_bor.
     κ2 ⊑ κ1 -∗ type_incl ty1 ty2 -∗ type_incl (shr_bor κ1 ty1) (shr_bor κ2 ty2).
   Proof.
     iIntros "#Hκ #[_ [_ Hty]]". iApply type_incl_simple_type. simpl.
-    iIntros "!#" (tid [|[[]|][]]) "H"; try done. iApply "Hty".
+    iIntros "!>" (tid [|[[]|][]]) "H"; try done. iApply "Hty".
     iApply (ty1.(ty_shr_mono) with "Hκ"). done.
   Qed.
 
@@ -31,7 +31,7 @@ Section shr_bor.
   Proof.
     intros κ1 κ2 Hκ ty1 ty2 Hty.
     iIntros (??) "/= HL". iDestruct (Hκ with "HL") as "#Hincl".
-    iDestruct (Hty with "HL") as "#Hty". iIntros "!# #HE".
+    iDestruct (Hty with "HL") as "#Hty". iIntros "!> #HE".
     iDestruct ("Hincl" with "HE") as "%".
     iApply shr_type_incl.
     - by iApply lft_incl_syn_sem.
@@ -86,7 +86,7 @@ Section typing.
   Lemma read_shr E L κ ty :
     Copy ty → lctx_lft_alive E L κ → ⊢ typed_read E L (&shr{κ}ty) ty (&shr{κ}ty).
   Proof.
-    rewrite typed_read_eq. iIntros (Hcopy Halive) "!#".
+    rewrite typed_read_eq. iIntros (Hcopy Halive) "!>".
     iIntros ([[]|] tid F qmax qL ?) "#LFT #HE Htl HL #Hshr"; try done.
     iMod (Halive with "HE HL") as (q) "[Hκ Hclose]"; first solve_ndisj.
     iMod (copy_shr_acc with "LFT Hshr Htl Hκ") as (q') "(Htl & H↦ & Hcl)"; first solve_ndisj.

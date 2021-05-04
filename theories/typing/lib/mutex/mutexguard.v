@@ -64,7 +64,7 @@ Section mguard.
     iIntros (??????) "#? H". iDestruct "H" as (l') "[#Hf #H]".
     iExists _. iSplit.
     - by iApply frac_bor_shorten.
-    - iIntros "!# * % Htok".
+    - iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
       iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
@@ -90,7 +90,7 @@ Section mguard.
     intros α1 α2 Hα ty1 ty2 Hty. generalize Hty. rewrite eqtype_unfold.
     iIntros (Hty' qmax qL) "HL".
     iDestruct (Hty' with "HL") as "#Hty". clear Hty'. iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα12.
+    iIntros "!> #HE". iDestruct ("Hα" with "HE") as %Hα12.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs) {HE Hty}". iSplit; [done|iSplit; iModIntro].
     - iIntros (tid [|[[]|][]]) "H"; try done. simpl.
       iDestruct "H" as (β) "(#H⊑ & #Hinv & Hown)".
@@ -105,7 +105,7 @@ Section mguard.
         iApply heap_mapsto_pred_iff_proper.
         iModIntro; iIntros; iSplit; iIntros; by iApply "Ho".
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "H". iExists l'.
-      iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
+      iDestruct "H" as "[$ #H]". iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
       iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
@@ -152,7 +152,7 @@ Section code.
     □ ((q).[α] ={E,∅}=∗ ▷ lock_proto l R ∗ (▷ lock_proto l R ={∅,E}=∗ (q).[α])).
   Proof.
     (* FIXME: This should work: iIntros (?? R). *) intros ?? R.
-    iIntros "#LFT #Hshr #Hlincl !# Htok".
+    iIntros "#LFT #Hshr #Hlincl !> Htok".
     iMod (at_bor_acc_tok with "LFT Hshr Htok") as "[Hproto Hclose1]"; [done..|].
     iMod (fupd_mask_subseteq) as "Hclose2"; last iModIntro; first solve_ndisj.
     iFrame. iIntros "Hproto". iMod "Hclose2" as "_".
@@ -170,7 +170,7 @@ Section code.
   Lemma mutex_lock_type ty `{!TyWf ty} :
     typed_val mutex_lock (fn(∀ α, ∅; &shr{α}(mutex ty)) → mutexguard α ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (m); simpl_subst.
     iApply (type_new 1); [solve_typing..|]; iIntros (g); simpl_subst.
@@ -207,7 +207,7 @@ Section code.
     typed_val mutexguard_derefmut
               (fn(∀ '(α, β), ∅; &uniq{α}(mutexguard β ty)) → &uniq{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (g'); simpl_subst.
     (* Switch to Iris. *)
@@ -249,7 +249,7 @@ Section code.
     typed_val mutexguard_derefmut
               (fn(∀ '(α, β), ∅; &shr{α}(mutexguard β ty)) → &shr{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (g'); simpl_subst.
     (* Switch to Iris. *)
@@ -292,7 +292,7 @@ Section code.
   Lemma mutexguard_drop_type ty `{!TyWf ty} :
     typed_val mutexguard_drop (fn(∀ α, ∅; mutexguard α ty) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>g. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (m); simpl_subst.
     (* Switch to Iris. *)

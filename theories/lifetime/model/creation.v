@@ -130,7 +130,7 @@ Proof.
     - iRight. iFrame "Hκ". iPureIntro. by apply lft_dead_in_insert. }
   iModIntro; iExists Λ.
   rewrite {1}/lft_tok big_sepMS_singleton. iSplit; first done. iFrame "HΛ".
-  clear I A HΛ. iIntros "!# HΛ".
+  clear I A HΛ. iIntros "!> HΛ".
   iApply (step_fupd_mask_mono (↑lftN ∪ ↑lft_userN) _ ((↑lftN ∪ ↑lft_userN)∖↑mgmtN)).
   { (* FIXME solve_ndisj should really handle this... *)
     assert (↑lft_userN ## ↑mgmtN) by solve_ndisj.
@@ -153,11 +153,11 @@ Proof.
   assert (K ## K') by set_solver+.
   rewrite HI !big_sepS_union //. iDestruct "Hinv" as "[[HinvK HinvD] Hinv]".
   iAssert ([∗ set] κ ∈ K', lft_inv_alive κ)%I with "[HinvD]" as "HinvD".
-  { iApply (@big_sepS_impl with "[$HinvD]"); iIntros "!#".
+  { iApply (@big_sepS_impl with "[$HinvD]"); iIntros "!>".
     iIntros (κ [[Hκ _]%elem_of_filter _]%elem_of_difference) "?".
     by iApply lft_inv_alive_in. }
   iAssert ([∗ set] κ ∈ K, lft_inv A κ ∗ [† κ])%I with "[HinvK]" as "HinvK".
-  { iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!#".
+  { iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!>".
     iIntros (κ [? _]%elem_of_kill_set) "$". rewrite /lft_dead. eauto. }
   iApply fupd_trans.
   iApply (fupd_mask_mono (↑lft_userN ∪ ↑borN ∪ ↑inhN)).
@@ -181,15 +181,15 @@ Proof.
   rewrite /own_alft_auth /to_alftUR fmap_insert. iFrame "HA HI".
   rewrite HI !big_sepS_union //.
   iSplitL "HinvK HinvD"; first iSplitL "HinvK".
-  - iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!#".
+  - iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!>".
     iIntros (κ [? _]%elem_of_kill_set) "Hdead". rewrite /lft_inv.
     iRight. iFrame. iPureIntro. by apply lft_dead_in_insert_false'.
-  - iApply (@big_sepS_impl with "[$HinvD]"); iIntros "!#".
+  - iApply (@big_sepS_impl with "[$HinvD]"); iIntros "!>".
     iIntros (κ [[Hκ HκI]%elem_of_filter HκK]%elem_of_difference) "Halive".
     rewrite /lft_inv. iLeft. iFrame "Halive". iPureIntro.
     apply lft_alive_in_insert_false; last done.
     move: HκK. rewrite elem_of_kill_set -(elem_of_dom (D:=gset lft)). set_solver +HκI.
-  - iApply (@big_sepS_impl with "[$Hinv]"); iIntros "!#".
+  - iApply (@big_sepS_impl with "[$Hinv]"); iIntros "!>".
     rewrite /lft_inv. iIntros (κ Hκ) "[[? %]|[? %]]".
     + iLeft. iFrame. iPureIntro.
       apply lft_alive_in_insert_false; last done. intros ?.

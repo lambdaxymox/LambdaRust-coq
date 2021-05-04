@@ -32,7 +32,7 @@ Section option.
     typed_val
       option_as_mut (fn(∀ α, ∅; &uniq{α} (option τ)) → option (&uniq{α}τ)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret p). inv_vec p=>o. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (o'). simpl_subst.
     iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
@@ -44,7 +44,7 @@ Section option.
         iApply type_jump; solve_typing.
       + iApply (type_sum_assign (option $ &uniq{α}τ)%T); [try solve_typing..|].
         iApply type_jump; solve_typing.
-    - iIntros "/= !#". iIntros (k args). inv_vec args. simpl_subst.
+    - iIntros "/= !>". iIntros (k args). inv_vec args. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing.
   Qed.
@@ -62,7 +62,7 @@ Section option.
   Lemma option_unwrap_or_type τ `{!TyWf τ} :
     typed_val (option_unwrap_or τ) (fn(∅; option τ, τ) → τ).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([] ϝ ret p). inv_vec p=>o def. simpl_subst.
     iApply type_case_own; [solve_typing|]. constructor; last constructor; last constructor.
     + right. iApply type_delete; [solve_typing..|].
@@ -87,7 +87,7 @@ Section option.
   Lemma option_unwrap_type τ `{!TyWf τ} :
     typed_val (option_unwrap τ) (fn(∅; option τ) → τ).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([] ϝ ret p). inv_vec p=>o. simpl_subst.
     iApply type_case_own; [solve_typing|]. constructor; last constructor; last constructor.
     + right. iApply type_let; [iApply panic_type|solve_typing|].

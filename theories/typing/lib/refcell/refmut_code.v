@@ -20,7 +20,7 @@ Section refmut_functions.
   Lemma refmut_deref_type ty `{!TyWf ty} :
     typed_val refmut_deref (fn(∀ '(α, β), ∅; &shr{α}(refmut β ty)) → &shr{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -58,7 +58,7 @@ Section refmut_functions.
     typed_val refmut_derefmut
               (fn(∀ '(α, β), ∅; &uniq{α}(refmut β ty)) → &uniq{α}ty).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x').
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
@@ -113,7 +113,7 @@ Section refmut_functions.
   Lemma refmut_drop_type ty `{!TyWf ty} :
     typed_val refmut_drop (fn(∀ α, ∅; refmut α ty) → unit).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros (α ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk Hx". rewrite tctx_interp_singleton tctx_hasty_val.
     destruct x as [[|lx|]|]; try done. iDestruct "Hx" as "[Hx Hx†]".
@@ -181,7 +181,7 @@ Section refmut_functions.
     typed_val call_once (fn(∀ α, ∅; fty, &uniq{α}ty1) → &uniq{α}ty2) →
     typed_val (refmut_map call_once) (fn(∀ α, ∅; refmut α ty1, fty) → refmut α ty2).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret arg).
        inv_vec arg=>ref env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.
@@ -260,7 +260,7 @@ Section refmut_functions.
     typed_val (refmut_map_split call_once)
               (fn(∀ α, ∅; refmut α ty, fty) → Π[refmut α ty1; refmut α ty2]).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret arg).
        inv_vec arg=>refmut env. simpl_subst.
     iApply type_let; [apply Hf | solve_typing |]. iIntros (f'). simpl_subst.

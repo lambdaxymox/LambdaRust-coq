@@ -23,7 +23,7 @@ Section code.
     typed_val call_once (fn(∅; fty, ty) → ty) →
     typed_val (take ty call_once) (fn(∀ α, ∅; &uniq{α} ty, fty) → unit).
   Proof.
-    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros Hf E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
     iIntros (α ϝ ret arg). inv_vec arg=>x env. simpl_subst.
     iApply type_deref; [solve_typing..|]; iIntros (x'); simpl_subst.
     iApply type_let; [apply Hf|solve_typing|]; iIntros (f'); simpl_subst.

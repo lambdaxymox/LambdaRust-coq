@@ -66,7 +66,7 @@ Section refmut.
     iIntros (??????) "#? H". iDestruct "H" as (lv lrc) "[#Hf #H]".
     iExists _, _. iSplit.
     - by iApply frac_bor_shorten.
-    - iIntros "!# * % Htok".
+    - iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
       iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
@@ -87,7 +87,7 @@ Section refmut.
   Proof.
     intros α1 α2 Hα ty1 ty2. rewrite eqtype_unfold=>Hty. iIntros (qmax qL) "HL".
     iDestruct (Hty with "HL") as "#Hty". iDestruct (Hα with "HL") as "#Hα".
-    iIntros "!# #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
+    iIntros "!> #HE". iDestruct ("Hα" with "HE") as %Hα1α2.
     iDestruct ("Hty" with "HE") as "(%&#Ho&#Hs)". iSplit; [|iSplit; iModIntro].
     - done.
     - iIntros (tid [|[[]|][|[[]|][]]]) "H"=>//=.
@@ -100,7 +100,7 @@ Section refmut.
           iExists vl; iFrame; by iApply "Ho".
       + iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem.
     - iIntros (κ tid l) "H /=". iDestruct "H" as (lv lrc) "H". iExists lv, lrc.
-      iDestruct "H" as "[$ #H]". iIntros "!# * % Htok".
+      iDestruct "H" as "[$ #H]". iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
       iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.

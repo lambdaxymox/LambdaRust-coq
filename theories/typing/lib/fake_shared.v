@@ -12,7 +12,7 @@ Section fake_shared.
     typed_val fake_shared_box
       (fn(∀ '(α, β), ∅; &shr{α}(&shr{β} ty)) → &shr{α}(box ty)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite tctx_interp_singleton tctx_hasty_val.
@@ -22,9 +22,9 @@ Section fake_shared.
       iNext. iDestruct "H" as ([|[[]|][]]) "[H↦ H]"; try done.
       iExists _. iFrame. iDestruct "H" as (vl) "[#Hf H]".
       iNext. destruct vl as [|[[|l'|]|][]]; try done. iExists l'. iSplit.
-      { iApply frac_bor_iff; last done. iIntros "!>!# *".
+      { iApply frac_bor_iff; last done. iIntros "!>!> *".
         rewrite heap_mapsto_vec_singleton. iSplit; auto. }
-      iDestruct "H" as "#H". iIntros "!# * % $". iApply step_fupd_intro. set_solver.
+      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro. set_solver.
       simpl. iApply ty_shr_mono; last done.
       by iApply lft_incl_syn_sem. }
     do 2 wp_seq.
@@ -42,7 +42,7 @@ Section fake_shared.
     typed_val fake_shared_box
       (fn(∀ '(α, β), ∅; &shr{α}(&shr{β} ty)) → &shr{α}(&uniq{β} ty)).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([α β] ϝ ret arg). inv_vec arg=>x. simpl_subst.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT".
     rewrite tctx_interp_singleton tctx_hasty_val.
@@ -53,9 +53,9 @@ Section fake_shared.
       iNext. iDestruct "H" as ([|[[]|][]]) "[H↦ H]"; try done.
       iExists _. iFrame. iDestruct "H" as (vl) "[#Hf H]".
       iNext. destruct vl as [|[[|l'|]|][]]; try done. iExists l'. iSplit.
-      { iApply frac_bor_iff; last done. iIntros "!>!# *".
+      { iApply frac_bor_iff; last done. iIntros "!>!> *".
         rewrite heap_mapsto_vec_singleton. iSplit; auto. }
-      iDestruct "H" as "#H". iIntros "!# * % $". iApply step_fupd_intro. set_solver.
+      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro. set_solver.
       simpl. iApply ty_shr_mono; last done.
       by iApply lft_intersect_incl_l.
     }

@@ -14,7 +14,7 @@ Section init_prod.
 
   Lemma init_prod_type : typed_val init_prod (fn(∅; int, int) → Π[int;int]).
   Proof.
-    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !#".
+    intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
       iIntros ([] ϝ ret p). inv_vec p=>x y. simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (x'). simpl_subst.
     iApply type_deref; [solve_typing..|]. iIntros (y'). simpl_subst.
