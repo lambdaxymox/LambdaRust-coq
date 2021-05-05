@@ -417,7 +417,7 @@ Section typing.
   Proof.
     iIntros (<- ->) "#Hbody /=". iIntros (tid qmax) "#LFT _ $ $ #HT". iApply wp_value.
     rewrite tctx_interp_singleton. iLöb as "IH". iExists _. iSplit.
-    { simpl. rewrite decide_left. done. }
+    { simpl. rewrite decide_True_pi. done. }
     iExists fb, _, argsb, e, _. iSplit; first done. iSplit; first done. iNext.
     iIntros (x ϝ k args) "!>". iIntros (tid' qmax') "_ HE Htl HL HC HT'".
     iApply ("Hbody" with "LFT HE Htl HL HC").

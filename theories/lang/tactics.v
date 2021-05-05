@@ -207,7 +207,7 @@ Proof.
   apply strongly_atomic_atomic, ectx_language_atomic.
   - inversion 1. naive_solver.
   - apply ectxi_language_sub_redexes_are_values. intros [] * Hskip; try naive_solver.
-    + inversion Hskip. simpl. rewrite decide_left. eauto.
+    + inversion Hskip. simpl. rewrite decide_True_pi. eauto.
     + inversion Hskip. rename select ([Lit _] = _) into Hargs.
       assert (length [Lit LitPoison] = 1%nat) as Hlen by done. move:Hlen.
       rewrite Hargs. rewrite app_length fmap_length /=.

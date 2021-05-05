@@ -33,7 +33,7 @@ Section type_context.
 
   Lemma eval_path_of_val (v : val) :
     eval_path v = Some v.
-  Proof. destruct v. done. simpl. rewrite (decide_left _). done. Qed.
+  Proof. destruct v. done. simpl. rewrite (decide_True_pi _). done. Qed.
 
   Lemma wp_eval_path E p v :
     eval_path p = Some v → ⊢ WP p @ E {{ v', ⌜v' = v⌝ }}.
