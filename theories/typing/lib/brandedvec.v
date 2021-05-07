@@ -150,7 +150,7 @@ Section brandedvec.
     iIntros "Hn Hm".
     iDestruct "Hn" as (γn) "(Hidx1 & Hn)".
     iDestruct "Hm" as (γm) "(Hidx2 & Hm)".
-    iDestruct (lft_meta_agree with "Hidx1 Hidx2") as %<-. 
+    iDestruct (lft_meta_agree with "Hidx1 Hidx2") as %<-.
     iDestruct (own_valid_2 with "Hn Hm") as %[?%max_nat_included ?]%auth_both_valid_discrete.
     iPureIntro. simpl in *. lia.
   Qed.
@@ -163,7 +163,7 @@ Section typing.
   Local Notation iProp := (iProp Σ).
 
   Definition brandvec_new (call_once : val) (R_F : type) : val :=
-    funrec: <> ["f"] :=
+    fn: ["f"] :=
       let: "call_once" := call_once in
       letalloc: "n" <- #0 in
       letcall: "r" := "call_once" ["f";"n"]%E in
@@ -233,7 +233,7 @@ Section typing.
   Qed.
 
   Definition brandvec_get_index : val :=
-    funrec: <> ["v"; "i"] :=
+    fn: ["v"; "i"] :=
       let: "r" := new [ #2 ] in
       let: "v'" := !"v" in
       let: "i'" := !"i" in
@@ -310,7 +310,7 @@ Section typing.
   Qed.
 
   Definition brandidx_get : val :=
-    funrec: <> ["s";"c"] :=
+    fn: ["s";"c"] :=
       let: "len" := !"s" in
       let: "idx" := !"c" in
       delete [ #1; "s" ];; delete [ #1; "c" ];;
@@ -360,7 +360,7 @@ Section typing.
   Qed.
 
   Definition brandvec_push : val :=
-    funrec: <> ["s"] :=
+    fn: ["s"] :=
       let: "n" := !"s" in
       delete [ #1; "s" ];;
       let: "r" := new [ #1] in

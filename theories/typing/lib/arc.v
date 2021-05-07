@@ -328,7 +328,7 @@ Section arc.
 
   (* Code : constructors *)
   Definition arc_new ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "arcbox" := new [ #(2 + ty.(ty_size))%nat ] in
       let: "arc" := new [ #1 ] in
       "arcbox" +ₗ #0 <- #1;;
@@ -371,7 +371,7 @@ Section arc.
   Qed.
 
   Definition weak_new ty : val :=
-    funrec: <> [] :=
+    fn: [] :=
       let: "arcbox" := new [ #(2 + ty.(ty_size))%nat ] in
       let: "w" := new [ #1 ] in
       "arcbox" +ₗ #0 <- #0;;
@@ -414,7 +414,7 @@ Section arc.
 
   (* Code : deref *)
   Definition arc_deref : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "x" := new [ #1 ] in
       let: "arc'" := !"arc" in
       "x" <- (!"arc'" +ₗ #2);;
@@ -457,7 +457,7 @@ Section arc.
 
   (* Code : getters *)
   Definition arc_strong_count : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #1 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in
@@ -500,7 +500,7 @@ Section arc.
   Qed.
 
   Definition arc_weak_count : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #1 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in
@@ -544,7 +544,7 @@ Section arc.
 
   (* Code : clone, [up/down]grade. *)
   Definition arc_clone : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #1 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in
@@ -588,7 +588,7 @@ Section arc.
   Qed.
 
   Definition weak_clone : val :=
-    funrec: <> ["w"] :=
+    fn: ["w"] :=
       let: "r" := new [ #1 ] in
       let: "w'" := !"w" in
       let: "w''" := !"w'" in
@@ -632,7 +632,7 @@ Section arc.
   Qed.
 
   Definition downgrade : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #1 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in
@@ -676,7 +676,7 @@ Section arc.
   Qed.
 
   Definition upgrade : val :=
-    funrec: <> ["w"] :=
+    fn: ["w"] :=
       let: "r" := new [ #2 ] in
       let: "w'" := !"w" in
       let: "w''" := !"w'" in
@@ -733,7 +733,7 @@ Section arc.
 
   (* Code : drop *)
   Definition arc_drop ty : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #(option ty).(ty_size) ] in
       let: "arc'" := !"arc" in
       "r" <-{Σ none} ();;
@@ -801,7 +801,7 @@ Section arc.
   Qed.
 
   Definition weak_drop ty : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #0] in
       let: "arc'" := !"arc" in
       (if: drop_weak ["arc'"] then delete [ #(2 + ty.(ty_size)); "arc'" ]
@@ -837,7 +837,7 @@ Section arc.
 
   (* Code : other primitives *)
   Definition arc_try_unwrap ty : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #(Σ[ ty; arc ty ]).(ty_size) ] in
       let: "arc'" := !"arc" in
       if: try_unwrap ["arc'"] then
@@ -912,7 +912,7 @@ Section arc.
   Qed.
 
   Definition arc_get_mut : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #2 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in
@@ -975,7 +975,7 @@ Section arc.
   Qed.
 
   Definition arc_make_mut (ty : type) (clone : val) : val :=
-    funrec: <> ["arc"] :=
+    fn: ["arc"] :=
       let: "r" := new [ #1 ] in
       let: "arc'" := !"arc" in
       let: "arc''" := !"arc'" in

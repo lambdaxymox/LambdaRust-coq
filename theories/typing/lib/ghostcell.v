@@ -351,7 +351,7 @@ Section ghostcell.
   Qed.
 
   Definition ghosttoken_new (call_once : val) (R_F : type) : val :=
-    funrec: <> ["f"] :=
+    fn: ["f"] :=
       let: "call_once" := call_once in
       let: "n" := new [ #0] in
       letcall: "r" := "call_once" ["f";"n"]%E in
@@ -406,7 +406,7 @@ Section ghostcell.
   Qed.
 
   Definition ghostcell_new : val :=
-    funrec: <> ["n"] :=
+    fn: ["n"] :=
       return: ["n"].
 
   Lemma ghostcell_new_type `{!TyWf ty} :
@@ -426,7 +426,7 @@ Section ghostcell.
   Qed.
 
   Definition ghostcell_borrow : val :=
-    funrec: <> ["c";"s"] :=
+    fn: ["c";"s"] :=
       (* Skips needed for laters *)
       Skip ;; Skip ;;
       return: ["c"].
@@ -583,7 +583,7 @@ Section ghostcell.
   Qed.
 
   Definition ghostcell_borrow_mut : val :=
-    funrec: <> ["c";"s"] :=
+    fn: ["c";"s"] :=
       (* Skips needed for laters *)
       Skip ;; Skip ;;
       return: ["c"].
@@ -686,7 +686,7 @@ Section ghostcell.
   Qed.
 
   Definition ghostcell_as_mut : val :=
-    funrec: <> ["c"] :=
+    fn: ["c"] :=
       return: ["c"].
 
   Lemma ghostcell_as_mut_type `{!TyWf ty} :

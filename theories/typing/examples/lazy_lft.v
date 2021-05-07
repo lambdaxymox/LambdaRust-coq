@@ -6,7 +6,7 @@ Section lazy_lft.
   Context `{!typeG Σ}.
 
   Definition lazy_lft : val :=
-    funrec: <> [] :=
+    fn: [] :=
       Newlft;;
       let: "t" := new [ #2] in let: "f" := new [ #1] in let: "g" := new [ #1] in
       let: "42" := #42 in "f" <- "42";;

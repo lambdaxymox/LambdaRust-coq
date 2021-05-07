@@ -12,7 +12,7 @@ Section refcell_functions.
 
   (* Constructing a refcell. *)
   Definition refcell_new ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #(S ty.(ty_size))] in
       "r" +ₗ #0 <- #0;;
       "r" +ₗ #1 <-{ty.(ty_size)} !"x";;
@@ -45,7 +45,7 @@ Section refcell_functions.
 
   (* The other direction: getting ownership out of a refcell. *)
   Definition refcell_into_inner ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #ty.(ty_size)] in
       "r" <-{ty.(ty_size)} !("x" +ₗ #1);;
           (* TODO: Can we make it so that the parenthesis above are mandatory?
@@ -79,7 +79,7 @@ Section refcell_functions.
   Qed.
 
   Definition refcell_get_mut : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       "x" <- "x'" +ₗ #1;;       (* Get the second field *)
       return: ["x"].
@@ -117,7 +117,7 @@ Section refcell_functions.
 
   (* Shared borrowing. *)
   Definition refcell_try_borrow : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #3 ] in
     withcont: "k":
       let: "x'" := !"x" in
@@ -226,7 +226,7 @@ Section refcell_functions.
 
   (* Unique borrowing. *)
   Definition refcell_try_borrow_mut : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #3 ] in
     withcont: "k":
       let: "x'" := !"x" in

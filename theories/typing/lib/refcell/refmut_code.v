@@ -11,7 +11,7 @@ Section refmut_functions.
 
   (* Turning a refmut into a shared borrow. *)
   Definition refmut_deref : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "r'" := !"x'" in
       letalloc: "r" <- "r'" in
@@ -102,7 +102,7 @@ Section refmut_functions.
 
   (* Dropping a refmut and set the count to 0 in the corresponding refcell. *)
   Definition refmut_drop : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "rc" := !("x" +ₗ #1) in
       let: "n" := !"rc" in
       "rc" <- "n" + #1;;
@@ -167,7 +167,7 @@ Section refmut_functions.
 
   (* Apply a function within the refmut, typically for accessing a component. *)
   Definition refmut_map (call_once : val) : val :=
-    funrec: <> ["ref"; "f"] :=
+    fn: ["ref"; "f"] :=
       let: "call_once" := call_once in
       let: "x'" := !"ref" in
       letalloc: "x" <- "x'" in
@@ -227,7 +227,7 @@ Section refmut_functions.
   (* Apply a function within the refmut, and create two refmuts,
      typically for splitting the reference. *)
   Definition refmut_map_split (call_once : val) : val :=
-    funrec: <> ["refmut"; "f"] :=
+    fn: ["refmut"; "f"] :=
       let: "call_once" := call_once in
       let: "x'" := !"refmut" in
 

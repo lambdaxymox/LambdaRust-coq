@@ -6,7 +6,7 @@ Section init_prod.
   Context `{!typeG Σ}.
 
   Definition init_prod : val :=
-    funrec: <> ["x"; "y"] :=
+    fn: ["x"; "y"] :=
        let: "x'" := !"x" in let: "y'" := !"y" in
        let: "r" := new [ #2] in
        "r" +ₗ #0 <- "x'";; "r" +ₗ #1 <- "y'";;

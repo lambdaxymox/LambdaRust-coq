@@ -28,7 +28,7 @@ Section non_lexical.
     typed_val insert (fn(∀ α, ∅; &uniq{α} hashmap, K, V) → option V).
 
   Definition get_default : val :=
-    funrec: <> ["map"; "key"] :=
+    fn: ["map"; "key"] :=
       let: "get_mut" := get_mut in
       let: "map'" := !"map" in
 

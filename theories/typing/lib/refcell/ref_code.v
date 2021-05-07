@@ -36,7 +36,7 @@ Section ref_functions.
 
   (* Cloning a ref. We need to increment the counter. *)
   Definition ref_clone : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "rc" := !("x'" +ₗ #1) in
       let: "n" := !"rc" in
@@ -98,7 +98,7 @@ Section ref_functions.
 
   (* Turning a ref into a shared borrow. *)
   Definition ref_deref : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "r'" := !"x'" in
       letalloc: "r" <- "r'" in
@@ -134,7 +134,7 @@ Section ref_functions.
 
   (* Dropping a ref and decrement the count in the corresponding refcell. *)
   Definition ref_drop : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "rc" := !("x" +ₗ #1) in
       let: "n" := !"rc" in
       "rc" <- "n" - #1;;
@@ -196,7 +196,7 @@ Section ref_functions.
 
   (* Apply a function within the ref, typically for accessing a component. *)
   Definition ref_map (call_once : val) : val :=
-    funrec: <> ["ref"; "f"] :=
+    fn: ["ref"; "f"] :=
       let: "call_once" := call_once in
       let: "x'" := !"ref" in
       letalloc: "x" <- "x'" in
@@ -256,7 +256,7 @@ Section ref_functions.
   (* Apply a function within the ref, and create two ref,
      typically for splitting the reference. *)
   Definition ref_map_split (call_once : val) : val :=
-    funrec: <> ["ref"; "f"] :=
+    fn: ["ref"; "f"] :=
       let: "call_once" := call_once in
       let: "x'" := !"ref" in
 

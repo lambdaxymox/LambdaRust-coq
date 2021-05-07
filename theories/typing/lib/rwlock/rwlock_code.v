@@ -12,7 +12,7 @@ Section rwlock_functions.
 
   (* Constructing a rwlock. *)
   Definition rwlock_new ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #(S ty.(ty_size))] in
       "r" +ₗ #0 <- #0;;
       "r" +ₗ #1 <-{ty.(ty_size)} !"x";;
@@ -48,7 +48,7 @@ Section rwlock_functions.
   (* The other direction: getting ownership out of a rwlock.
      Note: as we ignore poisonning, this cannot fail. *)
   Definition rwlock_into_inner ty : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #ty.(ty_size)] in
       "r" <-{ty.(ty_size)} !("x" +ₗ #1);;
        delete [ #(S ty.(ty_size)) ; "x"];; return: ["r"].
@@ -81,7 +81,7 @@ Section rwlock_functions.
   Qed.
 
   Definition rwlock_get_mut : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       "x" <- "x'" +ₗ #1;;
       return: ["x"].
@@ -117,7 +117,7 @@ Section rwlock_functions.
 
   (* Acquiring a read lock. *)
   Definition rwlock_try_read : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "r" := new [ #2 ] in
       let: "x'" := !"x" in
     withcont: "k":
@@ -236,7 +236,7 @@ Section rwlock_functions.
 
   (* Acquiring a write lock. *)
   Definition rwlock_try_write : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
     withcont: "k":
       let: "r" := new [ #2 ] in
       let: "x'" := !"x" in

@@ -18,7 +18,7 @@ Section option.
   Definition some := 1%nat.
 
   Definition option_as_mut : val :=
-    funrec: <> ["o"] :=
+    fn: ["o"] :=
       let: "o'" := !"o" in
       let: "r" := new [ #2 ] in
     withcont: "k":
@@ -50,7 +50,7 @@ Section option.
   Qed.
 
   Definition option_unwrap_or τ : val :=
-    funrec: <> ["o"; "def"] :=
+    fn: ["o"; "def"] :=
       case: !"o" of
       [ delete [ #(S τ.(ty_size)); "o"];;
         return: ["def"];
@@ -74,7 +74,7 @@ Section option.
   Qed.
 
   Definition option_unwrap τ : val :=
-    funrec: <> ["o"] :=
+    fn: ["o"] :=
       case: !"o" of
       [ let: "panic" := panic in
         letcall: "emp" := "panic" [] in

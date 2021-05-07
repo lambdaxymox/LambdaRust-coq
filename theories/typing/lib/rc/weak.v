@@ -106,7 +106,7 @@ Section code.
   Context `{!typeG Σ, !rcG Σ}.
 
   Definition rc_upgrade : val :=
-    funrec: <> ["w"] :=
+    fn: ["w"] :=
       let: "r" := new [ #2 ] in
     withcont: "k":
       let: "w'" := !"w" in
@@ -221,7 +221,7 @@ Section code.
   Qed.
 
   Definition rc_downgrade : val :=
-    funrec: <> ["rc"] :=
+    fn: ["rc"] :=
       let: "r" := new [ #1 ] in
       let: "rc'" := !"rc" in
       let: "rc''" := !"rc'" in
@@ -284,7 +284,7 @@ Section code.
 
   (* Exact same code as downgrade *)
   Definition weak_clone : val :=
-    funrec: <> ["w"] :=
+    fn: ["w"] :=
       let: "r" := new [ #1 ] in
       let: "w'" := !"w" in
       let: "w''" := !"w'" in
@@ -356,7 +356,7 @@ Section code.
   Qed.
 
   Definition weak_drop ty : val :=
-    funrec: <> ["w"] :=
+    fn: ["w"] :=
     withcont: "k":
       let: "w'" := !"w" in
       let: "weak" := !("w'" +ₗ #1) in
@@ -437,7 +437,7 @@ Section code.
   Qed.
 
   Definition weak_new ty : val :=
-    funrec: <> [] :=
+    fn: [] :=
       let: "rcbox" := new [ #(2 + ty.(ty_size))%nat ] in
       let: "w" := new [ #1 ] in
       "rcbox" +ₗ #0 <- #0;;

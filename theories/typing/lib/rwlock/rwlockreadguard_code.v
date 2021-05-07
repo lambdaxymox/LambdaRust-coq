@@ -11,7 +11,7 @@ Section rwlockreadguard_functions.
 
   (* Turning a rwlockreadguard into a shared borrow. *)
   Definition rwlockreadguard_deref : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
       let: "r'" := !"x'" +ₗ #1 in
       letalloc: "r" <- "r'" in
@@ -47,7 +47,7 @@ Section rwlockreadguard_functions.
 
   (* Dropping a rwlockreadguard and releasing the corresponding lock. *)
   Definition rwlockreadguard_drop : val :=
-    funrec: <> ["x"] :=
+    fn: ["x"] :=
       let: "x'" := !"x" in
     withcont: "loop":
       "loop" []
