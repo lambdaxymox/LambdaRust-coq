@@ -1,5 +1,4 @@
 From lrust.lang Require Export proofmode.
-From lrust.lifetime Require Export frac_borrow.
 
 (* Last, so that we make sure we shadow the defintion of delete for
    sets coming from the prelude. *)
