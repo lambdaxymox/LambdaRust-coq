@@ -1,7 +1,8 @@
 From iris.algebra Require Import numbers.
 From iris.proofmode Require Import tactics.
 From lrust.typing Require Export type.
-From lrust.typing Require Import type_context lft_contexts product own uniq_bor shr_bor.
+From lrust.typing Require Import type_context lft_contexts product own uniq_bor.
+From lrust.typing Require Import shr_bor.
 Set Default Proof Using "Type".
 
 Section product_split.
