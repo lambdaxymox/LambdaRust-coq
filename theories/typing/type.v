@@ -50,9 +50,7 @@ Instance: Params (@ty_size) 2 := {}.
 Instance: Params (@ty_own) 2 := {}.
 Instance: Params (@ty_shr) 2 := {}.
 
-Arguments ty_size {_ _} _ / : simpl nomatch.
-Arguments ty_own {_ _} _ _ _ / : simpl nomatch.
-Arguments ty_shr {_ _} _ _ _ _ / : simpl nomatch.
+Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
 
 Class TyWf `{!typeG Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.
 Arguments ty_lfts {_ _} _ {_}.
