@@ -156,7 +156,7 @@ Section product.
   Definition product := foldr product2 unit0.
   Definition unit := product [].
 
-  Global Instance product_wf tyl `{!TyWfLst tyl} : TyWf (product tyl) :=
+  Global Instance product_wf tyl `{!ListTyWf tyl} : TyWf (product tyl) :=
     { ty_lfts := tyl_lfts tyl; ty_wf_E := tyl_wf_E tyl }.
 
   Lemma outlives_product ty1 ty2 ϝ `{!TyWf ty1, !TyWf ty2} :
@@ -179,11 +179,11 @@ Section product.
   Lemma product_proper' E L tyl1 tyl2 :
     Forall2 (eqtype E L) tyl1 tyl2 → eqtype E L (product tyl1) (product tyl2).
   Proof. apply product_proper. Qed.
-  Global Instance product_copy tys : LstCopy tys → Copy (product tys).
+  Global Instance product_copy tys : ListCopy tys → Copy (product tys).
   Proof. induction 1; apply _. Qed.
-  Global Instance product_send tys : LstSend tys → Send (product tys).
+  Global Instance product_send tys : ListSend tys → Send (product tys).
   Proof. induction 1; apply _. Qed.
-  Global Instance product_sync tys : LstSync tys → Sync (product tys).
+  Global Instance product_sync tys : ListSync tys → Sync (product tys).
   Proof. induction 1; apply _. Qed.
 
   Definition product_cons ty tyl :
@@ -252,7 +252,7 @@ Section typing.
     eqtype E L (Π[Π tyl1; Π tyl2]) (Π(tyl1 ++ tyl2)).
   Proof. by rewrite -prod_flatten_r -prod_flatten_l. Qed.
 
-  Lemma ty_outlives_E_elctx_sat_product E L tyl {Wf : TyWfLst tyl} α:
+  Lemma ty_outlives_E_elctx_sat_product E L tyl {Wf : ListTyWf tyl} α:
     elctx_sat E L (tyl_outlives_E tyl α) →
     elctx_sat E L (ty_outlives_E (Π tyl) α).
   Proof.

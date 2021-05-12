@@ -84,7 +84,7 @@ Section sum.
     - iApply ((nth i tyl emp0).(ty_shr_mono) with "Hord"); done.
   Qed.
 
-  Global Instance sum_wf tyl `{!TyWfLst tyl} : TyWf (sum tyl) :=
+  Global Instance sum_wf tyl `{!ListTyWf tyl} : TyWf (sum tyl) :=
     { ty_lfts := tyl_lfts tyl; ty_wf_E := tyl_wf_E tyl }.
 
   Global Instance sum_type_ne n : Proper (Forall2 (type_dist2 n) ==> type_dist2 n) sum.
@@ -174,7 +174,7 @@ Section sum.
     nth i [] d = d.
   Proof. by destruct i. Qed.
 
-  Global Instance sum_copy tyl : LstCopy tyl → Copy (sum tyl).
+  Global Instance sum_copy tyl : ListCopy tyl → Copy (sum tyl).
   Proof.
     intros HFA. split.
     - intros tid vl.
@@ -215,7 +215,7 @@ Section sum.
         iMod ("Hclose" with "[$Hown1 $Hown2]") as "$". by iFrame.
   Qed.
 
-  Global Instance sum_send tyl : LstSend tyl → Send (sum tyl).
+  Global Instance sum_send tyl : ListSend tyl → Send (sum tyl).
   Proof.
     iIntros (Hsend tid1 tid2 vl) "H". iDestruct "H" as (i vl' vl'') "(% & % & Hown)".
     iExists _, _, _. iSplit; first done. iSplit; first done. iApply @send_change_tid; last done.
@@ -223,7 +223,7 @@ Section sum.
     iIntros (???) "[]".
   Qed.
 
-  Global Instance sum_sync tyl : LstSync tyl → Sync (sum tyl).
+  Global Instance sum_sync tyl : ListSync tyl → Sync (sum tyl).
   Proof.
     iIntros (Hsync κ tid1 tid2 l) "H". iDestruct "H" as (i) "[Hframe Hown]".
     iExists _. iFrame "Hframe". iApply @sync_change_tid; last done.

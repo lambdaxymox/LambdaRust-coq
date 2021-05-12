@@ -73,34 +73,34 @@ Proof.
 Qed.
 
 (* Lift TyWf to lists.  We cannot use `Forall` because that one is restricted to Prop. *)
-Inductive TyWfLst `{!typeG Σ} : list type → Type :=
-| tyl_wf_nil : TyWfLst []
-| tyl_wf_cons ty tyl `{!TyWf ty, !TyWfLst tyl} : TyWfLst (ty::tyl).
-Existing Class TyWfLst.
-Existing Instances tyl_wf_nil tyl_wf_cons.
+Inductive ListTyWf `{!typeG Σ} : list type → Type :=
+| list_ty_wf_nil : ListTyWf []
+| list_ty_wf_cons ty tyl `{!TyWf ty, !ListTyWf tyl} : ListTyWf (ty::tyl).
+Existing Class ListTyWf.
+Existing Instances list_ty_wf_nil list_ty_wf_cons.
 
-Fixpoint tyl_lfts `{!typeG Σ} tyl {WF : TyWfLst tyl} : list lft :=
+Fixpoint tyl_lfts `{!typeG Σ} tyl {WF : ListTyWf tyl} : list lft :=
   match WF with
-  | tyl_wf_nil => []
-  | tyl_wf_cons ty [] => ty.(ty_lfts)
-  | tyl_wf_cons ty tyl => ty.(ty_lfts) ++ tyl.(tyl_lfts)
+  | list_ty_wf_nil => []
+  | list_ty_wf_cons ty [] => ty.(ty_lfts)
+  | list_ty_wf_cons ty tyl => ty.(ty_lfts) ++ tyl.(tyl_lfts)
   end.
 
-Fixpoint tyl_wf_E `{!typeG Σ} tyl {WF : TyWfLst tyl} : elctx :=
+Fixpoint tyl_wf_E `{!typeG Σ} tyl {WF : ListTyWf tyl} : elctx :=
   match WF with
-  | tyl_wf_nil => []
-  | tyl_wf_cons ty [] => ty.(ty_wf_E)
-  | tyl_wf_cons ty tyl => ty.(ty_wf_E) ++ tyl.(tyl_wf_E)
+  | list_ty_wf_nil => []
+  | list_ty_wf_cons ty [] => ty.(ty_wf_E)
+  | list_ty_wf_cons ty tyl => ty.(ty_wf_E) ++ tyl.(tyl_wf_E)
   end.
 
-Fixpoint tyl_outlives_E `{!typeG Σ} tyl {WF : TyWfLst tyl} (κ : lft) : elctx :=
+Fixpoint tyl_outlives_E `{!typeG Σ} tyl {WF : ListTyWf tyl} (κ : lft) : elctx :=
   match WF with
-  | tyl_wf_nil => []
-  | tyl_wf_cons ty [] => ty_outlives_E ty κ
-  | tyl_wf_cons ty tyl => ty_outlives_E ty κ ++ tyl.(tyl_outlives_E) κ
+  | list_ty_wf_nil => []
+  | list_ty_wf_cons ty [] => ty_outlives_E ty κ
+  | list_ty_wf_cons ty tyl => ty_outlives_E ty κ ++ tyl.(tyl_outlives_E) κ
   end.
 
-Lemma tyl_outlives_E_elctx_sat `{!typeG Σ} E L tyl {WF : TyWfLst tyl} α β :
+Lemma tyl_outlives_E_elctx_sat `{!typeG Σ} E L tyl {WF : ListTyWf tyl} α β :
   tyl_outlives_E tyl β ⊆+ E →
   lctx_lft_incl E L α β →
   elctx_sat E L (tyl_outlives_E tyl α).
@@ -402,31 +402,31 @@ Class Copy `{!typeG Σ} (t : type) := {
 Existing Instances copy_persistent.
 Instance: Params (@Copy) 2 := {}.
 
-Class LstCopy `{!typeG Σ} (tys : list type) := lst_copy : Forall Copy tys.
-Instance: Params (@LstCopy) 2 := {}.
-Global Instance lst_copy_nil `{!typeG Σ} : LstCopy [] := List.Forall_nil _.
+Class ListCopy `{!typeG Σ} (tys : list type) := lst_copy : Forall Copy tys.
+Instance: Params (@ListCopy) 2 := {}.
+Global Instance lst_copy_nil `{!typeG Σ} : ListCopy [] := List.Forall_nil _.
 Global Instance lst_copy_cons `{!typeG Σ} ty tys :
-  Copy ty → LstCopy tys → LstCopy (ty :: tys) := List.Forall_cons _ _ _.
+  Copy ty → ListCopy tys → ListCopy (ty :: tys) := List.Forall_cons _ _ _.
 
 Class Send `{!typeG Σ} (t : type) :=
   send_change_tid tid1 tid2 vl : t.(ty_own) tid1 vl -∗ t.(ty_own) tid2 vl.
 Instance: Params (@Send) 2 := {}.
 
-Class LstSend `{!typeG Σ} (tys : list type) := lst_send : Forall Send tys.
-Instance: Params (@LstSend) 2 := {}.
-Global Instance lst_send_nil `{!typeG Σ} : LstSend [] := List.Forall_nil _.
+Class ListSend `{!typeG Σ} (tys : list type) := lst_send : Forall Send tys.
+Instance: Params (@ListSend) 2 := {}.
+Global Instance lst_send_nil `{!typeG Σ} : ListSend [] := List.Forall_nil _.
 Global Instance lst_send_cons `{!typeG Σ} ty tys :
-  Send ty → LstSend tys → LstSend (ty :: tys) := List.Forall_cons _ _ _.
+  Send ty → ListSend tys → ListSend (ty :: tys) := List.Forall_cons _ _ _.
 
 Class Sync `{!typeG Σ} (t : type) :=
   sync_change_tid κ tid1 tid2 l : t.(ty_shr) κ tid1 l -∗ t.(ty_shr) κ tid2 l.
 Instance: Params (@Sync) 2 := {}.
 
-Class LstSync `{!typeG Σ} (tys : list type) := lst_sync : Forall Sync tys.
-Instance: Params (@LstSync) 2 := {}.
-Global Instance lst_sync_nil `{!typeG Σ} : LstSync [] := List.Forall_nil _.
+Class ListSync `{!typeG Σ} (tys : list type) := lst_sync : Forall Sync tys.
+Instance: Params (@ListSync) 2 := {}.
+Global Instance lst_sync_nil `{!typeG Σ} : ListSync [] := List.Forall_nil _.
 Global Instance lst_sync_cons `{!typeG Σ} ty tys :
-  Sync ty → LstSync tys → LstSync (ty :: tys) := List.Forall_cons _ _ _.
+  Sync ty → ListSync tys → ListSync (ty :: tys) := List.Forall_cons _ _ _.
 
 Section type.
   Context `{!typeG Σ}.

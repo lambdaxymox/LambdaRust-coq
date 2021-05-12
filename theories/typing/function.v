@@ -9,7 +9,7 @@ Section fn.
 
   Record fn_params := FP { fp_E : lft → elctx; fp_tys : vec type n; fp_ty : type }.
 
-  Definition FP_wf E (tys : vec type n) `{!TyWfLst tys} ty `{!TyWf ty} :=
+  Definition FP_wf E (tys : vec type n) `{!ListTyWf tys} ty `{!TyWf ty} :=
     FP (λ ϝ, E ϝ ++ tyl_wf_E tys ++ tyl_outlives_E tys ϝ ++
                     ty.(ty_wf_E) ++ ty_outlives_E ty ϝ)
        tys ty.

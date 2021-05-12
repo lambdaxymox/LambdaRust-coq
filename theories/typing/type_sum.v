@@ -285,7 +285,7 @@ Section case.
     by iApply type_seq; [eapply type_sum_memcpy_instr, Hr|done|done].
   Qed.
 
-  Lemma ty_outlives_E_elctx_sat_sum E L tyl {Wf : TyWfLst tyl} α:
+  Lemma ty_outlives_E_elctx_sat_sum E L tyl {Wf : ListTyWf tyl} α:
     elctx_sat E L (tyl_outlives_E tyl α) →
     elctx_sat E L (ty_outlives_E (sum tyl) α).
   Proof.
