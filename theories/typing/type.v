@@ -121,6 +121,8 @@ Record simple_type `{!typeG Σ} :=
 Existing Instance st_own_persistent.
 Instance: Params (@st_own) 2 := {}.
 
+Arguments st_own {_ _} _ / : simpl nomatch.
+
 Program Definition ty_of_st `{!typeG Σ} (st : simple_type) : type :=
   {| ty_size := 1; ty_own := st.(st_own);
      (* [st.(st_own) tid vl] needs to be outside of the fractured
