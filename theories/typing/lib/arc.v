@@ -105,7 +105,7 @@ Section arc.
          | _ => False end;
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
-           □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
+           □ ∀ F q, ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ q.[κ]
              ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν q', κ ⊑ ν ∗
                 arc_persist tid ν γ l' ty ∗
                 &at{κ, arc_shrN}(arc_tok γ q')
@@ -227,7 +227,7 @@ Section arc.
          | _ => False end;
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
-           □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
+           □ ∀ F q, ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ q.[κ]
              ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν,
                 arc_persist tid ν γ l' ty ∗ &at{κ, arc_shrN}(weak_tok γ)
     |}%I.

@@ -18,7 +18,7 @@ Section weak.
          | _ => False end;
        ty_shr κ tid l :=
          ∃ (l' : loc), &frac{κ} (λ q, l ↦{q} #l') ∗
-           □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ]
+           □ ∀ F q, ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ q.[κ]
              ={F}[F∖↑shrN]▷=∗ q.[κ] ∗ ∃ γ ν, rc_persist tid ν γ l' ty ∗
                 &na{κ, tid, rc_shrN}(own γ weak_tok)
     |}%I.

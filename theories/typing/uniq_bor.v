@@ -16,7 +16,7 @@ Section uniq_bor.
          end;
        ty_shr κ' tid l :=
          ∃ l':loc, &frac{κ'}(λ q', l ↦{q'} #l') ∗
-           □ ∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ⊓κ']
+           □ ∀ F q, ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ q.[κ⊓κ']
                ={F}[F∖↑shrN]▷=∗ ty.(ty_shr) (κ⊓κ') tid l' ∗ q.[κ⊓κ']
     |}%I.
   Next Obligation. by iIntros (q ty tid [|[[]|][]]) "H". Qed.

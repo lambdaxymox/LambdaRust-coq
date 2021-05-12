@@ -60,7 +60,7 @@ Section own.
          end%I;
        ty_shr κ tid l :=
          (∃ l':loc, &frac{κ}(λ q', l ↦{q'} #l') ∗
-            □ (∀ F q, ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ q.[κ] ={F}[F∖↑shrN]▷=∗
+            □ (∀ F q, ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ q.[κ] ={F}[F∖↑shrN]▷=∗
                             ty.(ty_shr) κ tid l' ∗ q.[κ]))%I |}.
   Next Obligation. by iIntros (q ty tid [|[[]|][]]) "H". Qed.
   Next Obligation.

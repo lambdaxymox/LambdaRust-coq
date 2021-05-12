@@ -65,7 +65,7 @@ Section typing.
 
   (** Writing and Reading **)
   Definition typed_write_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
-    (□ ∀ v tid F qmax qL, ⌜lftE ∪ (↑lrustN) ⊆ F⌝ →
+    (□ ∀ v tid F qmax qL, ⌜↑lftN ∪ (↑lrustN) ⊆ F⌝ →
       lft_ctx -∗ elctx_interp E -∗ llctx_interp_noend qmax L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl, ⌜length vl = ty.(ty_size) ∧ v = #l⌝ ∗ l ↦∗ vl ∗
           (▷ l ↦∗: ty.(ty_own) tid ={F}=∗
@@ -85,7 +85,7 @@ Section typing.
      that nobody could possibly have changed the vl (because only half the
      fraction was given). So we go with the definition that is easier to prove. *)
   Definition typed_read_def (E : elctx) (L : llctx) (ty1 ty ty2 : type) : iProp Σ :=
-    (□ ∀ v tid F qmax qL, ⌜lftE ∪ ↑lrustN ⊆ F⌝ →
+    (□ ∀ v tid F qmax qL, ⌜↑lftN ∪ ↑lrustN ⊆ F⌝ →
       lft_ctx -∗ elctx_interp E -∗ na_own tid F -∗
       llctx_interp_noend qmax L qL -∗ ty1.(ty_own) tid [v] ={F}=∗
         ∃ (l : loc) vl q, ⌜v = #l⌝ ∗ l ↦∗{q} vl ∗ ▷ ty.(ty_own) tid vl ∗

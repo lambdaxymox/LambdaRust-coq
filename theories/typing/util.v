@@ -25,10 +25,10 @@ Section util.
    *)
 
   Lemma delay_sharing_later N κ l ty tid :
-    lftE ⊆ N →
+    ↑lftN ⊆ N →
     lft_ctx -∗ &{κ}(▷ l ↦∗: ty_own ty tid) ={N}=∗
        □ ∀ (F : coPset) (q : Qp),
-       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ tid l ∗ (q).[κ].
+       ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ (q).[κ] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ tid l ∗ (q).[κ].
   Proof.
     iIntros (?) "#LFT Hbor". rewrite bor_unfold_idx.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".
@@ -47,10 +47,10 @@ Section util.
   Qed.
 
   Lemma delay_sharing_nested N κ κ' κ'' l ty tid :
-    lftE ⊆ N →
+    ↑lftN ⊆ N →
     lft_ctx -∗ ▷ (κ'' ⊑ κ ⊓ κ') -∗ &{κ'}(&{κ}(l ↦∗: ty_own ty tid)) ={N}=∗
        □ ∀ (F : coPset) (q : Qp),
-       ⌜↑shrN ∪ lftE ⊆ F⌝ -∗ (q).[κ''] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ'' tid l ∗ (q).[κ''].
+       ⌜↑shrN ∪ ↑lftN ⊆ F⌝ -∗ (q).[κ''] ={F}[F ∖ ↑shrN]▷=∗ ty.(ty_shr) κ'' tid l ∗ (q).[κ''].
   Proof.
     iIntros (?) "#LFT #Hincl Hbor". rewrite bor_unfold_idx.
     iDestruct "Hbor" as (i) "(#Hpb&Hpbown)".

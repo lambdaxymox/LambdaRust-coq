@@ -13,7 +13,6 @@ Class typeG Σ := TypeG {
   type_frac_borrowG :> frac_borG Σ
 }.
 
-Definition lftE : coPset := ↑lftN.
 Definition lrustN := nroot .@ "lrust".
 Definition shrN  := lrustN .@ "shr".
 
@@ -40,7 +39,7 @@ Record type `{!typeG Σ} :=
        nicer (they would otherwise require a "∨ □|=>[†κ]"), and (b) so that
        we can have emp == sum [].
      *)
-    ty_share E κ l tid q : lftE ⊆ E →
+    ty_share E κ l tid q : ↑lftN ⊆ E →
       lft_ctx -∗ &{κ} (l ↦∗: ty_own tid) -∗ q.[κ] ={E}=∗
       ty_shr κ tid l ∗ q.[κ];
     ty_shr_mono κ κ' tid l :
@@ -175,7 +174,7 @@ Section ofe.
   Let P (x : T) : Prop :=
     (∀ κ tid l, Persistent (x.2 κ tid l)) ∧
     (∀ tid vl, x.1.2 tid vl -∗ ⌜length vl = x.1.1⌝) ∧
-    (∀ E κ l tid q, lftE ⊆ E →
+    (∀ E κ l tid q, ↑lftN ⊆ E →
       lft_ctx -∗ &{κ} (l ↦∗: λ vs, x.1.2 tid vs) -∗
       q.[κ] ={E}=∗ x.2 κ tid l ∗ q.[κ]) ∧
     (∀ κ κ' tid l, κ' ⊑ κ -∗ x.2 κ tid l -∗ x.2 κ' tid l).
@@ -395,7 +394,7 @@ Fixpoint shr_locsE (l : loc) (n : nat) : coPset :=
 Class Copy `{!typeG Σ} (t : type) := {
   copy_persistent tid vl : Persistent (t.(ty_own) tid vl);
   copy_shr_acc κ tid E F l q :
-    lftE ∪ ↑shrN ⊆ E → shr_locsE l (t.(ty_size) + 1) ⊆ F →
+    ↑lftN ∪ ↑shrN ⊆ E → shr_locsE l (t.(ty_size) + 1) ⊆ F →
     lft_ctx -∗ t.(ty_shr) κ tid l -∗ na_own tid F -∗ q.[κ] ={E}=∗
        ∃ q', na_own tid (F ∖ shr_locsE l t.(ty_size)) ∗
          ▷(l ↦∗{q'}: t.(ty_own) tid) ∗
