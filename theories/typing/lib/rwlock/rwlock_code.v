@@ -182,7 +182,7 @@ Section rwlock_functions.
         iAssert (∃ qν ν, (qβ / 2).[β] ∗ (qν).[ν] ∗
                          ty_shr ty (β ⊓ ν) tid (lx +ₗ 1) ∗
                          own γ (◯ reading_st qν ν) ∗ rwlock_inv tid tid lx γ β ty ∗
-                         ((1).[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]))%I
+                         ((1).[ν] ={↑lftN ∪ lft_userE}[lft_userE]▷=∗ [†ν]))%I
           with "[> Hlx Hownst Hst Hβtok2]"
           as (q' ν) "(Hβtok2 & Hν & Hshr & Hreading & INV & H†)".
         { destruct st' as [[|[[agν q] n]|]|]; try done.
@@ -202,7 +202,7 @@ Section rwlock_functions.
           - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". solve_ndisj.
             iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply
               auth_update_alloc, (op_local_update_discrete _ _ (reading_st (1/2)%Qp ν)).
-            rewrite right_id. iExists _, _. iFrame "Htok1 Hreading".
+            rewrite (right_id None). iExists _, _. iFrame "Htok1 Hreading".
             iDestruct (lft_intersect_acc with "Hβtok2 Htok2") as (q) "[Htok Hclose]".
             iApply (fupd_mask_mono (↑lftN)). solve_ndisj.
             iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]". solve_ndisj.

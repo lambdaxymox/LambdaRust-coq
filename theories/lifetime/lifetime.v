@@ -26,12 +26,12 @@ Definition lft_incl_syntactic (κ κ' : lft) : Prop := ∃ κ'', κ'' ⊓ κ' = 
 Infix "⊑ˢʸⁿ" := lft_incl_syntactic (at level 40) : stdpp_scope.
 
 Section derived.
-Context `{!invG Σ, !lftG Σ}.
+Context `{!invG Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma lft_create E :
   ↑lftN ⊆ E →
-  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+  lft_ctx ={E}=∗ ∃ κ, 1.[κ] ∗ □ (1.[κ] ={↑lftN ∪ userE}[userE]▷=∗ [†κ]).
 Proof.
   iIntros (?) "#LFT".
   iMod (lft_create_strong (λ _, True) with "LFT") as (κ _) "H"=>//;
@@ -50,7 +50,7 @@ Qed.
 Lemma bor_acc_atomic_cons E κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗
-    (▷ P ∗ ∀ Q, ▷ (▷ Q ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ} Q) ∨
+    (▷ P ∗ ∀ Q, ▷ (▷ Q ={userE}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ} Q) ∨
     ([†κ] ∗ |={E∖↑lftN,E}=> True).
 Proof.
   iIntros (?) "#LFT HP".
@@ -76,7 +76,7 @@ Qed.
 Lemma bor_acc_cons E q κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ▷ P ∗
-    ∀ Q, ▷ (▷ Q ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ} Q ∗ q.[κ].
+    ∀ Q, ▷ (▷ Q ={userE}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ} Q ∗ q.[κ].
 Proof.
   iIntros (?) "#LFT HP Htok".
   iMod (bor_acc_strong with "LFT HP Htok") as (κ') "(#Hκκ' & $ & Hclose)"; first done.

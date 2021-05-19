@@ -6,8 +6,21 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 Import uPred.
 
+Lemma lft_init `{!invG Σ, !lftPreG Σ} E userE :
+  ↑lftN ⊆ E → ↑lftN ## userE → ⊢ |={E}=> ∃ _ : lftG Σ userE, lft_ctx.
+Proof.
+  iIntros (? HuserE). rewrite /lft_ctx.
+  iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first by apply auth_auth_valid.
+  iMod (own_alloc (● ∅ : authR ilftUR)) as (γi) "Hi"; first by apply auth_auth_valid.
+  set (HlftG := LftG _ _ _ _ γa _ γi _ _ _ HuserE). iExists HlftG.
+  iMod (inv_alloc _ _ lfts_inv with "[Ha Hi]") as "$"; last done.
+  iModIntro. rewrite /lfts_inv /own_alft_auth /own_ilft_auth. iExists ∅, ∅.
+  rewrite /to_alftUR /to_ilftUR !fmap_empty. iFrame.
+  rewrite dom_empty_L big_sepS_empty. done.
+Qed.
+
 Section primitive.
-Context `{!invG Σ, !lftG Σ}.
+Context `{!invG Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma to_borUR_included (B : gmap slice_name bor_state) i s q :
@@ -16,19 +29,6 @@ Proof.
   rewrite singleton_included_l=> -[qs []]. unfold_leibniz.
   rewrite lookup_fmap fmap_Some_equiv=> -[s' [-> ->]].
   by move=> /Some_pair_included [_] /Some_included_total /to_agree_included=>->.
-Qed.
-
-Lemma lft_init `{!lftPreG Σ} E :
-  ↑lftN ⊆ E → ⊢ |={E}=> ∃ _ : lftG Σ, lft_ctx.
-Proof.
-  iIntros (?). rewrite /lft_ctx.
-  iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first by apply auth_auth_valid.
-  iMod (own_alloc (● ∅ : authR ilftUR)) as (γi) "Hi"; first by apply auth_auth_valid.
-  set (HlftG := LftG _ _ _ γa _ γi _ _ _). iExists HlftG.
-  iMod (inv_alloc _ _ lfts_inv with "[Ha Hi]") as "$"; last done.
-  iModIntro. rewrite /lfts_inv /own_alft_auth /own_ilft_auth. iExists ∅, ∅.
-  rewrite /to_alftUR /to_ilftUR !fmap_empty. iFrame.
-  rewrite dom_empty_L big_sepS_empty. done.
 Qed.
 
 (** Ownership *)
@@ -497,7 +497,7 @@ Proof.
 Qed.
 
 Lemma lft_vs_cons κ Pb Pb' Pi :
-  (▷ Pb'-∗ [†κ] ={↑lft_userN ∪ ↑borN}=∗ ▷ Pb) -∗
+  (▷ Pb'-∗ [†κ] ={userE ∪ ↑borN}=∗ ▷ Pb) -∗
   lft_vs κ Pb Pi -∗ lft_vs κ Pb' Pi.
 Proof.
   iIntros "Hcons Hvs". rewrite !lft_vs_unfold.

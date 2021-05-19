@@ -5,7 +5,7 @@ From iris.base_logic.lib Require Import boxes.
 Set Default Proof Using "Type".
 
 Section accessors.
-Context `{!invG Σ, !lftG Σ}.
+Context `{!invG Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 (* Helper internal lemmas *)
@@ -55,7 +55,7 @@ Proof.
 Qed.
 
 Lemma add_vs Pb Pb' P Q Pi κ :
-  ▷ (Pb ≡ (P ∗ Pb')) -∗ lft_vs κ Pb Pi -∗ (▷ Q -∗ [†κ] ={↑lft_userN}=∗ ▷ P) -∗
+  ▷ (Pb ≡ (P ∗ Pb')) -∗ lft_vs κ Pb Pi -∗ (▷ Q -∗ [†κ] ={userE}=∗ ▷ P) -∗
   lft_vs κ (Q ∗ Pb') Pi.
 Proof.
   iIntros "#HEQ Hvs HvsQ". iApply (lft_vs_cons with "[-Hvs] Hvs").
@@ -148,7 +148,7 @@ Qed.
 Lemma bor_acc_strong E q κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P -∗ q.[κ] ={E}=∗ ∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-    ∀ Q, ▷(▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
+    ∀ Q, ▷(▷ Q -∗ [†κ'] ={userE}=∗ ▷ P) -∗ ▷ Q ={E}=∗ &{κ'} Q ∗ q.[κ].
 Proof.
   unfold bor, raw_bor. iIntros (HE) "#LFT Hbor Htok".
   iDestruct "Hbor" as (κ'') "(#Hle & Htmp)". iDestruct "Htmp" as (s'') "(Hbor & #Hs)".
@@ -215,7 +215,7 @@ Lemma bor_acc_atomic_strong E κ P :
   ↑lftN ⊆ E →
   lft_ctx -∗ &{κ} P ={E,E∖↑lftN}=∗
    (∃ κ', κ ⊑ κ' ∗ ▷ P ∗
-      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={↑lft_userN}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
+      ∀ Q, ▷ (▷ Q -∗ [†κ'] ={userE}=∗ ▷ P) -∗ ▷ Q ={E∖↑lftN,E}=∗ &{κ'} Q) ∨
     ([†κ] ∗ |={E∖↑lftN,E}=> True).
 Proof.
   iIntros (HE) "#LFT Hbor". rewrite bor_unfold_idx /idx_bor /bor /raw_bor.

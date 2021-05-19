@@ -127,7 +127,7 @@ Section refmut_functions.
     iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
     iMod (na_bor_acc with "LFT Hinv Hβ Hna") as "(INV & Hna & Hcloseβ)"; [done..|].
     iDestruct "INV" as (st) "(H↦lrc & H● & INV)". wp_read. wp_let. wp_op. wp_write.
-    iAssert (|={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=> refcell_inv tid lrc γ β ty')%I
+    iAssert (|={↑lftN ∪ lft_userE}[lft_userE]▷=> refcell_inv tid lrc γ β ty')%I
       with "[H↦lrc H● H◯ Hν INV]" as "INV".
     { iDestruct (own_valid_2 with "H● H◯") as
         %[[[=]|(? & [[? q'] ?] & [= <-] & Hst & INCL)]%option_included _]
@@ -152,7 +152,7 @@ Section refmut_functions.
         iApply step_fupd_intro; [set_solver-|]. iSplitL; [|done].
         iDestruct "Hq" as (q' ?) "?". iExists (q+q')%Qp. iFrame.
         rewrite assoc (comm _ q'' q) //. }
-    wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ ↑lft_userN)); first done.
+    wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ lft_userE)); first done.
     iApply (wp_step_fupd with "INV"); [set_solver-|]. wp_seq. iIntros "{Hb} Hb !>".
     iMod ("Hcloseβ" with "Hb Hna") as "[Hβ Hna]".
     iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL". wp_seq.

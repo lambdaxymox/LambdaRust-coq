@@ -393,7 +393,7 @@ Section ghostcell.
       by iFrame "Hidx Hown".
     + iIntros (r) "Hna Hf Hown".
       simpl_subst.
-      iDestruct ("Hcloseα" with "[Hf]") as "[Htok Hf]"; first by rewrite right_id.
+      iDestruct ("Hcloseα" with "[Hf]") as "[Htok Hf]"; [by rewrite (right_id static)|].
       iMod ("Hclosef" with "Hf HL") as "HL".
       wp_let.
       iApply (type_type _ _ _ [ r ◁ box R_F ] with "[] LFT HE Hna HL Hc"); try solve_typing;

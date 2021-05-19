@@ -5,14 +5,14 @@ Set Default Proof Using "Type".
 
 (** Atomic persistent bors  *)
 (* TODO : update the TEX with the fact that we can choose the namespace. *)
-Definition at_bor `{!invG Σ, !lftG Σ} κ N (P : iProp Σ) :=
+Definition at_bor `{!invG Σ, !lftG Σ userE} κ N (P : iProp Σ) :=
   (∃ i, &{κ,i}P ∗
     (⌜N ## lftN⌝ ∗ inv N (idx_bor_own 1 i) ∨
      ⌜N = lftN⌝ ∗ inv N (∃ q, idx_bor_own q i)))%I.
 Notation "&at{ κ , N }" := (at_bor κ N) (format "&at{ κ , N }") : bi_scope.
 
 Section atomic_bors.
-  Context `{!invG Σ, !lftG Σ} (P : iProp Σ) (N : namespace).
+  Context `{!invG Σ, !lftG Σ userE} (P : iProp Σ) (N : namespace).
 
   Global Instance at_bor_ne κ n : Proper (dist n ==> dist n) (at_bor κ N).
   Proof. solve_proper. Qed.
@@ -97,7 +97,7 @@ Section atomic_bors.
   Qed.
 End atomic_bors.
 
-Lemma at_bor_acc_lftN `{!invG Σ, !lftG Σ} (P : iProp Σ) E κ :
+Lemma at_bor_acc_lftN `{!invG Σ, !lftG Σ userE} (P : iProp Σ) E κ :
   ↑lftN ⊆ E →
   lft_ctx -∗ &at{κ,lftN}P ={E,E∖↑lftN}=∗ ▷P ∗ (▷P ={E∖↑lftN,E}=∗ True) ∨
              [†κ] ∗ |={E∖↑lftN,E}=> True.

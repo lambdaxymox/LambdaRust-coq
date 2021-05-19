@@ -84,7 +84,7 @@ Section rc.
                  because [weak_new] cannot prove ty_shr, even for a dead
                  lifetime. *)
               (ty.(ty_shr) ν tid (l +ₗ 2) ∨ [†ν]) ∗
-              □ (1.[ν] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†ν]))%I.
+              □ (1.[ν] ={↑lftN ∪ lft_userE}[lft_userE]▷=∗ [†ν]))%I.
 
   Global Instance rc_persist_persistent tid ν γ l ty : Persistent (rc_persist tid ν γ l ty).
   Proof. unfold rc_persist, tc_opaque. apply _. Qed.
@@ -246,16 +246,16 @@ Section code.
         (((⌜strong = 1%positive⌝ ∗
            (∃ weak : Z, (l +ₗ 1) ↦ #weak ∗
              ((⌜weak = 1⌝ ∗
-               |={⊤}[↑lft_userN]▷=> † l…(2 + ty.(ty_size)) ∗
+               |={⊤}[lft_userE]▷=> † l…(2 + ty.(ty_size)) ∗
                           ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ na_own tid F) ∨
              (⌜weak > 1⌝ ∗
               ((l ↦ #1 -∗ (l +ₗ 1) ↦ #weak
                 ={⊤}=∗ na_own tid F ∗ ty_own (rc ty) tid [ #l ]) ∧
                (l ↦ #0 -∗ (l +ₗ 1) ↦ #(weak - 1)
-                ={⊤}[↑lft_userN]▷=∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗
+                ={⊤}[lft_userE]▷=∗ ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗
                 ((l +ₗ 2) ↦∗: (λ vl, ⌜length vl = ty.(ty_size)⌝)
                  ={⊤}=∗ na_own tid F)))))) ∧
-           (l ↦ #0 ={⊤}[↑lft_userN]▷=∗
+           (l ↦ #0 ={⊤}[lft_userE]▷=∗
              ▷ (l +ₗ 2) ↦∗: ty.(ty_own) tid ∗ † l…(2 + ty.(ty_size)) ∗ na_own tid F ∗
              (na_own tid F ={⊤}=∗ ∃ weak : Z,
                 (l +ₗ 1) ↦ #weak ∗
@@ -294,7 +294,7 @@ Section code.
              iMod (own_update_2 with "Hst Htok") as "Hst".
              { apply auth_update_dealloc. rewrite -{1}(right_id (None, 0%nat) _ (_, _)).
                apply cancel_local_update_unit, _. }
-             rewrite -[in (1).[ν]%I]Hqq' -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans.
+             rewrite -[in (1).[ν]%I]Hqq' -[(|={lft_userE,⊤}=>_)%I]fupd_trans.
              iApply step_fupd_mask_mono;
                last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
              iModIntro. iNext. iMod "H†".
@@ -309,7 +309,7 @@ Section code.
                 iMod ("Hclose" with "[-Htok Hν1]") as "$"; last by auto 10 with iFrame.
                 iFrame. iExists _. auto with iFrame.
              ++ iIntros "Hl1 Hl2".
-                rewrite -[in (1).[ν]%I]Hqq' -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans.
+                rewrite -[in (1).[ν]%I]Hqq' -[(|={lft_userE,⊤}=>_)%I]fupd_trans.
                 iApply step_fupd_mask_mono;
                   last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
                 iModIntro. iNext. iMod "H†".
@@ -330,7 +330,7 @@ Section code.
           { apply auth_update. etrans.
             - rewrite [(Some _, weak)]pair_split. apply cancel_local_update_unit, _.
             - apply (op_local_update _ _ (Some (Cinr (Excl tt)), 0%nat)). auto. }
-          rewrite -[(|={↑lft_userN,⊤}=>_)%I]fupd_trans -[in (1).[ν]%I]Hqq'.
+          rewrite -[(|={lft_userE,⊤}=>_)%I]fupd_trans -[in (1).[ν]%I]Hqq'.
           iApply step_fupd_mask_mono;
             last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
           iModIntro. iNext. iMod "H†".

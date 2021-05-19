@@ -6,7 +6,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
 Section creation.
-Context `{!invG Σ, !lftG Σ}.
+Context `{!invG Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma lft_kill (I : gmap lft lft_names) (K K' : gset lft) (κ : lft) :
@@ -16,7 +16,7 @@ Lemma lft_kill (I : gmap lft lft_names) (K K' : gset lft) (κ : lft) :
     ([∗ set] κ' ∈ K', lft_inv_alive κ'))%I in
   (∀ κ', is_Some (I !! κ') → κ ⊂ κ' → κ' ∈ K) →
   (∀ κ', is_Some (I !! κ') → κ' ⊂ κ → κ' ∈ K') →
-  Iinv -∗ lft_inv_alive κ -∗ [†κ] ={↑lft_userN ∪ ↑borN ∪ ↑inhN}=∗ Iinv ∗ lft_inv_dead κ.
+  Iinv -∗ lft_inv_alive κ -∗ [†κ] ={userE ∪ ↑borN ∪ ↑inhN}=∗ Iinv ∗ lft_inv_dead κ.
 Proof.
   iIntros (Iinv HK HK') "(HI & Hdead & Halive) Hlalive Hκ".
   rewrite lft_inv_alive_unfold;
@@ -63,7 +63,7 @@ Lemma lfts_kill (A : gmap atomic_lft _) (I : gmap lft lft_names) (K K' : gset lf
   (∀ κ κ', κ ∈ K → is_Some (I !! κ') → κ ⊆ κ' → κ' ∈ K) →
   (∀ κ, lft_alive_in A κ → is_Some (I !! κ) → κ ∉ K → κ ∈ K') →
   Iinv K' -∗ ([∗ set] κ ∈ K, lft_inv A κ ∗ [†κ])
-    ={↑lft_userN ∪ ↑borN ∪ ↑inhN}=∗ Iinv K' ∗ [∗ set] κ ∈ K, lft_inv_dead κ.
+    ={userE ∪ ↑borN ∪ ↑inhN}=∗ Iinv K' ∗ [∗ set] κ ∈ K, lft_inv_dead κ.
 Proof.
   intros Iinv. revert K'.
   induction (set_wf K) as [K _ IH]=> K' HKK' HK HK'.
@@ -112,9 +112,9 @@ Lemma lft_create_strong P E :
   pred_infinite P → ↑lftN ⊆ E →
   lft_ctx ={E}=∗
   ∃ p : positive, let κ := positive_to_lft p in ⌜P p⌝ ∗
-       (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+       (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ userE}[userE]▷=∗ [†κ]).
 Proof.
-  iIntros (HP ?) "#LFT".
+  assert (userE_lftN_disj:=userE_lftN_disj). iIntros (HP ?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   rewrite ->pred_infinite_set in HP.
   destruct (HP (dom (gset _) A)) as [Λ [HPx HΛ%not_elem_of_dom]].
@@ -131,10 +131,9 @@ Proof.
   iModIntro; iExists Λ.
   rewrite {1}/lft_tok big_sepMS_singleton. iSplit; first done. iFrame "HΛ".
   clear I A HΛ. iIntros "!> HΛ".
-  iApply (step_fupd_mask_mono (↑lftN ∪ ↑lft_userN) _ ((↑lftN ∪ ↑lft_userN)∖↑mgmtN)).
+  iApply (step_fupd_mask_mono (↑lftN ∪ userE) _ ((↑lftN ∪ userE)∖↑mgmtN)).
   { (* FIXME solve_ndisj should really handle this... *)
-    assert (↑lft_userN ## ↑mgmtN) by solve_ndisj.
-    set_solver. }
+    assert (↑mgmtN ## userE) by solve_ndisj. set_solver. }
   { done. }
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   { (* FIXME solve_ndisj should really handle this... *)
@@ -160,10 +159,10 @@ Proof.
   { iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!>".
     iIntros (κ [? _]%elem_of_kill_set) "$". rewrite /lft_dead. eauto. }
   iApply fupd_trans.
-  iApply (fupd_mask_mono (↑lft_userN ∪ ↑borN ∪ ↑inhN)).
+  iApply (fupd_mask_mono (userE ∪ ↑borN ∪ ↑inhN)).
   { (* FIXME can we make solve_ndisj handle this? *)
-    clear. rewrite -assoc. apply union_least.
-    - assert (↑lft_userN ##@{coPset} ↑mgmtN) by solve_ndisj. set_solver.
+    clear -userE_lftN_disj. rewrite -assoc. apply union_least.
+    - assert (userE ##@{coPset} ↑mgmtN) by solve_ndisj. set_solver.
     - assert (↑inhN ##@{coPset} ↑mgmtN) by solve_ndisj.
       assert (↑inhN ⊆@{coPset} ↑lftN) by solve_ndisj.
       assert (↑borN ##@{coPset} ↑mgmtN) by solve_ndisj.

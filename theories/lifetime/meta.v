@@ -21,12 +21,12 @@ we need. In other words, we use [own_unit] instead of [own_alloc]. As a result
 we can just hard-code an arbitrary name here. *)
 Local Definition lft_meta_gname : gname := 42%positive.
 
-Definition lft_meta `{!lftG Σ, lft_metaG Σ} (κ : lft) (γ : gname) : iProp Σ :=
+Definition lft_meta `{!lftG Σ userE, lft_metaG Σ} (κ : lft) (γ : gname) : iProp Σ :=
   ∃ p : positive, ⌜κ = positive_to_lft p⌝ ∗
     own lft_meta_gname (dyn_reservation_map_data p (to_agree γ)).
 
 Section lft_meta.
-  Context `{!invG Σ, !lftG Σ, lft_metaG Σ}.
+  Context `{!invG Σ, !lftG Σ userE, lft_metaG Σ}.
 
   Global Instance lft_meta_timeless κ γ : Timeless (lft_meta κ γ).
   Proof. apply _. Qed.
@@ -36,7 +36,7 @@ Section lft_meta.
   Lemma lft_create_meta {E : coPset} (γ : gname) :
     ↑lftN ⊆ E →
     lft_ctx ={E}=∗
-    ∃ κ, lft_meta κ γ ∗ (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ ↑lft_userN}[↑lft_userN]▷=∗ [†κ]).
+    ∃ κ, lft_meta κ γ ∗ (1).[κ] ∗ □ ((1).[κ] ={↑lftN ∪ userE}[userE]▷=∗ [†κ]).
   Proof.
     iIntros (HE) "#LFT".
     iMod (own_unit (dyn_reservation_mapUR (agreeR gnameO)) lft_meta_gname) as "Hown".

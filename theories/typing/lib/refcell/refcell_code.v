@@ -193,7 +193,7 @@ Section refcell_functions.
         - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
           iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply
             auth_update_alloc, (op_local_update_discrete _ _ (reading_stR (1/2)%Qp ν)).
-          rewrite right_id. iExists _, _. iFrame "Htok1 Hreading".
+          rewrite (right_id None). iExists _, _. iFrame "Htok1 Hreading".
           iDestruct (lft_intersect_acc with "Hβtok2 Htok2") as (q) "[Htok Hclose]".
           iApply (fupd_mask_mono (↑lftN)); first done.
           iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]". done.
@@ -276,7 +276,7 @@ Section refcell_functions.
       iMod (own_update with "Hownst") as "[Hownst ?]".
       { by eapply auth_update_alloc,
           (op_local_update_discrete _ _ (refcell_st_to_R $ Some (ν, true, (1/2)%Qp, xH))). }
-      rewrite right_id.
+      rewrite (right_id None).
       iApply fupd_wp. iApply (fupd_mask_mono (↑lftN)); first done.
       iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hb") as "[Hb Hbh]". done.
       { iApply lft_intersect_incl_l. }
