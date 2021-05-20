@@ -149,11 +149,11 @@ Section refmut_functions.
         iDestruct "INV" as "(H† & Hq & _)".
         rewrite /= (_:Z.neg (1%positive ⋅ n') + 1 = Z.neg n');
           last (rewrite pos_op_plus; lia). iFrame.
-        iApply step_fupd_intro; [set_solver-|]. iSplitL; [|done].
+        iApply step_fupd_intro; [set_solver+|]. iSplitL; [|done].
         iDestruct "Hq" as (q' ?) "?". iExists (q+q')%Qp. iFrame.
         rewrite assoc (comm _ q'' q) //. }
     wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ lft_userE)); first done.
-    iApply (wp_step_fupd with "INV"); [set_solver-|]. wp_seq. iIntros "{Hb} Hb !>".
+    iApply (wp_step_fupd with "INV"); [set_solver+|]. wp_seq. iIntros "{Hb} Hb !>".
     iMod ("Hcloseβ" with "Hb Hna") as "[Hβ Hna]".
     iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL". wp_seq.
     iApply (type_type _ _ _ [ #lx ◁ box (uninit 2)]

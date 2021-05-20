@@ -34,7 +34,7 @@ Proof.
     iDestruct (own_cnt_valid_2 with "Hcnt' Hcnt")
       as %[?%nat_included _]%auth_both_valid_discrete; lia. }
   iMod (box_empty with "Hbox") as "[HP Hbox]"=>//.
-  { (* FIXME [solve_ndisj] fails *) set_solver-. }
+  { (* FIXME [solve_ndisj] fails *) set_solver+. }
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
   iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom _ I) with "Halive")
@@ -42,7 +42,7 @@ Proof.
   { intros κ'. rewrite elem_of_dom. eauto. }
   iApply fupd_trans. iApply fupd_mask_mono; last
   iMod ("Hvs" $! I with "[HI Halive] HP Hκ") as "(Hinv & HQ & Hcnt')".
-  { set_solver-. }
+  { set_solver+. }
   { rewrite lft_vs_inv_unfold. iFrame. }
   rewrite lft_vs_inv_unfold; iDestruct "Hinv" as "(HI&Halive)".
   iSpecialize ("Halive'" with "Halive").

@@ -204,7 +204,7 @@ Section refcell_functions.
           + iIntros "!> Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro.
             iNext. iMod "Hν".
             iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hh" with "[Hν]") as "$".
-            { set_solver-. }
+            { set_solver+. }
             * rewrite -lft_dead_or. auto.
             * done.
           + iExists _. iFrame. by rewrite Qp_div_2. }
@@ -284,7 +284,7 @@ Section refcell_functions.
       { iExists _. iFrame. iNext. iSplitL "Hbh".
         - iIntros "Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro. iNext. iMod "Hν".
           iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hbh" with "[Hν]") as "$".
-          { set_solver-. }
+          { set_solver+. }
           * rewrite -lft_dead_or. auto.
           * done.
         - iSplitL; [|done]. iExists _. iFrame. by rewrite Qp_div_2. }

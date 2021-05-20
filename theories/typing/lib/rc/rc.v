@@ -299,7 +299,7 @@ Section code.
                last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
              iModIntro. iNext. iMod "H†".
              iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
-             { set_solver-. }
+             { set_solver+. }
              iMod "Hclose2" as "_". iModIntro.
              iMod ("Hclose" with "[Hst $Hna]") as "$"; first by iExists _; iFrame.
              iModIntro. iNext. iDestruct "Hty" as (vl) "[??]". iExists _. iFrame.
@@ -314,7 +314,7 @@ Section code.
                   last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
                 iModIntro. iNext. iMod "H†".
                 iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
-                { set_solver-. }
+                { set_solver+. }
                 iMod "Hclose2" as "_". iModIntro.
                 iMod (own_update_2 with "Hst Htok") as "Hst".
                 { apply auth_update_dealloc, prod_local_update_1,
@@ -335,7 +335,7 @@ Section code.
             last iMod ("Hνend" with "[$Hν $Hν1]") as "H†"; try done.
           iModIntro. iNext. iMod "H†".
           iMod fupd_mask_subseteq as "Hclose2"; last iMod ("Hν†" with "H†") as "Hty".
-          { set_solver-. }
+          { set_solver+. }
           iMod "Hclose2" as "_". iModIntro.
           iMod ("Hclose" with "[Hst $Hna Hl1 Hl2]") as "$";
             first by iExists _; iFrame; iFrame.

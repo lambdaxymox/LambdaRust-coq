@@ -463,7 +463,7 @@ Section code.
     wp_op. rewrite shift_loc_0. wp_write. wp_op. wp_write.
     iMod (lft_create with "LFT") as (ν) "[Hν #Hν†]"; first done.
     iPoseProof ("Hν†" with "Hν") as "H†". wp_bind (_ <- _)%E.
-    iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); [set_solver-..|].
+    iApply wp_mask_mono; last iApply (wp_step_fupd with "H†"); [set_solver+..|].
     wp_write. iIntros "#Hν !>". wp_seq.
     iApply (type_type _ _ _ [ #lw ◁ box (weak ty)]
         with "[] LFT HE Hna HL Hk [> -]"); last first.

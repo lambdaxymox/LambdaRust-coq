@@ -179,10 +179,10 @@ Section ref_functions.
         { apply auth_update_dealloc.
           rewrite -(agree_idemp (to_agree _)) !pair_op Some_op.
           apply (cancel_local_update_unit (reading_stR q ν)), _. }
-        iApply step_fupd_intro; first set_solver-. iExists (q+q'')%Qp. iFrame.
+        iApply step_fupd_intro; first set_solver+. iExists (q+q'')%Qp. iFrame.
         by rewrite assoc (comm _ q0 q). }
     wp_bind Endlft. iApply (wp_mask_mono _ (↑lftN ∪ lft_userE)); first done.
-    iApply (wp_step_fupd with "INV"); [set_solver-..|]. wp_seq.
+    iApply (wp_step_fupd with "INV"); [set_solver+..|]. wp_seq.
     iIntros "INV !>". wp_seq. iMod ("Hcloseβ" with "[$INV] Hna") as "[Hβ Hna]".
     iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
     iApply (type_type _ _ _ [ #lx ◁ box (uninit 2)] with "[] LFT HE Hna HL Hk");

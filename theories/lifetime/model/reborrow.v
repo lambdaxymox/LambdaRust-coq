@@ -82,7 +82,7 @@ Proof.
     rewrite /to_borUR lookup_fmap. by rewrite HB. }
   iMod (slice_fill _ _ false with "Hislice HP Hbox")
      as "Hbox".
-  { set_solver-. }
+  { set_solver+. }
   { by rewrite lookup_fmap HB. }
   iDestruct (@big_sepM_delete with "HB") as "[Hcnt HB]"; first done.
   rewrite /=. iDestruct "Hcnt" as "[% H1◯]".

@@ -96,14 +96,14 @@ Section rwlockreadguard_functions.
           iCombine "Hν" "Hν'" as "Hν". iDestruct "Hq" as %->.
           iApply (step_fupd_mask_mono ((↑lftN ∪ lft_userE) ∪ (⊤ ∖ ↑rwlockN ∖ ↑lftN ∖ lft_userE)));
             last iApply (step_fupd_mask_frame_r _ (lft_userE)).
-          { set_solver-. }
+          { set_solver+. }
           { solve_ndisj. }
           { rewrite difference_difference. apply: disjoint_difference_r1. done. }
           { (* FIXME [solve_ndisj] fails. *)
             apply: disjoint_difference_r1. done. }
           iMod ("H†" with "Hν") as "H†". iModIntro. iNext. iMod "H†".
           iMod fupd_mask_subseteq as "Hclose"; last iMod ("Hh" with "H†") as "Hb".
-          { set_solver-. }
+          { set_solver+. }
           iMod "Hclose" as "_". iIntros "!> Hlx". iExists None. iFrame.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.
           rewrite -(right_id None op (Some _)). apply cancel_local_update_unit, _.
