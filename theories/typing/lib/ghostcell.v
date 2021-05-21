@@ -9,6 +9,52 @@ Set Default Proof Using "Type".
 Definition ghostcellN := lrustN .@ "ghostcell".
 Definition ghosttokenN := lrustN .@ "ghosttoken".
 
+(* This library should be valid under weak memory, but the current
+   model of Lambdarust-weak makes this challenging to prove. The
+   reasons are:
+
+     - The SC model in this file relies crucially on using the atomic accessors
+       of borrows, which are much weaker (when they exist) in weakmem. The
+       reason of this weakness is that, when we are not in SC, we cannot tel
+       that a lifetime is "either alive or dead", since it can be "dead", but
+       in a way which is not yet synchronized with the current thread.
+
+   So let's search for another model:
+     - We have to prove that successive mutable accesses to the ghost cell are
+       synchronized (i.e., they are in happens-before relationship).
+     - The only reason these accesses are indeed synchronized is that the *ghost
+       token* is transmitted via mechanisms guaranteeing happens-before
+       relationship (like every resource transfer in Rust).
+     - In particular, when the borrow of a ghost token ends, the ghost token
+       needs to change its internal state to remember the view of the death of
+       its lifetime. Indeed, the death of the corresponding lifetime is an
+       essential link in the synchronization chain between two successive
+       accesses to the ghost cell.
+     - In the lifetime logic, the only way to allow updates at the death of a
+       lifetime is through the "consequence view-shift" of [bor_acc_strong]:
+          ▷ Q -∗ [†κ'] ={userE}=∗ ▷ P
+     - However, unfortunately, this "consequence view-shift" take a subjective
+       version of the death token in weak_mem:
+          ▷ Q -∗ subj [†κ'] ={userE}=∗ ▷ P
+       As a result, the view at which this view shift is used is independent
+       from the actual "view of the death of the lifetime", so we have no
+       information about it.
+     - The reason why this is a subjective token in weak-mem is because of what
+       happens when a non-atomic lifetime dies (a non-atomic lifetime is the
+       intersection of other lifetimes). Indeed, a non-atomic lifetime can die
+       "several times", once for each component, and each of these death can
+       occur at non-comparable views. The only relevant view that we would pass
+       to the consequence view-shift is the view used for the inheritance of
+       the borrow, but that view is not necessarily well-defined since the
+       borrow can be the result of a merging of other borrows.
+    Hence, it sounds like that the main blocking point is the merging rule of
+    the lifetime logic, which we use very rarely in the model (only for
+    merging actual borrows in [tctx_merge_uniq_prod2]). So it might be mossible
+    to remove the merging rule from the lifetime logic to get rid of the
+    subjective modality in the consequence view-shift and finally get a model
+    for GhostCell under weak memory...
+  *)
+
 (* States:
    Not borrowed, borrowed.
 
