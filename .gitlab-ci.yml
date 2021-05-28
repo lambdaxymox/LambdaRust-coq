@@ -39,7 +39,9 @@ build-coq.8.13.1:
 build-iris.dev:
   <<: *template
   variables:
-    OPAM_PINS: "coq version 8.13.dev   coq-stdpp.dev git git+https://gitlab.mpi-sws.org/iris/stdpp.git#$STDPP_REV   coq-iris.dev git git+https://gitlab.mpi-sws.org/iris/iris.git#$IRIS_REV"
+    STDPP_REPO: "iris/stdpp"
+    IRIS_REPO: "iris/iris"
+    OPAM_PINS: "coq version 8.13.dev   git+https://gitlab.mpi-sws.org/$STDPP_REPO#$STDPP_REV   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
   except:
   only:
   - triggers
