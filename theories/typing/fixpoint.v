@@ -4,7 +4,7 @@ Set Default Proof Using "Type".
 Import uPred.
 
 Section fixpoint_def.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
   Context (T : type → type) {HT: TypeContractive T}.
 
   Global Instance type_inhabited : Inhabited type := populate bool.
@@ -37,13 +37,13 @@ Section fixpoint_def.
     {| ty_lfts := lfts; ty_wf_E := wf_E |}.
 End fixpoint_def.
 
-Lemma type_fixpoint_ne `{!typeG Σ} (T1 T2 : type → type)
+Lemma type_fixpoint_ne `{!typeGS Σ} (T1 T2 : type → type)
     `{!TypeContractive T1, !TypeContractive T2} n :
   (∀ t, T1 t ≡{n}≡ T2 t) → type_fixpoint T1 ≡{n}≡ type_fixpoint T2.
 Proof. eapply fixpointK_ne; apply type_contractive_ne, _. Qed.
 
 Section fixpoint.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
   Context (T : type → type) {HT: TypeContractive T}.
 
   Global Instance fixpoint_copy :
@@ -98,7 +98,7 @@ Section fixpoint.
 End fixpoint.
 
 Section subtyping.
-  Context `{!typeG Σ} (E : elctx) (L : llctx).
+  Context `{!typeGS Σ} (E : elctx) (L : llctx).
 
   (* TODO : is there a way to declare these as a [Proper] instances ? *)
   Lemma fixpoint_mono T1 `{!TypeContractive T1} T2 `{!TypeContractive T2} :

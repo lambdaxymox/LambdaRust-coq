@@ -11,7 +11,7 @@ Set Default Proof Using "Type".
    [take_mut]. *)
 
 Section panic.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition panic : val :=
     fn: [] := #☠.

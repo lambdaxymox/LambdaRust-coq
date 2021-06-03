@@ -6,7 +6,7 @@ From lrust.typing Require Import shr_bor.
 Set Default Proof Using "Type".
 
 Section product_split.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (** General splitting / merging for pointer types *)
   Fixpoint hasty_ptr_offsets (p : path) (ptr: type → type) tyl (off : nat) : tctx :=

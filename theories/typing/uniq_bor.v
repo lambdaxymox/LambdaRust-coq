@@ -5,7 +5,7 @@ From lrust.typing Require Import util lft_contexts type_context programs.
 Set Default Proof Using "Type".
 
 Section uniq_bor.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Program Definition uniq_bor (κ:lft) (ty:type) :=
     {| ty_size := 1;
@@ -113,7 +113,7 @@ End uniq_bor.
 Notation "&uniq{ κ }" := (uniq_bor κ) (format "&uniq{ κ }") : lrust_type_scope.
 
 Section typing.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Lemma uniq_mono' E L κ1 κ2 ty1 ty2 :
     lctx_lft_incl E L κ2 κ1 → eqtype E L ty1 ty2 →

@@ -36,7 +36,7 @@ Proof. solve_inG. Qed.
 
 (** Now we come to the Iris part of the proof. *)
 Section proof.
-Context `{!lrustG Σ, !spawnG Σ} (N : namespace).
+Context `{!lrustGS Σ, !spawnG Σ} (N : namespace).
 
 Definition spawn_inv (γf γj : gname) (c : loc) (Ψ : val → iProp Σ) : iProp Σ :=
   (own γf (Excl ()) ∗ own γj (Excl ()) ∨

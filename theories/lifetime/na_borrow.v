@@ -3,7 +3,7 @@ From iris.base_logic.lib Require Export na_invariants.
 From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
-Definition na_bor `{!invGS Σ, !lftG Σ userE, !na_invG Σ}
+Definition na_bor `{!invGS Σ, !lftGS Σ userE, !na_invG Σ}
            (κ : lft) (tid : na_inv_pool_name) (N : namespace) (P : iProp Σ) :=
   (∃ i, &{κ,i}P ∗ na_inv tid N (idx_bor_own 1 i))%I.
 
@@ -11,7 +11,7 @@ Notation "&na{ κ , tid , N }" := (na_bor κ tid N)
     (format "&na{ κ , tid , N }") : bi_scope.
 
 Section na_bor.
-  Context `{!invGS Σ, !lftG Σ userE, !na_invG Σ}
+  Context `{!invGS Σ, !lftGS Σ userE, !na_invG Σ}
           (tid : na_inv_pool_name) (N : namespace) (P : iProp Σ).
 
   Global Instance na_bor_ne κ n : Proper (dist n ==> dist n) (na_bor κ tid N).

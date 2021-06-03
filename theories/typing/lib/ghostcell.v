@@ -93,7 +93,7 @@ Definition ghosttoken_st_to_R (st : ghosttoken_st) : ghosttoken_stR :=
         end).
 
 Section ghostcell.
-  Context `{!typeG Σ, !ghostcellG Σ}.
+  Context `{!typeGS Σ, !ghostcellG Σ}.
   Implicit Types (α β: lft) (γ: gname) (q: Qp) (ty: type) (l: loc).
 
   Local Instance ghosttoken_fractional γ κ' :

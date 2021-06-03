@@ -40,7 +40,7 @@ Definition refcellN := lrustN .@ "refcell".
 Definition refcell_invN := refcellN .@ "inv".
 
 Section refcell_inv.
-  Context `{!typeG Σ, !refcellG Σ}.
+  Context `{!typeGS Σ, !refcellG Σ}.
 
   Definition refcell_inv tid (l : loc) (γ : gname) (α : lft) ty : iProp Σ :=
     (∃ st, l ↦ #(Z_of_refcell_st st) ∗ own γ (● (refcell_st_to_R st)) ∗
@@ -94,7 +94,7 @@ Section refcell_inv.
 End refcell_inv.
 
 Section refcell.
-  Context `{!typeG Σ, !refcellG Σ}.
+  Context `{!typeGS Σ, !refcellG Σ}.
 
   (* Original Rust type:
      pub struct RefCell<T: ?Sized> {

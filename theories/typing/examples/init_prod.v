@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section init_prod.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition init_prod : val :=
     fn: ["x"; "y"] :=

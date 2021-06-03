@@ -3,7 +3,7 @@ From lrust.typing Require Export type.
 Set Default Proof Using "Type".
 
 Section util.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (* Delayed sharing is used by various types; in particular own and uniq.
      It comes in two flavors: Borrows of "later something" and borrows of

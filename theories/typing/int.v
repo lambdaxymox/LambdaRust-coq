@@ -4,7 +4,7 @@ From lrust.typing Require Import bool programs.
 Set Default Proof Using "Type".
 
 Section int.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Program Definition int : type :=
     {| st_own tid vl :=
@@ -22,7 +22,7 @@ Section int.
 End int.
 
 Section typing.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Lemma type_int_instr (z : Z) : typed_val #z int.
   Proof.

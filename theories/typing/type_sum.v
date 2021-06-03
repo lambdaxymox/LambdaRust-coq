@@ -5,7 +5,7 @@ From lrust.typing Require Import lft_contexts type_context programs product.
 Set Default Proof Using "Type".
 
 Section case.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (* FIXME : have an Iris version of Forall2. *)
   Lemma type_case_own' E L C T p n tyl el :

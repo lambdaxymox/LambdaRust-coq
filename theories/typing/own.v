@@ -5,7 +5,7 @@ From lrust.typing Require Import util uninit type_context programs.
 Set Default Proof Using "Type".
 
 Section own.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition freeable_sz (n : nat) (sz : nat) (l : loc) : iProp Σ :=
     match sz, n return _ with
@@ -146,7 +146,7 @@ Section own.
 End own.
 
 Section box.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition box ty := own_ptr ty.(ty_size) ty.
 
@@ -183,7 +183,7 @@ Section box.
 End box.
 
 Section util.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Lemma ownptr_own n ty tid v :
     (own_ptr n ty).(ty_own) tid [v] ⊣⊢
@@ -214,7 +214,7 @@ Section util.
 End util.
 
 Section typing.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (** Typing *)
   Lemma write_own {E L} ty ty' n :

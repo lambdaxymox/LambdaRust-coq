@@ -21,7 +21,7 @@ Definition brandidxN := lrustN .@ "brandix".
 Definition brandvecN := lrustN .@ "brandvec".
 
 Section brandedvec.
-  Context `{!typeG Σ, !brandidxG Σ}.
+  Context `{!typeGS Σ, !brandidxG Σ}.
   Implicit Types (q : Qp) (α : lft) (γ : gname) (n m : nat).
   Local Notation iProp := (iProp Σ).
 
@@ -158,7 +158,7 @@ Section brandedvec.
 End brandedvec.
 
 Section typing.
-  Context `{!typeG Σ, !brandidxG Σ}.
+  Context `{!typeGS Σ, !brandidxG Σ}.
   Implicit Types (q : Qp) (α : lft) (γ : gname) (n m : nat).
   Local Notation iProp := (iProp Σ).
 

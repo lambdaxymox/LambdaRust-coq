@@ -7,7 +7,7 @@ From lrust.typing.lib.rwlock Require Import rwlock rwlockwriteguard.
 Set Default Proof Using "Type".
 
 Section rwlockwriteguard_functions.
-  Context `{!typeG Σ, !rwlockG Σ}.
+  Context `{!typeGS Σ, !rwlockG Σ}.
 
   (* Turning a rwlockwriteguard into a shared borrow. *)
   Definition rwlockwriteguard_deref : val :=

@@ -6,13 +6,13 @@ From lrust.lang Require Import tactics.
 Set Default Proof Using "Type".
 Import uPred.
 
-Class lrustG Σ := LRustG {
-  lrustG_invG : invGS Σ;
-  lrustG_gen_heapG :> heapGS Σ
+Class lrustGS Σ := LRustGS {
+  lrustGS_invGS : invGS Σ;
+  lrustGS_heapGS :> heapGS Σ
 }.
 
-Instance lrustG_irisG `{!lrustG Σ} : irisGS lrust_lang Σ := {
-  iris_invG := lrustG_invG;
+Instance lrustGS_irisGS `{!lrustGS Σ} : irisGS lrust_lang Σ := {
+  iris_invG := lrustGS_invGS;
   state_interp σ _ κs _ := heap_ctx σ;
   fork_post _ := True%I;
   num_laters_per_step _ := 0%nat;
@@ -63,7 +63,7 @@ Instance do_subst_vec xl (vsl : vec val (length xl)) e :
 Proof. by rewrite /DoSubstL subst_v_eq. Qed.
 
 Section lifting.
-Context `{!lrustG Σ}.
+Context `{!lrustGS Σ}.
 Implicit Types P Q : iProp Σ.
 Implicit Types e : expr.
 Implicit Types ef : option expr.

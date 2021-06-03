@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section fake_shared.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition fake_shared_box : val :=
     fn: ["x"] := Skip ;; return: ["x"].

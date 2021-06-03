@@ -4,7 +4,7 @@ From lrust.typing Require Import programs.
 Set Default Proof Using "Type".
 
 Section typing.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (** Jumping to and defining a continuation. *)
   Lemma type_jump args argsv E L C T k T' :

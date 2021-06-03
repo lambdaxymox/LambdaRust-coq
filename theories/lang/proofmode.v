@@ -6,14 +6,14 @@ From lrust.lang Require Export tactics lifting.
 Set Default Proof Using "Type".
 Import uPred.
 
-Lemma tac_wp_value `{!lrustG Σ} Δ E Φ e v :
+Lemma tac_wp_value `{!lrustGS Σ} Δ E Φ e v :
   IntoVal e v →
   envs_entails Δ (Φ v) → envs_entails Δ (WP e @ E {{ Φ }}).
 Proof. rewrite envs_entails_eq=> ? ->. by apply wp_value. Qed.
 
 Ltac wp_value_head := eapply tac_wp_value; [iSolveTC|reduction.pm_prettify].
 
-Lemma tac_wp_pure `{!lrustG Σ} K Δ Δ' E e1 e2 φ n Φ :
+Lemma tac_wp_pure `{!lrustGS Σ} K Δ Δ' E e1 e2 φ n Φ :
   PureExec φ n e1 e2 →
   φ →
   MaybeIntoLaterNEnvs n Δ Δ' →
@@ -38,7 +38,7 @@ Tactic Notation "wp_pure" open_constr(efoc) :=
   | _ => fail "wp_pure: not a 'wp'"
   end.
 
-Lemma tac_wp_eq_loc `{!lrustG Σ} K Δ Δ' E i1 i2 l1 l2 q1 q2 v1 v2 Φ :
+Lemma tac_wp_eq_loc `{!lrustGS Σ} K Δ Δ' E i1 i2 l1 l2 q1 q2 v1 v2 Φ :
   MaybeIntoLaterNEnvs 1 Δ Δ' →
   envs_lookup i1 Δ' = Some (false, l1 ↦{q1} v1)%I →
   envs_lookup i2 Δ' = Some (false, l2 ↦{q2} v2)%I →
@@ -67,7 +67,7 @@ Tactic Notation "wp_op" := wp_pure (BinOp _ _ _) || wp_eq_loc.
 Tactic Notation "wp_if" := wp_pure (If _ _ _).
 Tactic Notation "wp_case" := wp_pure (Case _ _); try wp_value_head.
 
-Lemma tac_wp_bind `{!lrustG Σ} K Δ E Φ e :
+Lemma tac_wp_bind `{!lrustGS Σ} K Δ E Φ e :
   envs_entails Δ (WP e @ E {{ v, WP fill K (of_val v) @ E {{ Φ }} }})%I →
   envs_entails Δ (WP fill K e @ E {{ Φ }}).
 Proof. rewrite envs_entails_eq=> ->. apply: wp_bind. Qed.
@@ -89,7 +89,7 @@ Tactic Notation "wp_bind" open_constr(efoc) :=
   end.
 
 Section heap.
-Context `{!lrustG Σ}.
+Context `{!lrustGS Σ}.
 Implicit Types P Q : iProp Σ.
 Implicit Types Φ : val → iProp Σ.
 Implicit Types Δ : envs (uPredI (iResUR Σ)).

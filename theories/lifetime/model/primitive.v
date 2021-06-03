@@ -6,13 +6,13 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 Import uPred.
 
-Lemma lft_init `{!invGS Σ, !lftPreG Σ} E userE :
-  ↑lftN ⊆ E → ↑lftN ## userE → ⊢ |={E}=> ∃ _ : lftG Σ userE, lft_ctx.
+Lemma lft_init `{!invGS Σ, !lftGpreS Σ} E userE :
+  ↑lftN ⊆ E → ↑lftN ## userE → ⊢ |={E}=> ∃ _ : lftGS Σ userE, lft_ctx.
 Proof.
   iIntros (? HuserE). rewrite /lft_ctx.
   iMod (own_alloc (● ∅ : authR alftUR)) as (γa) "Ha"; first by apply auth_auth_valid.
   iMod (own_alloc (● ∅ : authR ilftUR)) as (γi) "Hi"; first by apply auth_auth_valid.
-  set (HlftG := LftG _ _ _ _ γa _ γi _ _ _ HuserE). iExists HlftG.
+  set (HlftGS := LftG _ _ _ _ γa _ γi _ _ _ HuserE). iExists HlftGS.
   iMod (inv_alloc _ _ lfts_inv with "[Ha Hi]") as "$"; last done.
   iModIntro. rewrite /lfts_inv /own_alft_auth /own_ilft_auth. iExists ∅, ∅.
   rewrite /to_alftUR /to_ilftUR !fmap_empty. iFrame.
@@ -20,7 +20,7 @@ Proof.
 Qed.
 
 Section primitive.
-Context `{!invGS Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftGS Σ userE}.
 Implicit Types κ : lft.
 
 Lemma to_borUR_included (B : gmap slice_name bor_state) i s q :

@@ -7,25 +7,25 @@ From lrust.typing Require Import typing.
 
 Set Default Proof Using "Type".
 
-Class typePreG Σ := PreTypeG {
-  type_preG_lrustG :> lrustPreG Σ;
-  type_preG_lftG :> lftPreG Σ;
+Class typeGpreS Σ := PreTypeG {
+  type_preG_lrustGS :> lrustGpreS Σ;
+  type_preG_lftGS :> lftGpreS Σ;
   type_preG_na_invG :> na_invG Σ;
   type_preG_frac_borG :> frac_borG Σ
 }.
 
 Definition typeΣ : gFunctors :=
   #[lrustΣ; lftΣ; na_invΣ; GFunctor (constRF fracR)].
-Instance subG_typePreG {Σ} : subG typeΣ Σ → typePreG Σ.
+Instance subG_typeGpreS {Σ} : subG typeΣ Σ → typeGpreS Σ.
 Proof. solve_inG. Qed.
 
 Section type_soundness.
   Definition exit_cont : val := λ: [<>], #☠.
 
-  Definition main_type `{!typeG Σ} := (fn(∅) → unit)%T.
+  Definition main_type `{!typeGS Σ} := (fn(∅) → unit)%T.
 
-  Theorem type_soundness `{!typePreG Σ} (main : val) σ t :
-    (∀ `{!typeG Σ}, typed_val main main_type) →
+  Theorem type_soundness `{!typeGpreS Σ} (main : val) σ t :
+    (∀ `{!typeGS Σ}, typed_val main main_type) →
     rtc erased_step ([main [exit_cont]%E], ∅) (t, σ) →
     nonracing_threadpool t σ ∧
     (∀ e, e ∈ t → is_Some (to_val e) ∨ reducible e σ).
@@ -63,7 +63,7 @@ End type_soundness.
 (* Soundness theorem when no other CMRA is needed. *)
 
 Theorem type_soundness_closed (main : val) σ t :
-  (∀ `{!typeG typeΣ}, typed_val main main_type) →
+  (∀ `{!typeGS typeΣ}, typed_val main main_type) →
   rtc erased_step ([main [exit_cont]%E], ∅) (t, σ) →
   nonracing_threadpool t σ ∧
   (∀ e, e ∈ t → is_Some (to_val e) ∨ reducible e σ).

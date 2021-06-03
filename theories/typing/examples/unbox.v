@@ -3,7 +3,7 @@ From lrust.typing Require Import typing.
 Set Default Proof Using "Type".
 
 Section unbox.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition unbox : val :=
     fn: ["b"] :=

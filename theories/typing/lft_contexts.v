@@ -23,7 +23,7 @@ Notation llctx := (list llctx_elt).
 Notation "κ ⊑ₗ κl" := (@pair lft (list lft) κ κl) (at level 70).
 
 Section lft_contexts.
-  Context `{!invGS Σ, !lftG Σ lft_userE}.
+  Context `{!invGS Σ, !lftGS Σ lft_userE}.
   Implicit Type (κ : lft).
 
   (* External lifetime contexts. *)
@@ -415,7 +415,7 @@ Arguments lctx_lft_incl_incl_noend {_ _ _ _} _ _.
 Arguments lctx_lft_alive_tok {_ _ _ _ _} _ _ _.
 Arguments lctx_lft_alive_tok_noend {_ _ _ _ _} _ _ _.
 
-Lemma elctx_sat_submseteq `{!invGS Σ, !lftG Σ lft_userE} E E' L :
+Lemma elctx_sat_submseteq `{!invGS Σ, !lftGS Σ lft_userE} E E' L :
   E' ⊆+ E → elctx_sat E L E'.
 Proof. iIntros (HE' ??) "_ !> H". by iApply big_sepL_submseteq. Qed.
 

@@ -7,7 +7,7 @@ Set Default Proof Using "Type".
 Definition spawnN := lrustN .@ "spawn".
 
 Section join_handle.
-  Context `{!typeG Σ, !spawnG Σ}.
+  Context `{!typeGS Σ, !spawnG Σ}.
 
   Definition join_inv (ty : type) (v : val) :=
     (∀ tid, (box ty).(ty_own) tid [v])%I.
@@ -65,7 +65,7 @@ Section join_handle.
 End join_handle.
 
 Section spawn.
-  Context `{!typeG Σ, !spawnG Σ}.
+  Context `{!typeGS Σ, !spawnG Σ}.
 
   Definition spawn (call_once : val) : val :=
     fn: ["f"] :=

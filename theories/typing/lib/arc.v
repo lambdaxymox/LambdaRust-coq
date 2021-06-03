@@ -13,7 +13,7 @@ Definition arc_shrN := arcN .@ "shr".
 Definition arc_endN := arcN .@ "end".
 
 Section arc.
-  Context `{!typeG Σ, !arcG Σ}.
+  Context `{!typeGS Σ, !arcG Σ}.
 
   (* Preliminary definitions. *)
   Let P1 ν q := (q.[ν])%I.

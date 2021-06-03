@@ -6,7 +6,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
 Section borrow.
-Context `{!invGS Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftGS Σ userE}.
 Implicit Types κ : lft.
 
 Lemma bor_sep E κ P Q :

@@ -6,16 +6,16 @@ Set Default Proof Using "Type".
 
 Class frac_borG Σ := frac_borG_inG :> inG Σ fracR.
 
-Local Definition frac_bor_inv `{!invGS Σ, !lftG Σ userE, !frac_borG Σ}
+Local Definition frac_bor_inv `{!invGS Σ, !lftGS Σ userE, !frac_borG Σ}
                               (φ : Qp → iProp Σ) γ κ' :=
   (∃ q, φ q ∗ own γ q ∗ (⌜q = 1%Qp⌝ ∨ ∃ q', ⌜(q + q' = 1)%Qp⌝ ∗ q'.[κ']))%I.
 
-Definition frac_bor `{!invGS Σ, !lftG Σ userE, !frac_borG Σ} κ (φ : Qp → iProp Σ) :=
+Definition frac_bor `{!invGS Σ, !lftGS Σ userE, !frac_borG Σ} κ (φ : Qp → iProp Σ) :=
   (∃ γ κ', κ ⊑ κ' ∗ &at{κ',lftN} (frac_bor_inv φ γ κ'))%I.
 Notation "&frac{ κ }" := (frac_bor κ) (format "&frac{ κ }") : bi_scope.
 
 Section frac_bor.
-  Context `{!invGS Σ, !lftG Σ userE, !frac_borG Σ} (φ : Qp → iProp Σ).
+  Context `{!invGS Σ, !lftGS Σ userE, !frac_borG Σ} (φ : Qp → iProp Σ).
   Implicit Types E : coPset.
 
   Global Instance frac_bor_contractive κ n :
@@ -155,7 +155,7 @@ Section frac_bor.
   Qed.
 End frac_bor.
 
-Lemma frac_bor_lft_incl `{!invGS Σ, !lftG Σ userE, !frac_borG Σ} κ κ' q:
+Lemma frac_bor_lft_incl `{!invGS Σ, !lftGS Σ userE, !frac_borG Σ} κ κ' q:
   lft_ctx -∗ &frac{κ}(λ q', (q * q').[κ']) -∗ κ ⊑ κ'.
 Proof.
   iIntros "#LFT#Hbor". iApply lft_incl_intro. iModIntro. iSplitR.

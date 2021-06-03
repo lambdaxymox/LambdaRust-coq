@@ -4,21 +4,21 @@ From lrust.lang Require Export heap.
 From lrust.lang Require Import proofmode notation.
 Set Default Proof Using "Type".
 
-Class lrustPreG Σ := HeapGpreS {
-  lrust_preG_irig :> invGpreS Σ;
-  lrust_preG_heap :> inG Σ (authR heapUR);
-  lrust_preG_heap_freeable :> inG Σ (authR heap_freeableUR)
+Class lrustGpreS Σ := HeapGpreS {
+  lrustGpreS_irig :> invGpreS Σ;
+  lrustGpreS_heap :> inG Σ (authR heapUR);
+  lrustGpreS_heap_freeable :> inG Σ (authR heap_freeableUR)
 }.
 
 Definition lrustΣ : gFunctors :=
   #[invΣ;
     GFunctor (constRF (authR heapUR));
     GFunctor (constRF (authR heap_freeableUR))].
-Instance subG_heapPreG {Σ} : subG lrustΣ Σ → lrustPreG Σ.
+Instance subG_lrustGpreS {Σ} : subG lrustΣ Σ → lrustGpreS Σ.
 Proof. solve_inG. Qed.
 
-Definition lrust_adequacy Σ `{!lrustPreG Σ} e σ φ :
-  (∀ `{!lrustG Σ}, True ⊢ WP e {{ v, ⌜φ v⌝ }}) →
+Definition lrust_adequacy Σ `{!lrustGpreS Σ} e σ φ :
+  (∀ `{!lrustGS Σ}, True ⊢ WP e {{ v, ⌜φ v⌝ }}) →
   adequate NotStuck e σ (λ v _, φ v).
 Proof.
   intros Hwp; eapply (wp_adequacy _ _); iIntros (??).
@@ -29,5 +29,5 @@ Proof.
   set (Hheap := HeapGS _ _ _ vγ fγ).
   iModIntro. iExists (λ σ _, heap_ctx σ), (λ _, True%I). iSplitL.
   { iExists ∅. by iFrame. }
-  by iApply (Hwp (LRustG _ _ Hheap)).
+  by iApply (Hwp (LRustGS _ _ Hheap)).
 Qed.

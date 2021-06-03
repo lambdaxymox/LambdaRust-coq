@@ -6,9 +6,9 @@ From lrust.typing Require Export base.
 From lrust.typing Require Import lft_contexts.
 Set Default Proof Using "Type".
 
-Class typeG Σ := TypeG {
-  type_lrustG :> lrustG Σ;
-  type_lftG :> lftG Σ lft_userE;
+Class typeGS Σ := TypeG {
+  type_lrustGS :> lrustGS Σ;
+  type_lftGS :> lftGS Σ lft_userE;
   type_na_invG :> na_invG Σ;
   type_frac_borrowG :> frac_borG Σ
 }.
@@ -18,7 +18,7 @@ Definition shrN  := lrustN .@ "shr".
 
 Definition thread_id := na_inv_pool_name.
 
-Record type `{!typeG Σ} :=
+Record type `{!typeGS Σ} :=
   { ty_size : nat;
     ty_own : thread_id → list val → iProp Σ;
     ty_shr : lft → thread_id → loc → iProp Σ;
@@ -52,14 +52,14 @@ Instance: Params (@ty_shr) 2 := {}.
 
 Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
 
-Class TyWf `{!typeG Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.
+Class TyWf `{!typeGS Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.
 Arguments ty_lfts {_ _} _ {_}.
 Arguments ty_wf_E {_ _} _ {_}.
 
-Definition ty_outlives_E `{!typeG Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
+Definition ty_outlives_E `{!typeGS Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
   (λ α, κ ⊑ₑ α) <$> ty.(ty_lfts).
 
-Lemma ty_outlives_E_elctx_sat `{!typeG Σ} E L ty `{!TyWf ty} α β :
+Lemma ty_outlives_E_elctx_sat `{!typeGS Σ} E L ty `{!TyWf ty} α β :
   ty_outlives_E ty β ⊆+ E →
   lctx_lft_incl E L α β →
   elctx_sat E L (ty_outlives_E ty α).
@@ -73,34 +73,34 @@ Proof.
 Qed.
 
 (* Lift TyWf to lists.  We cannot use `Forall` because that one is restricted to Prop. *)
-Inductive ListTyWf `{!typeG Σ} : list type → Type :=
+Inductive ListTyWf `{!typeGS Σ} : list type → Type :=
 | list_ty_wf_nil : ListTyWf []
 | list_ty_wf_cons ty tyl `{!TyWf ty, !ListTyWf tyl} : ListTyWf (ty::tyl).
 Existing Class ListTyWf.
 Existing Instances list_ty_wf_nil list_ty_wf_cons.
 
-Fixpoint tyl_lfts `{!typeG Σ} tyl {WF : ListTyWf tyl} : list lft :=
+Fixpoint tyl_lfts `{!typeGS Σ} tyl {WF : ListTyWf tyl} : list lft :=
   match WF with
   | list_ty_wf_nil => []
   | list_ty_wf_cons ty [] => ty.(ty_lfts)
   | list_ty_wf_cons ty tyl => ty.(ty_lfts) ++ tyl.(tyl_lfts)
   end.
 
-Fixpoint tyl_wf_E `{!typeG Σ} tyl {WF : ListTyWf tyl} : elctx :=
+Fixpoint tyl_wf_E `{!typeGS Σ} tyl {WF : ListTyWf tyl} : elctx :=
   match WF with
   | list_ty_wf_nil => []
   | list_ty_wf_cons ty [] => ty.(ty_wf_E)
   | list_ty_wf_cons ty tyl => ty.(ty_wf_E) ++ tyl.(tyl_wf_E)
   end.
 
-Fixpoint tyl_outlives_E `{!typeG Σ} tyl {WF : ListTyWf tyl} (κ : lft) : elctx :=
+Fixpoint tyl_outlives_E `{!typeGS Σ} tyl {WF : ListTyWf tyl} (κ : lft) : elctx :=
   match WF with
   | list_ty_wf_nil => []
   | list_ty_wf_cons ty [] => ty_outlives_E ty κ
   | list_ty_wf_cons ty tyl => ty_outlives_E ty κ ++ tyl.(tyl_outlives_E) κ
   end.
 
-Lemma tyl_outlives_E_elctx_sat `{!typeG Σ} E L tyl {WF : ListTyWf tyl} α β :
+Lemma tyl_outlives_E_elctx_sat `{!typeGS Σ} E L tyl {WF : ListTyWf tyl} α β :
   tyl_outlives_E tyl β ⊆+ E →
   lctx_lft_incl E L α β →
   elctx_sat E L (tyl_outlives_E tyl α).
@@ -112,14 +112,14 @@ Proof.
       (etrans; [|done]); solve_typing.
 Qed.
 
-Record simple_type `{!typeG Σ} :=
+Record simple_type `{!typeGS Σ} :=
   { st_own : thread_id → list val → iProp Σ;
     st_size_eq tid vl : st_own tid vl -∗ ⌜length vl = 1%nat⌝;
     st_own_persistent tid vl : Persistent (st_own tid vl) }.
 Existing Instance st_own_persistent.
 Instance: Params (@st_own) 2 := {}.
 
-Program Definition ty_of_st `{!typeG Σ} (st : simple_type) : type :=
+Program Definition ty_of_st `{!typeGS Σ} (st : simple_type) : type :=
   {| ty_size := 1; ty_own := st.(st_own);
      (* [st.(st_own) tid vl] needs to be outside of the fractured
          borrow, otherwise I do not know how to prove the shr part of
@@ -149,7 +149,7 @@ Bind Scope lrust_type_scope with type.
 
 (* OFE and COFE structures on types and simple types. *)
 Section ofe.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Inductive type_equiv' (ty1 ty2 : type) : Prop :=
     Type_equiv :
@@ -260,7 +260,7 @@ End ofe.
 
 (** Special metric for type-nonexpansive and Type-contractive functions. *)
 Section type_dist2.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (* Size and shr are n-equal, but own is only n-1-equal.
      We need this to express what shr has to satisfy on a Type-NE-function:
@@ -328,7 +328,7 @@ Notation TypeNonExpansive T := (∀ n, Proper (type_dist2 n ==> type_dist2 n) T)
 Notation TypeContractive T := (∀ n, Proper (type_dist2_later n ==> type_dist2 n) T).
 
 Section type_contractive.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Lemma type_ne_dist_later T :
     TypeNonExpansive T → ∀ n, Proper (type_dist2_later n ==> type_dist2_later n) T.
@@ -389,7 +389,7 @@ Fixpoint shr_locsE (l : loc) (n : nat) : coPset :=
   | S n => ↑shrN.@l ∪ shr_locsE (l +ₗ 1%nat) n
   end.
 
-Class Copy `{!typeG Σ} (t : type) := {
+Class Copy `{!typeGS Σ} (t : type) := {
   copy_persistent tid vl : Persistent (t.(ty_own) tid vl);
   copy_shr_acc κ tid E F l q :
     ↑lftN ∪ ↑shrN ⊆ E → shr_locsE l (t.(ty_size) + 1) ⊆ F →
@@ -402,34 +402,34 @@ Class Copy `{!typeG Σ} (t : type) := {
 Existing Instances copy_persistent.
 Instance: Params (@Copy) 2 := {}.
 
-Class ListCopy `{!typeG Σ} (tys : list type) := lst_copy : Forall Copy tys.
+Class ListCopy `{!typeGS Σ} (tys : list type) := lst_copy : Forall Copy tys.
 Instance: Params (@ListCopy) 2 := {}.
-Global Instance lst_copy_nil `{!typeG Σ} : ListCopy [] := List.Forall_nil _.
-Global Instance lst_copy_cons `{!typeG Σ} ty tys :
+Global Instance lst_copy_nil `{!typeGS Σ} : ListCopy [] := List.Forall_nil _.
+Global Instance lst_copy_cons `{!typeGS Σ} ty tys :
   Copy ty → ListCopy tys → ListCopy (ty :: tys) := List.Forall_cons _ _ _.
 
-Class Send `{!typeG Σ} (t : type) :=
+Class Send `{!typeGS Σ} (t : type) :=
   send_change_tid tid1 tid2 vl : t.(ty_own) tid1 vl -∗ t.(ty_own) tid2 vl.
 Instance: Params (@Send) 2 := {}.
 
-Class ListSend `{!typeG Σ} (tys : list type) := lst_send : Forall Send tys.
+Class ListSend `{!typeGS Σ} (tys : list type) := lst_send : Forall Send tys.
 Instance: Params (@ListSend) 2 := {}.
-Global Instance lst_send_nil `{!typeG Σ} : ListSend [] := List.Forall_nil _.
-Global Instance lst_send_cons `{!typeG Σ} ty tys :
+Global Instance lst_send_nil `{!typeGS Σ} : ListSend [] := List.Forall_nil _.
+Global Instance lst_send_cons `{!typeGS Σ} ty tys :
   Send ty → ListSend tys → ListSend (ty :: tys) := List.Forall_cons _ _ _.
 
-Class Sync `{!typeG Σ} (t : type) :=
+Class Sync `{!typeGS Σ} (t : type) :=
   sync_change_tid κ tid1 tid2 l : t.(ty_shr) κ tid1 l -∗ t.(ty_shr) κ tid2 l.
 Instance: Params (@Sync) 2 := {}.
 
-Class ListSync `{!typeG Σ} (tys : list type) := lst_sync : Forall Sync tys.
+Class ListSync `{!typeGS Σ} (tys : list type) := lst_sync : Forall Sync tys.
 Instance: Params (@ListSync) 2 := {}.
-Global Instance lst_sync_nil `{!typeG Σ} : ListSync [] := List.Forall_nil _.
-Global Instance lst_sync_cons `{!typeG Σ} ty tys :
+Global Instance lst_sync_nil `{!typeGS Σ} : ListSync [] := List.Forall_nil _.
+Global Instance lst_sync_cons `{!typeGS Σ} ty tys :
   Sync ty → ListSync tys → ListSync (ty :: tys) := List.Forall_cons _ _ _.
 
 Section type.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (** Copy types *)
   Lemma shr_locsE_shift l n m :
@@ -532,30 +532,30 @@ Section type.
   Qed.
 End type.
 
-Definition type_incl `{!typeG Σ} (ty1 ty2 : type) : iProp Σ :=
+Definition type_incl `{!typeGS Σ} (ty1 ty2 : type) : iProp Σ :=
     (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
      (□ ∀ tid vl, ty1.(ty_own) tid vl -∗ ty2.(ty_own) tid vl) ∗
      (□ ∀ κ tid l, ty1.(ty_shr) κ tid l -∗ ty2.(ty_shr) κ tid l))%I.
 Instance: Params (@type_incl) 2 := {}.
 (* Typeclasses Opaque type_incl. *)
 
-Definition type_equal `{!typeG Σ} (ty1 ty2 : type) : iProp Σ :=
+Definition type_equal `{!typeGS Σ} (ty1 ty2 : type) : iProp Σ :=
     (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
      (□ ∀ tid vl, ty1.(ty_own) tid vl ∗-∗ ty2.(ty_own) tid vl) ∗
      (□ ∀ κ tid l, ty1.(ty_shr) κ tid l ∗-∗ ty2.(ty_shr) κ tid l))%I.
 Instance: Params (@type_equal) 2 := {}.
 
-Definition subtype `{!typeG Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
+Definition subtype `{!typeGS Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
   ∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗ type_incl ty1 ty2).
 Instance: Params (@subtype) 4 := {}.
 
 (* TODO: The prelude should have a symmetric closure. *)
-Definition eqtype `{!typeG Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
+Definition eqtype `{!typeGS Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
   subtype E L ty1 ty2 ∧ subtype E L ty2 ty1.
 Instance: Params (@eqtype) 4 := {}.
 
 Section subtyping.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Global Instance type_incl_ne : NonExpansive2 type_incl.
   Proof.
@@ -742,7 +742,7 @@ Section subtyping.
 End subtyping.
 
 Section type_util.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Lemma heap_mapsto_ty_own l ty tid :
     l ↦∗: ty_own ty tid ⊣⊢ ∃ (vl : vec val ty.(ty_size)), l ↦∗ vl ∗ ty_own ty tid vl.

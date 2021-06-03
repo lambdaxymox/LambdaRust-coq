@@ -4,7 +4,7 @@ From lrust.typing Require Import product.
 Set Default Proof Using "Type".
 
 Section uninit.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Program Definition uninit_1 : type :=
     {| st_own tid vl := ⌜length vl = 1%nat⌝%I |}.

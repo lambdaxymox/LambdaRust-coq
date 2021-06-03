@@ -9,7 +9,7 @@ Set Default Proof Using "Type".
 Definition mutexN := lrustN .@ "mutex".
 
 Section mutex.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   (*
     pub struct Mutex<T: ?Sized> {
@@ -126,7 +126,7 @@ Section mutex.
 End mutex.
 
 Section code.
-  Context `{!typeG Σ}.
+  Context `{!typeGS Σ}.
 
   Definition mutex_new ty : val :=
     fn: ["x"] :=

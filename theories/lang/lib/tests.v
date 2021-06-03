@@ -4,7 +4,7 @@ From lrust.lang Require Import lang proofmode notation.
 Set Default Proof Using "Type".
 
 Section tests.
-  Context `{!lrustG Σ}.
+  Context `{!lrustGS Σ}.
 
   Lemma test_location_cmp E (l1 l2 : loc) q1 q2 v1 v2 :
     {{{ ▷ l1 ↦{q1} v1 ∗ ▷ l2 ↦{q2} v2 }}}

@@ -114,7 +114,7 @@ Instance subG_arcΣ {Σ} : subG arcΣ Σ → arcG Σ.
 Proof. solve_inG. Qed.
 
 Section def.
-  Context `{!lrustG Σ, !arcG Σ} (P1 : Qp → iProp Σ) (P2 : iProp Σ) (N : namespace).
+  Context `{!lrustGS Σ, !arcG Σ} (P1 : Qp → iProp Σ) (P2 : iProp Σ) (N : namespace).
 
   Definition arc_tok γ q : iProp Σ :=
     own γ (◯ (Some $ Cinl (q, 1%positive, None), 0%nat)).
@@ -158,7 +158,7 @@ Section arc.
      this is the lifetime token), and P2 is the thing that is owned by the
      protocol when only weak references are left (in practice, P2 is the
      ownership of the underlying memory incl. deallocation). *)
-  Context `{!lrustG Σ, !arcG Σ} (P1 : Qp → iProp Σ) {HP1:Fractional P1}
+  Context `{!lrustGS Σ, !arcG Σ} (P1 : Qp → iProp Σ) {HP1:Fractional P1}
           (P2 : iProp Σ) (N : namespace).
 
   Instance P1_AsFractional q : AsFractional (P1 q) P1 q.

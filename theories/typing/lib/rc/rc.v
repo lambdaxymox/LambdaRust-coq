@@ -25,7 +25,7 @@ Definition rc_invN := rcN .@ "inv".
 Definition rc_shrN := rcN .@ "shr".
 
 Section rc.
-  Context `{!typeG Σ, !rcG Σ}.
+  Context `{!typeGS Σ, !rcG Σ}.
 
   (* The RC can be in four different states :
        - The living state, meaning that some strong reference exists. The
@@ -236,7 +236,7 @@ Section rc.
 End rc.
 
 Section code.
-  Context `{!typeG Σ, !rcG Σ}.
+  Context `{!typeGS Σ, !rcG Σ}.
 
   Lemma rc_check_unique ty F tid (l : loc) :
     ↑rc_invN ⊆ F →
