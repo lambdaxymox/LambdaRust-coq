@@ -99,7 +99,7 @@ Definition try_unwrap_full : val :=
     else #2.
 
 (** The CMRA we need. *)
-(* Not bundling heapG, as it may be shared with other users. *)
+(* Not bundling heapGS, as it may be shared with other users. *)
 
 (* See rc.v for understanding the structure of this CMRA.
    The only additional thing is the [optionR (exclR unitO))], used to handle

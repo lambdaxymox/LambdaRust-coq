@@ -6,7 +6,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
 Section creation.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma lft_kill (I : gmap lft lft_names) (K K' : gset lft) (κ : lft) :

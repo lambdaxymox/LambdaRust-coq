@@ -80,7 +80,7 @@ Definition to_ilftUR : gmap lft lft_names → ilftUR := fmap to_agree.
 Definition to_borUR : gmap slice_name bor_state → borUR := fmap ((1%Qp,.) ∘ to_agree).
 
 Section defs.
-  Context `{!invG Σ, !lftG Σ userE}.
+  Context `{!invGS Σ, !lftG Σ userE}.
 
   Definition lft_tok (q : Qp) (κ : lft) : iProp Σ :=
     ([∗ mset] Λ ∈ κ, own alft_name (◯ {[ Λ := Cinl q ]}))%I.
@@ -224,7 +224,7 @@ Typeclasses Opaque lft_tok lft_dead bor_cnt lft_bor_alive lft_bor_dead
   idx_bor_own idx_bor raw_bor bor.
 
 Section basic_properties.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 (* Unfolding lemmas *)

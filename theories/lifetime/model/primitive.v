@@ -6,7 +6,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 Import uPred.
 
-Lemma lft_init `{!invG Σ, !lftPreG Σ} E userE :
+Lemma lft_init `{!invGS Σ, !lftPreG Σ} E userE :
   ↑lftN ⊆ E → ↑lftN ## userE → ⊢ |={E}=> ∃ _ : lftG Σ userE, lft_ctx.
 Proof.
   iIntros (? HuserE). rewrite /lft_ctx.
@@ -20,7 +20,7 @@ Proof.
 Qed.
 
 Section primitive.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma to_borUR_included (B : gmap slice_name bor_state) i s q :

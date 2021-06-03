@@ -5,7 +5,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
 Section reborrow.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 (* Notice that taking lft_inv for both κ and κ' already implies

@@ -7,11 +7,11 @@ Set Default Proof Using "Type".
 Import uPred.
 
 Class lrustG Σ := LRustG {
-  lrustG_invG : invG Σ;
-  lrustG_gen_heapG :> heapG Σ
+  lrustG_invG : invGS Σ;
+  lrustG_gen_heapG :> heapGS Σ
 }.
 
-Instance lrustG_irisG `{!lrustG Σ} : irisG lrust_lang Σ := {
+Instance lrustG_irisG `{!lrustG Σ} : irisGS lrust_lang Σ := {
   iris_invG := lrustG_invG;
   state_interp σ _ κs _ := heap_ctx σ;
   fork_post _ := True%I;

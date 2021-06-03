@@ -18,7 +18,7 @@ Definition heapUR : ucmra :=
 Definition heap_freeableUR : ucmra :=
   gmapUR block (prodR fracR (gmapR Z (exclR unitO))).
 
-Class heapG Σ := HeapG {
+Class heapGS Σ := HeapGS {
   heap_inG :> inG Σ (authR heapUR);
   heap_freeable_inG :> inG Σ (authR heap_freeableUR);
   heap_name : gname;
@@ -34,7 +34,7 @@ Definition heap_freeable_rel (σ : state) (hF : heap_freeableUR) : Prop :=
     qs.2 ≠ ∅ ∧ ∀ i, is_Some (σ !! (blk, i)) ↔ is_Some (qs.2 !! i).
 
 Section definitions.
-  Context `{!heapG Σ}.
+  Context `{!heapGS Σ}.
 
   Definition heap_mapsto_st (st : lock_state)
              (l : loc) (q : Qp) (v: val) : iProp Σ :=
@@ -106,7 +106,7 @@ Section to_heap.
 End to_heap.
 
 Section heap.
-  Context `{!heapG Σ}.
+  Context `{!heapGS Σ}.
   Implicit Types P Q : iProp Σ.
   Implicit Types σ : state.
   Implicit Types E : coPset.

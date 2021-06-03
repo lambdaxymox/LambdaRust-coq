@@ -4,8 +4,8 @@ From lrust.lang Require Export heap.
 From lrust.lang Require Import proofmode notation.
 Set Default Proof Using "Type".
 
-Class lrustPreG Σ := HeapPreG {
-  lrust_preG_irig :> invPreG Σ;
+Class lrustPreG Σ := HeapGpreS {
+  lrust_preG_irig :> invGpreS Σ;
   lrust_preG_heap :> inG Σ (authR heapUR);
   lrust_preG_heap_freeable :> inG Σ (authR heap_freeableUR)
 }.
@@ -26,7 +26,7 @@ Proof.
   { apply (auth_auth_valid (to_heap _)), to_heap_valid. }
   iMod (own_alloc (● (∅ : heap_freeableUR))) as (fγ) "Hfγ";
     first by apply auth_auth_valid.
-  set (Hheap := HeapG _ _ _ vγ fγ).
+  set (Hheap := HeapGS _ _ _ vγ fγ).
   iModIntro. iExists (λ σ _, heap_ctx σ), (λ _, True%I). iSplitL.
   { iExists ∅. by iFrame. }
   by iApply (Hwp (LRustG _ _ Hheap)).

@@ -26,7 +26,7 @@ Definition lft_meta `{!lftG Σ userE, lft_metaG Σ} (κ : lft) (γ : gname) : iP
     own lft_meta_gname (dyn_reservation_map_data p (to_agree γ)).
 
 Section lft_meta.
-  Context `{!invG Σ, !lftG Σ userE, lft_metaG Σ}.
+  Context `{!invGS Σ, !lftG Σ userE, lft_metaG Σ}.
 
   Global Instance lft_meta_timeless κ γ : Timeless (lft_meta κ γ).
   Proof. apply _. Qed.

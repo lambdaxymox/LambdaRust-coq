@@ -5,7 +5,7 @@ From iris.proofmode Require Import tactics.
 Set Default Proof Using "Type".
 
 Section faking.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma ilft_create A I κ :

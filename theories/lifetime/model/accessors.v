@@ -5,7 +5,7 @@ From iris.base_logic.lib Require Import boxes.
 Set Default Proof Using "Type".
 
 Section accessors.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 (* Helper internal lemmas *)

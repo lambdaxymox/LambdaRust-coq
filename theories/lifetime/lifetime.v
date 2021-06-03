@@ -26,7 +26,7 @@ Definition lft_incl_syntactic (κ κ' : lft) : Prop := ∃ κ'', κ'' ⊓ κ' = 
 Infix "⊑ˢʸⁿ" := lft_incl_syntactic (at level 40) : stdpp_scope.
 
 Section derived.
-Context `{!invG Σ, !lftG Σ userE}.
+Context `{!invGS Σ, !lftG Σ userE}.
 Implicit Types κ : lft.
 
 Lemma lft_create E :

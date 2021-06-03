@@ -25,17 +25,17 @@ Module Type lifetime_sig.
   Parameter static : lft.
   Declare Instance lft_intersect : Meet lft.
 
-  Parameter lft_ctx : ∀ `{!invG Σ, !lftG Σ userE}, iProp Σ.
+  Parameter lft_ctx : ∀ `{!invGS Σ, !lftG Σ userE}, iProp Σ.
 
   Parameter lft_tok : ∀ `{!lftG Σ userE} (q : Qp) (κ : lft), iProp Σ.
   Parameter lft_dead : ∀ `{!lftG Σ userE} (κ : lft), iProp Σ.
 
-  Parameter lft_incl : ∀ `{!invG Σ, !lftG Σ userE} (κ κ' : lft), iProp Σ.
-  Parameter bor : ∀ `{!invG Σ, !lftG Σ userE} (κ : lft) (P : iProp Σ), iProp Σ.
+  Parameter lft_incl : ∀ `{!invGS Σ, !lftG Σ userE} (κ κ' : lft), iProp Σ.
+  Parameter bor : ∀ `{!invGS Σ, !lftG Σ userE} (κ : lft) (P : iProp Σ), iProp Σ.
 
   Parameter bor_idx : Type.
   Parameter idx_bor_own : ∀ `{!lftG Σ userE} (q : frac) (i : bor_idx), iProp Σ.
-  Parameter idx_bor : ∀ `{!invG Σ, !lftG Σ userE} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
+  Parameter idx_bor : ∀ `{!invGS Σ, !lftG Σ userE} (κ : lft) (i : bor_idx) (P : iProp Σ), iProp Σ.
 
   (** Our lifetime creation lemma offers allocating a lifetime that is defined
   by a [positive] in some given infinite set. This operation converts the
@@ -53,7 +53,7 @@ Module Type lifetime_sig.
   Infix "⊑" := lft_incl (at level 70) : bi_scope.
 
   Section properties.
-  Context `{!invG Σ, !lftG Σ userE}.
+  Context `{!invGS Σ, !lftG Σ userE}.
 
   (** * Instances *)
   Global Declare Instance lft_inhabited : Inhabited lft.
@@ -172,7 +172,7 @@ Module Type lifetime_sig.
   Parameter lftΣ : gFunctors.
   Global Declare Instance subG_lftPreG Σ : subG lftΣ Σ → lftPreG Σ.
 
-  Parameter lft_init : ∀ `{!invG Σ, !lftPreG Σ} E userE,
+  Parameter lft_init : ∀ `{!invGS Σ, !lftPreG Σ} E userE,
     ↑lftN ⊆ E → ↑lftN ## userE →
     ⊢ |={E}=> ∃ _ : lftG Σ userE, lft_ctx.
 End lifetime_sig.
