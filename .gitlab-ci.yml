@@ -36,7 +36,21 @@ build-coq.8.13.1:
   tags:
   - fp-timing
 
-build-iris.dev:
+trigger-iris.timing:
+  <<: *template
+  variables:
+    OPAM_PINS: "coq version 8.13.1   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
+  tags:
+  - fp-timing
+  only:
+  - triggers
+  - schedules
+  - api
+  except:
+    variables:
+    - $TIMING_AD_HOC_ID == null
+
+trigger-iris.dev:
   <<: *template
   variables:
     STDPP_REPO: "iris/stdpp"
@@ -44,6 +58,9 @@ build-iris.dev:
     OPAM_PINS: "coq version 8.13.dev   git+https://gitlab.mpi-sws.org/$STDPP_REPO#$STDPP_REV   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
   except:
   only:
-  - triggers
-  - schedules
-  - api
+    refs:
+    - triggers
+    - schedules
+    - api
+    variables:
+    - $TIMING_AD_HOC_ID == null
