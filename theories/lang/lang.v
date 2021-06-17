@@ -161,7 +161,8 @@ Arguments subst_v _%binder _ _%E.
 Lemma subst_v_eq (xl : list binder) (vsl : vec val (length xl)) e :
   Some $ subst_v xl vsl e = subst_l xl (of_val <$> vec_to_list vsl) e.
 Proof.
-  revert vsl. induction xl=>/= vsl; inv_vec vsl=>//=v vsl. by rewrite -IHxl.
+  revert vsl. induction xl as [|x xl IHxl]=>/= vsl; inv_vec vsl=>//=v vsl.
+  by rewrite -IHxl.
 Qed.
 
 (** The stepping relation *)
@@ -372,7 +373,8 @@ Lemma list_expr_val_eq_inv vl1 vl2 e1 e2 el1 el2 :
   map of_val vl1 ++ e1 :: el1 = map of_val vl2 ++ e2 :: el2 →
   vl1 = vl2 ∧ el1 = el2.
 Proof.
-  revert vl2; induction vl1; destruct vl2; intros H1 H2; inversion 1.
+  revert vl2; induction vl1 as [|? vl1 IHvl1];
+    intros vl2; destruct vl2 as [|? vl2]; intros H1 H2; inversion 1.
   - done.
   - subst. by rewrite to_of_val in H1.
   - subst. by rewrite to_of_val in H2.
@@ -469,11 +471,13 @@ Qed.
 (** Closed expressions *)
 Lemma is_closed_weaken X Y e : is_closed X e → X ⊆ Y → is_closed Y e.
 Proof.
-  revert e X Y. fix FIX 1; destruct e=>X Y/=; try naive_solver.
+  revert e X Y. fix FIX 1; intros e; destruct e=>X Y/=; try naive_solver.
   - naive_solver set_solver.
   - rewrite !andb_True. intros [He Hel] HXY. split. by eauto.
+    rename select (list expr) into el.
     induction el=>/=; naive_solver.
   - rewrite !andb_True. intros [He Hel] HXY. split. by eauto.
+    rename select (list expr) into el.
     induction el=>/=; naive_solver.
 Qed.
 
@@ -482,12 +486,16 @@ Proof. intros. by apply is_closed_weaken with [], list_subseteq_nil. Qed.
 
 Lemma is_closed_subst X e x es : is_closed X e → x ∉ X → subst x es e = e.
 Proof.
-  revert e X. fix FIX 1; destruct e=> X /=; rewrite ?bool_decide_spec ?andb_True=> He ?;
+  revert e X. fix FIX 1; intros e; destruct e=> X /=; rewrite ?bool_decide_spec ?andb_True=> He ?;
     repeat case_bool_decide; simplify_eq/=; f_equal;
     try by intuition eauto with set_solver.
-  - case He=> _. clear He. induction el=>//=. rewrite andb_True=>?.
+  - case He=> _. clear He.
+    rename select (list expr) into el.
+    induction el=>//=. rewrite andb_True=>?.
     f_equal; intuition eauto with set_solver.
-  - case He=> _. clear He. induction el=>//=. rewrite andb_True=>?.
+  - case He=> _. clear He.
+    rename select (list expr) into el.
+    induction el=>//=. rewrite andb_True=>?.
     f_equal; intuition eauto with set_solver.
 Qed.
 
@@ -503,14 +511,18 @@ Proof. intros <-%of_to_val. apply is_closed_of_val. Qed.
 Lemma subst_is_closed X x es e :
   is_closed X es → is_closed (x::X) e → is_closed X (subst x es e).
 Proof.
-  revert e X. fix FIX 1; destruct e=>X //=; repeat (case_bool_decide=>//=);
+  revert e X. fix FIX 1; intros e; destruct e=>X //=; repeat (case_bool_decide=>//=);
     try naive_solver; rewrite ?andb_True; intros.
   - set_solver.
   - eauto using is_closed_weaken with set_solver.
   - eapply is_closed_weaken; first done.
+    rename select binder into f.
+    rename select (list binder) into xl.
     destruct (decide (BNamed x = f)), (decide (BNamed x ∈ xl)); set_solver.
-  - split; first naive_solver. induction el; naive_solver.
-  - split; first naive_solver. induction el; naive_solver.
+  - split; first naive_solver.
+    rename select (list expr) into el. induction el; naive_solver.
+  - split; first naive_solver.
+    rename select (list expr) into el. induction el; naive_solver.
 Qed.
 
 Lemma subst'_is_closed X b es e :
@@ -571,17 +583,17 @@ Fixpoint expr_beq (e : expr) (e' : expr) : bool :=
   end.
 Lemma expr_beq_correct (e1 e2 : expr) : expr_beq e1 e2 ↔ e1 = e2.
 Proof.
-  revert e1 e2; fix FIX 1.
+  revert e1 e2; fix FIX 1. intros e1 e2.
     destruct e1 as [| | | |? el1| | | | | |? el1|],
              e2 as [| | | |? el2| | | | | |? el2|]; simpl; try done;
   rewrite ?andb_True ?bool_decide_spec ?FIX;
   try (split; intro; [destruct_and?|split_and?]; congruence).
   - match goal with |- context [?F el1 el2] => assert (F el1 el2 ↔ el1 = el2) end.
-    { revert el2. induction el1 as [|el1h el1q]; destruct el2; try done.
+    { revert el2. induction el1 as [|el1h el1q]; intros el2; destruct el2; try done.
       specialize (FIX el1h). naive_solver. }
     clear FIX. naive_solver.
   - match goal with |- context [?F el1 el2] => assert (F el1 el2 ↔ el1 = el2) end.
-    { revert el2. induction el1 as [|el1h el1q]; destruct el2; try done.
+    { revert el2. induction el1 as [|el1h el1q]; intros el2; destruct el2; try done.
       specialize (FIX el1h). naive_solver. }
     clear FIX. naive_solver.
 Qed.

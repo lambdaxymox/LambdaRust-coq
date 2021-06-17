@@ -87,10 +87,10 @@ Fixpoint is_closed (X : list string) (e : expr) : bool :=
   end.
 Lemma is_closed_correct X e : is_closed X e → lang.is_closed X (to_expr e).
 Proof.
-  revert e X. fix FIX 1; destruct e=>/=;
+  revert e X. fix FIX 1; intros e; destruct e=>/=;
     try naive_solver eauto using is_closed_to_val, is_closed_weaken_nil.
-  - induction el=>/=; naive_solver.
-  - induction el=>/=; naive_solver.
+  - rename select (list expr) into el. induction el=>/=; naive_solver.
+  - rename select (list expr) into el. induction el=>/=; naive_solver.
 Qed.
 
 (* We define [to_val (ClosedExpr _)] to be [None] since [ClosedExpr]
@@ -139,10 +139,10 @@ Fixpoint subst (x : string) (es : expr) (e : expr)  : expr :=
 Lemma to_expr_subst x er e :
   to_expr (subst x er e) = lang.subst x (to_expr er) (to_expr e).
 Proof.
-  revert e x er. fix FIX 1; destruct e=>/= ? er; repeat case_bool_decide;
+  revert e x er. fix FIX 1; intros e; destruct e=>/= ? er; repeat case_bool_decide;
     f_equal; eauto using is_closed_nil_subst, is_closed_to_val, eq_sym.
-  - induction el=>//=. f_equal; auto.
-  - induction el=>//=. f_equal; auto.
+  - rename select (list expr) into el. induction el=>//=. f_equal; auto.
+  - rename select (list expr) into el. induction el=>//=. f_equal; auto.
 Qed.
 
 Definition is_atomic (e: expr) : bool :=

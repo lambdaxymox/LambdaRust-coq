@@ -166,7 +166,7 @@ Proof.
     iMod ("Hclose'" with "[-Hbor Hclose]") as "_".
     { iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''".
       iLeft. iFrame "%". iExists _, _. iFrame. }
-    iExists κ''. iFrame "#". iIntros "!>* HvsQ HQ". clear -HE.
+    iExists κ''. iFrame "#". iIntros "!> %Q HvsQ HQ". clear -HE.
     iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose'".
     iDestruct (own_bor_auth with "HI Hbor") as %Hκ'.
     rewrite big_sepS_later big_sepS_elem_of_acc ?elem_of_dom //
@@ -234,7 +234,7 @@ Proof.
       as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
     iMod (slice_delete_full _ _ true with "Hs Hbox") as (Pb') "(HP' & EQ & Hbox)".
       solve_ndisj. by rewrite lookup_fmap EQB. iDestruct ("HPP'" with "HP'") as "$".
-    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!>* HvsQ HQ". solve_ndisj.
+    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!> %Q HvsQ HQ". solve_ndisj.
     iMod "Hclose" as "_". iDestruct (add_vs with "EQ Hvs [HvsQ]") as "Hvs".
     { iNext. iIntros "HQ H†". iApply "HPP'". iApply ("HvsQ" with "HQ H†"). }
     iMod (slice_insert_full _ _ true with "HQ Hbox") as (j) "(% & #Hs' & Hbox)".
