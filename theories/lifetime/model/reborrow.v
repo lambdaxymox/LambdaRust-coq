@@ -49,7 +49,7 @@ Proof.
     rewrite /to_borUR !fmap_insert. iFrame "Hbox HB●".
     iDestruct (@big_sepM_delete with "HB") as "[_ HB]"; first done.
     rewrite (big_sepM_delete _ (<[_:=_]>_) i); last by rewrite lookup_insert.
-    rewrite -insert_delete delete_insert ?lookup_delete //=. iFrame; auto. }
+    rewrite -insert_delete_insert delete_insert ?lookup_delete //=. iFrame; auto. }
   clear B HB Pb' Pi'.
   rewrite {1}/lft_bor_alive. iDestruct "Hκalive'" as (B) "(Hbox & >HB● & HB)".
   iMod (slice_insert_full _ _ true with "HP Hbox")
@@ -93,7 +93,7 @@ Proof.
     iIntros (_). rewrite lft_inv_alive_unfold.
     iExists Pb', Pi'. iFrame "Hvs' Hinh". rewrite /lft_bor_alive.
     iExists (<[i:=Bor_in]>B'). rewrite /to_borUR !fmap_insert. iFrame.
-    rewrite -insert_delete big_sepM_insert ?lookup_delete //=. by iFrame. }
+    rewrite -insert_delete_insert big_sepM_insert ?lookup_delete //=. by iFrame. }
   iModIntro. rewrite -[S n]Nat.add_1_l -nat_op auth_frag_op own_cnt_op.
   by iFrame.
 Qed.
@@ -135,7 +135,7 @@ Proof.
     as (Pb'') "HH"; [solve_ndisj|done|done| | |].
   { rewrite /lft_bor_alive (big_sepM_delete _ B i') //. iDestruct "HB" as "[_ HB]".
     iExists (delete i' B). rewrite -fmap_delete. iFrame.
-    rewrite fmap_delete -insert_delete delete_insert ?lookup_delete //=. }
+    rewrite fmap_delete -insert_delete_insert delete_insert ?lookup_delete //=. }
   { iNext. iApply (lft_vs_cons with "[] Hvs"). iIntros "[??] _ !>". iNext.
     iRewrite "HeqPb'". iFrame. by iApply "HP'". }
   iDestruct "HH" as "([HI Hinvκ] & $ & Halive & Hvs)".
