@@ -53,7 +53,8 @@ Proof.
   iModIntro. rewrite /lft_inv_dead. iExists Q. iFrame.
   rewrite /lft_bor_dead. iExists (dom _ B), P.
   rewrite !gset_to_gmap_dom -map_fmap_compose.
-  rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last naive_solver.
+  rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last first.
+  { move=>?? /HB ->. done. }
   iFrame.
 Qed.
 
