@@ -33,8 +33,7 @@ Proof.
     rewrite /lft_inv_dead; iDestruct "Hdead" as (R) "(_ & Hcnt' & _)".
     iDestruct (own_cnt_valid_2 with "Hcnt' Hcnt")
       as %[?%nat_included _]%auth_both_valid_discrete; lia. }
-  iMod (box_empty with "Hbox") as "[HP Hbox]"=>//.
-  { (* FIXME [solve_ndisj] fails *) set_solver+. }
+  iMod (box_empty with "Hbox") as "[HP Hbox]"=>//; first by solve_ndisj.
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
   iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom _ I) with "Halive")
@@ -131,13 +130,8 @@ Proof.
   iModIntro; iExists Λ.
   rewrite {1}/lft_tok big_sepMS_singleton. iSplit; first done. iFrame "HΛ".
   clear I A HΛ. iIntros "!> HΛ".
-  iApply (step_fupd_mask_mono (↑lftN ∪ userE) _ ((↑lftN ∪ userE)∖↑mgmtN)).
-  { (* FIXME solve_ndisj should really handle this... *)
-    assert (↑mgmtN ## userE) by solve_ndisj. set_solver. }
-  { done. }
+  iApply (step_fupd_mask_mono (↑lftN ∪ userE) _ ((↑lftN ∪ userE)∖↑mgmtN)); [solve_ndisj..|].
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
-  { (* FIXME solve_ndisj should really handle this... *)
-    assert (↑mgmtN ⊆ ↑lftN) by solve_ndisj. set_solver. }
   rewrite /lft_tok big_sepMS_singleton.
   iDestruct (own_valid_2 with "HA HΛ")
     as %[[s [?%leibniz_equiv ?]]%singleton_included_l _]%auth_both_valid_discrete.
@@ -159,15 +153,7 @@ Proof.
   { iApply (@big_sepS_impl with "[$HinvK]"); iIntros "!>".
     iIntros (κ [? _]%elem_of_kill_set) "$". rewrite /lft_dead. eauto. }
   iApply fupd_trans.
-  iApply (fupd_mask_mono (userE ∪ ↑borN ∪ ↑inhN)).
-  { (* FIXME can we make solve_ndisj handle this? *)
-    clear -userE_lftN_disj. rewrite -assoc. apply union_least.
-    - assert (userE ##@{coPset} ↑mgmtN) by solve_ndisj. set_solver.
-    - assert (↑inhN ##@{coPset} ↑mgmtN) by solve_ndisj.
-      assert (↑inhN ⊆@{coPset} ↑lftN) by solve_ndisj.
-      assert (↑borN ##@{coPset} ↑mgmtN) by solve_ndisj.
-      assert (↑borN ⊆@{coPset} ↑lftN) by solve_ndisj.
-      set_solver. }
+  iApply (fupd_mask_mono (userE ∪ ↑borN ∪ ↑inhN)); first solve_ndisj.
   iMod (lfts_kill A I K K' with "[$HI $HinvD] HinvK") as "[[HI HinvD] HinvK]".
   { done. }
   { intros κ κ' [??]%elem_of_kill_set ??. apply elem_of_kill_set.
