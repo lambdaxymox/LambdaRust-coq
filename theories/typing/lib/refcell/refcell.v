@@ -165,7 +165,7 @@ Section refcell.
   Qed.
 
   Global Instance refcell_wf ty `{!TyWf ty} : TyWf (refcell ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance refcell_type_ne : TypeNonExpansive refcell.
   Proof.

@@ -57,14 +57,14 @@ Arguments ty_lfts {_ _} _ {_}.
 Arguments ty_wf_E {_ _} _ {_}.
 
 Definition ty_outlives_E `{!typeGS Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
-  (λ α, κ ⊑ₑ α) <$> ty.(ty_lfts).
+  (λ α, κ ⊑ₑ α) <$> (ty_lfts ty).
 
 Lemma ty_outlives_E_elctx_sat `{!typeGS Σ} E L ty `{!TyWf ty} α β :
   ty_outlives_E ty β ⊆+ E →
   lctx_lft_incl E L α β →
   elctx_sat E L (ty_outlives_E ty α).
 Proof.
-  unfold ty_outlives_E. induction ty.(ty_lfts) as [|κ l IH]=>/= Hsub Hαβ.
+  unfold ty_outlives_E. induction (ty_lfts ty) as [|κ l IH]=>/= Hsub Hαβ.
   - solve_typing.
   - apply elctx_sat_lft_incl.
     + etrans; first done. eapply lctx_lft_incl_external, elem_of_submseteq, Hsub.
@@ -82,15 +82,15 @@ Existing Instances list_ty_wf_nil list_ty_wf_cons.
 Fixpoint tyl_lfts `{!typeGS Σ} tyl {WF : ListTyWf tyl} : list lft :=
   match WF with
   | list_ty_wf_nil => []
-  | list_ty_wf_cons ty [] => ty.(ty_lfts)
-  | list_ty_wf_cons ty tyl => ty.(ty_lfts) ++ tyl.(tyl_lfts)
+  | list_ty_wf_cons ty [] => ty_lfts ty
+  | list_ty_wf_cons ty tyl => ty_lfts ty ++ tyl_lfts tyl
   end.
 
 Fixpoint tyl_wf_E `{!typeGS Σ} tyl {WF : ListTyWf tyl} : elctx :=
   match WF with
   | list_ty_wf_nil => []
-  | list_ty_wf_cons ty [] => ty.(ty_wf_E)
-  | list_ty_wf_cons ty tyl => ty.(ty_wf_E) ++ tyl.(tyl_wf_E)
+  | list_ty_wf_cons ty [] => ty_wf_E ty
+  | list_ty_wf_cons ty tyl => ty_wf_E ty ++ tyl_wf_E tyl
   end.
 
 Fixpoint tyl_outlives_E `{!typeGS Σ} tyl {WF : ListTyWf tyl} (κ : lft) : elctx :=

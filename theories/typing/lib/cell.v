@@ -21,7 +21,7 @@ Section cell.
   Qed.
 
   Global Instance cell_wf ty `{!TyWf ty} : TyWf (cell ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance cell_type_ne : TypeNonExpansive cell.
   Proof. solve_type_proper. Qed.

@@ -172,7 +172,7 @@ Section rwlock.
   Qed.
 
   Global Instance rwlock_wf ty `{!TyWf ty} : TyWf (rwlock ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance rwlock_type_ne : TypeNonExpansive rwlock.
   Proof.

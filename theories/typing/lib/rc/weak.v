@@ -65,7 +65,7 @@ Section weak.
   Qed.
 
   Global Instance weak_wf ty `{!TyWf ty} : TyWf (weak ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance weak_type_contractive : TypeContractive weak.
   Proof.

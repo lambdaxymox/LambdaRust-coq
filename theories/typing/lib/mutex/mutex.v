@@ -73,7 +73,7 @@ Section mutex.
   Qed.
 
   Global Instance mutex_wf ty `{!TyWf ty} : TyWf (mutex ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance mutex_type_ne : TypeNonExpansive mutex.
   Proof.

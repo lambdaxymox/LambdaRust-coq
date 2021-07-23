@@ -321,7 +321,7 @@ Section ghostcell.
   Qed.
 
   Global Instance ghostcell_wf α `{!TyWf ty} : TyWf (ghostcell α ty) :=
-    { ty_lfts := α::ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := α::(ty_lfts ty); ty_wf_E := ty_wf_E ty }.
 
   Global Instance ghostcell_type_ne α : TypeNonExpansive (ghostcell α).
   Proof.

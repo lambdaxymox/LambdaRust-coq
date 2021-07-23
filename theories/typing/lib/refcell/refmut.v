@@ -75,7 +75,7 @@ Section refmut.
   Qed.
 
   Global Instance refmut_wf α ty `{!TyWf ty} : TyWf (refmut α ty) :=
-    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty α }.
+    { ty_lfts := [α]; ty_wf_E := ty_wf_E ty ++ ty_outlives_E ty α }.
 
   Global Instance refmut_type_contractive α : TypeContractive (refmut α).
   Proof. solve_type_proper. Qed.

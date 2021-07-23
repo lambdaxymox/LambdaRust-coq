@@ -194,7 +194,7 @@ Section rc.
   Qed.
 
   Global Instance rc_wf ty `{!TyWf ty} : TyWf (rc ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance rc_type_contractive : TypeContractive rc.
   Proof.
@@ -652,7 +652,7 @@ Section code.
 
   Definition rc_try_unwrap ty : val :=
     fn: ["rc"] :=
-      let: "r" := new [ #(Σ[ ty; rc ty ]).(ty_size) ] in
+      let: "r" := new [ #(ty_size Σ[ ty; rc ty ]) ] in
     withcont: "k":
       let: "rc'" := !"rc" in
       let: "strong" := !("rc'" +ₗ #0) in

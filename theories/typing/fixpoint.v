@@ -28,11 +28,11 @@ Section fixpoint_def.
   Global Instance type_fixpoint_wf `{!∀ `{!TyWf ty}, TyWf (T ty)} : TyWf type_fixpoint :=
     let lfts :=
       let _ : TyWf type_fixpoint := {| ty_lfts := []; ty_wf_E := [] |} in
-      (T type_fixpoint).(ty_lfts)
+      ty_lfts (T type_fixpoint)
     in
     let wf_E :=
       let _ : TyWf type_fixpoint := {| ty_lfts := lfts; ty_wf_E := [] |} in
-      (T type_fixpoint).(ty_wf_E)
+      ty_wf_E (T type_fixpoint)
     in
     {| ty_lfts := lfts; ty_wf_E := wf_E |}.
 End fixpoint_def.

@@ -11,7 +11,7 @@ Section fn.
 
   Definition FP_wf E (tys : vec type n) `{!ListTyWf tys} ty `{!TyWf ty} :=
     FP (λ ϝ, E ϝ ++ tyl_wf_E tys ++ tyl_outlives_E tys ϝ ++
-                    ty.(ty_wf_E) ++ ty_outlives_E ty ϝ)
+                    ty_wf_E ty ++ ty_outlives_E ty ϝ)
        tys ty.
 
   (* The other alternative for defining the fn type would be to state

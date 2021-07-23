@@ -25,7 +25,7 @@ Section join_handle.
   Next Obligation. iIntros (?) "**"; auto. Qed.
 
   Global Instance join_handle_wf ty `{!TyWf ty} : TyWf (join_handle ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Lemma join_handle_subtype ty1 ty2 :
     ▷ type_incl ty1 ty2 -∗ type_incl (join_handle ty1) (join_handle ty2).

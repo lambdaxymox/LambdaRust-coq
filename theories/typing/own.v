@@ -87,7 +87,7 @@ Section own.
   Qed.
 
   Global Instance own_ptr_wf n ty `{!TyWf ty} : TyWf (own_ptr n ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Lemma own_type_incl n m ty1 ty2 :
     ▷ ⌜n = m⌝ -∗ ▷ type_incl ty1 ty2 -∗ type_incl (own_ptr n ty1) (own_ptr m ty2).

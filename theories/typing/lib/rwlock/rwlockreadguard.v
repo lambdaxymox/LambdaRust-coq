@@ -63,7 +63,7 @@ Section rwlockreadguard.
   Qed.
 
   Global Instance rwlockreadguard_wf α ty `{!TyWf ty} : TyWf (rwlockreadguard α ty) :=
-    { ty_lfts := [α]; ty_wf_E := ty.(ty_wf_E) ++ ty_outlives_E ty α }.
+    { ty_lfts := [α]; ty_wf_E := ty_wf_E ty ++ ty_outlives_E ty α }.
 
   Global Instance rwlockreadguard_type_contractive α : TypeContractive (rwlockreadguard α).
   Proof.

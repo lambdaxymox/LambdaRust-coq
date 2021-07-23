@@ -161,7 +161,7 @@ Section arc.
   Qed.
 
   Global Instance arc_wf ty `{!TyWf ty} : TyWf (arc ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance arc_type_contractive : TypeContractive arc.
   Proof.
@@ -274,7 +274,7 @@ Section arc.
   Qed.
 
   Global Instance weak_wf ty `{!TyWf ty} : TyWf (weak ty) :=
-    { ty_lfts := ty.(ty_lfts); ty_wf_E := ty.(ty_wf_E) }.
+    { ty_lfts := ty_lfts ty; ty_wf_E := ty_wf_E ty }.
 
   Global Instance weak_type_contractive : TypeContractive weak.
   Proof.
@@ -837,7 +837,7 @@ Section arc.
   (* Code : other primitives *)
   Definition arc_try_unwrap ty : val :=
     fn: ["arc"] :=
-      let: "r" := new [ #(Σ[ ty; arc ty ]).(ty_size) ] in
+      let: "r" := new [ #(ty_size Σ[ ty; arc ty ]) ] in
       let: "arc'" := !"arc" in
       if: try_unwrap ["arc'"] then
         (* Return content *)
