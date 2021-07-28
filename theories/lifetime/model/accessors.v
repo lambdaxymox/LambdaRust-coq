@@ -1,5 +1,5 @@
 From lrust.lifetime Require Export primitive.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import csum auth frac gmap agree gset.
 From iris.base_logic.lib Require Import boxes.
 Set Default Proof Using "Type".

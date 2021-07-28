@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import auth csum frac agree numbers.
 From lrust.lang.lib Require Import memcpy.
 From lrust.lifetime Require Import na_borrow.

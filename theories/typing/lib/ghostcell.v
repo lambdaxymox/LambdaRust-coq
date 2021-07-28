@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import csum frac excl agree coPset.
 From iris.bi Require Import lib.fractional.
 From lrust.lang Require Import proofmode notation.

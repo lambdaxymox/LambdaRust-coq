@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.program_logic Require Export weakestpre.
 From iris.program_logic Require Import ectx_lifting.
 From lrust.lang Require Export lang heap.

@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import notation.
 From lrust.typing Require Import type lft_contexts type_context.
 Set Default Proof Using "Type".

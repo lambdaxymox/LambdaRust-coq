@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import list numbers.
 From lrust.typing Require Import lft_contexts.
 From lrust.typing Require Export type.

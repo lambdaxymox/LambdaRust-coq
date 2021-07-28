@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lang.lib Require Import memcpy.
 From lrust.typing Require Export type.
 From lrust.typing Require Import util uninit type_context programs.

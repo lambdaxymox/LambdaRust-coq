@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lang.lib Require Import swap.
 From lrust.typing Require Import typing.
 Set Default Proof Using "Type".

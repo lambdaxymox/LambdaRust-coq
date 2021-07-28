@@ -1,5 +1,5 @@
 From iris.algebra Require Import dyn_reservation_map agree.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lifetime Require Export lifetime.
 Set Default Proof Using "Type".
 

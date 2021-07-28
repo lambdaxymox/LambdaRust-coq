@@ -2,7 +2,7 @@ From lrust.lifetime.model Require Export definitions.
 From iris.algebra Require Import csum auth frac gmap agree gset proofmode_classes.
 From iris.base_logic.lib Require Import boxes.
 From iris.bi Require Import fractional.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 Set Default Proof Using "Type".
 Import uPred.
 

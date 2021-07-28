@@ -1,5 +1,5 @@
 From iris.proofmode Require Import coq_tactics reduction.
-From iris.proofmode Require Export tactics.
+From iris.proofmode Require Export proofmode.
 From iris.program_logic Require Export weakestpre.
 From iris.program_logic Require Import lifting.
 From lrust.lang Require Export tactics lifting.

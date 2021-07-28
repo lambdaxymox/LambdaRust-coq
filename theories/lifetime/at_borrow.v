@@ -1,5 +1,5 @@
 From iris.algebra Require Import gmap auth frac.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lifetime Require Export lifetime.
 Set Default Proof Using "Type".
 

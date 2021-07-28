@@ -1,7 +1,7 @@
 From lrust.lifetime Require Export lifetime_sig.
 From lrust.lifetime.model Require definitions primitive accessors faking borrow
      borrow_sep reborrow creation.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 Set Default Proof Using "Type".
 
 Module Export lifetime : lifetime_sig.

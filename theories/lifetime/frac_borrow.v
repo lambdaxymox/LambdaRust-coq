@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.bi Require Import fractional.
 From iris.algebra Require Import frac.
 From lrust.lifetime Require Export at_borrow.

@@ -1,5 +1,5 @@
 From iris.algebra Require Import auth numbers.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import proofmode notation lib.new_delete.
 From lrust.lifetime Require Import meta.
 From lrust.typing Require Import typing.

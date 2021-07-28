@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From lrust.typing Require Import typing lib.option.
 
 (* Typing "problem case #3" from:

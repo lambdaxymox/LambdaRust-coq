@@ -4,7 +4,7 @@ From iris.algebra Require Import big_op gmap frac agree numbers.
 From iris.algebra Require Import csum excl auth cmra_big_op.
 From iris.bi Require Import fractional.
 From iris.base_logic Require Export lib.own.
-From iris.proofmode Require Export tactics.
+From iris.proofmode Require Export proofmode.
 From lrust.lang Require Export lang.
 Set Default Proof Using "Type".
 Import uPred.

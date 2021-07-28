@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import list.
 From iris.bi Require Import fractional.
 From lrust.typing Require Import lft_contexts.

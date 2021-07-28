@@ -1,4 +1,4 @@
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import auth csum frac agree.
 From iris.bi Require Import fractional.
 From lrust.lang.lib Require Import memcpy.

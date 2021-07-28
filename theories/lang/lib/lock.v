@@ -1,5 +1,5 @@
 From iris.program_logic Require Import weakestpre.
-From iris.proofmode Require Import tactics.
+From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import excl.
 From lrust.lang Require Import lang proofmode notation.
 Set Default Proof Using "Type".
