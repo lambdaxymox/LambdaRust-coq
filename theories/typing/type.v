@@ -435,7 +435,7 @@ Section type.
   Lemma shr_locsE_shift l n m :
     shr_locsE l (n + m) = shr_locsE l n ∪ shr_locsE (l +ₗ n) m.
   Proof.
-    revert l; induction n; intros l.
+    revert l; induction n as [|n IHn]; intros l.
     - rewrite shift_loc_0. set_solver+.
     - rewrite -Nat.add_1_l Nat2Z.inj_add /= IHn shift_loc_assoc.
       set_solver+.
@@ -444,11 +444,11 @@ Section type.
   Lemma shr_locsE_disj l n m :
     shr_locsE l n ## shr_locsE (l +ₗ n) m.
   Proof.
-    revert l; induction n; intros l.
+    revert l; induction n as [|n IHn]; intros l.
     - simpl. set_solver+.
     - rewrite -Nat.add_1_l Nat2Z.inj_add /=.
       apply disjoint_union_l. split; last (rewrite -shift_loc_assoc; exact: IHn).
-      clear IHn. revert n; induction m; intros n; simpl; first set_solver+.
+      clear IHn. revert n; induction m as [|m IHm]; intros n; simpl; first set_solver+.
       rewrite shift_loc_assoc. apply disjoint_union_r. split.
       + apply ndot_ne_disjoint. destruct l. intros [=]. lia.
       + rewrite -Z.add_assoc. move:(IHm (n + 1)%nat). rewrite Nat2Z.inj_add //.

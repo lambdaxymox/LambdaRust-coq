@@ -351,7 +351,7 @@ Proof.
     change (App (of_val vf) ((of_val <$> vs) ++ e :: el)) with (fill_item (AppRCtx vf vs el) e).
     iApply wp_bind. iApply (wp_wand with "He"). iIntros (v) "HQ /=".
     rewrite cons_middle (assoc app) -(fmap_app _ _ [v]).
-    iApply (IH _ _ with "Hl"). iIntros "* Hvl". rewrite -assoc.
+    iApply (IH _ _ with "Hl"). iIntros "%vl Hvl". rewrite -assoc.
     iApply ("HΦ" $! (v:::vl)). iFrame.
 Qed.
 

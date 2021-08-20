@@ -90,7 +90,7 @@ Section borrow.
     rewrite tctx_interp_singleton.
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Hκ with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
-    wp_apply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hown"; try done.
+    wp_apply (wp_hasty with "Hp"). iIntros ([[|l|]|]) "_ Hown"; try done.
     iMod (bor_acc_cons with "LFT Hown Htok") as "[H↦ Hclose']". done.
     iDestruct "H↦" as ([|[[|l'|]|][]]) "[>H↦ Hown]"; try iDestruct "Hown" as ">[]".
       iDestruct "Hown" as "[Hown H†]". rewrite heap_mapsto_vec_singleton -wp_fupd. wp_read.

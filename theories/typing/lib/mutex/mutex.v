@@ -94,9 +94,9 @@ Section mutex.
     iDestruct ("EQ" with "HE") as "(% & #Howni & _) {EQ}".
     iSplit; last iSplit.
     - simpl. iPureIntro. f_equiv. done.
-    - iIntros "!> * Hvl". destruct vl as [|[[| |n]|]vl]; try done.
+    - iIntros "!> %tid %vl Hvl". destruct vl as [|[[| |n]|]vl]; try done.
       simpl. iDestruct "Hvl" as "[$ Hvl]". by iApply "Howni".
-    - iIntros "!> * Hshr". iDestruct "Hshr" as (κ') "[Hincl Hshr]".
+    - iIntros "!> %κ %tid %l Hshr". iDestruct "Hshr" as (κ') "[Hincl Hshr]".
       iExists _. iFrame "Hincl". iApply (at_bor_iff with "[] Hshr"). iNext.
       iApply lock_proto_iff_proper. iApply bor_iff_proper. iNext.
       iApply heap_mapsto_pred_iff_proper.

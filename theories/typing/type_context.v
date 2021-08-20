@@ -41,14 +41,17 @@ Section type_context.
     revert v; induction p; intros v; try done.
     { intros [=]. by iApply wp_value. }
     { move=> /of_to_val=> ?. by iApply wp_value. }
-    simpl. destruct op; try discriminate; [].
-    destruct p2; try (intros ?; by iApply wp_value); [].
-    destruct l; try (intros ?; by iApply wp_value); [].
-    destruct (eval_path p1); try done.
-    destruct v0; try discriminate; [].
-    destruct l; try discriminate; [].
-    intros [=<-]. wp_bind p1. iApply (wp_wand with "[]").
-    { iApply IHp1. done. }
+    simpl.
+    case_match; try discriminate; [].
+    case_match; try (intros ?; by iApply wp_value); [].
+    case_match; try (intros ?; by iApply wp_value); [].
+    case_match; try done.
+    case_match; try discriminate; [].
+    case_match; try discriminate; [].
+    intros [=<-].
+    match goal with |- context[(?l +ₗ _)%E] => rename l into p1 end.
+    wp_bind p1. iApply (wp_wand with "[]").
+    { match goal with H: context[(WP p1 @ _ {{ _, _ }})%I] |- _ => iApply H end. done. }
     iIntros (v) "%". subst v. wp_op. done.
   Qed.
 

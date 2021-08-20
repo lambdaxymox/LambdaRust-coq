@@ -270,8 +270,8 @@ Section rwlock_functions.
     iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβtok Hclose']". done.
     wp_bind (CAS _ _ _).
     iMod (at_bor_acc_tok with "LFT Hinv Hβtok") as "[INV Hclose'']"; try done.
-    iDestruct "INV" as (st) "(Hlx & >Hownst & Hst)". destruct st.
-    - iApply (wp_cas_int_fail with "Hlx"). by destruct c as [|[[]]|].
+    iDestruct "INV" as (st) "(Hlx & >Hownst & Hst)". destruct st as [c|].
+    - iApply (wp_cas_int_fail with "Hlx"); first by destruct c as [|[[]]|].
       iNext. iIntros "Hlx".
       iMod ("Hclose''" with "[Hlx Hownst Hst]") as "Hβtok"; first by iExists _; iFrame.
       iMod ("Hclose'" with "Hβtok") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".

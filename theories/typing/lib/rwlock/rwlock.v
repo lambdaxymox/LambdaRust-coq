@@ -69,7 +69,7 @@ Section rwlock_inv.
     (* TODO : this proof is essentially [solve_proper], but within the logic.
               It would easily gain from some automation. *)
     rewrite eqtype_unfold. iIntros (Hty) "HL".
-    iDestruct (Hty with "HL") as "#Hty". iIntros "* !> #HE H".
+    iDestruct (Hty with "HL") as "#Hty". iIntros "%tid_own %tid_shr %l %γ %α !> #HE H".
     iDestruct ("Hty" with "HE") as "(% & #Hown & #Hshr)".
     iAssert (□ (&{α}((l +ₗ 1) ↦∗: ty_own ty1 tid_own) -∗
                 &{α}((l +ₗ 1) ↦∗: ty_own ty2 tid_own)))%I as "#Hb".
@@ -195,10 +195,12 @@ Section rwlock.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty1ty2"; first done.
     iDestruct (rwlock_inv_proper with "HL") as "#Hty2ty1"; first by symmetry.
     iIntros "!> #HE". iDestruct ("EQ'" with "HE") as "(% & #Hown & #Hshr)".
-    iSplit; [|iSplit; iIntros "!> * H"].
+    iSplit; [|iSplit].
     - iPureIntro. simpl. congruence.
-    - destruct vl as [|[[]|]]; try done. iDestruct "H" as "[$ H]". by iApply "Hown".
-    - iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.
+    - iIntros "!> %tid %vl H". destruct vl as [|[[]|]]; try done.
+      iDestruct "H" as "[$ H]". by iApply "Hown".
+    - iIntros "!> %α %tid %l H". simpl.
+      iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.
       iApply at_bor_iff; last done. iNext; iModIntro; iSplit; iIntros "H".
       by iApply "Hty1ty2". by iApply "Hty2ty1".
   Qed.

@@ -89,10 +89,10 @@ Section diverging_static.
     { iIntros (k). simpl_subst.
       iApply type_equivalize_lft_static_bad.
       iApply (type_call [ϝ] ()); solve_typing. }
-    iIntros "!> *". inv_vec args=>r. simpl_subst.
+    iIntros "!> %k %args". inv_vec args=>r. simpl_subst.
     iApply (type_cont [] [] (λ r, [])).
     { iIntros (kloop). simpl_subst. iApply type_jump; solve_typing. }
-    iIntros "!> *". inv_vec args. simpl_subst.
+    iIntros "!> %k' %args". inv_vec args. simpl_subst.
     iApply type_jump; solve_typing.
   Qed.
 End diverging_static.

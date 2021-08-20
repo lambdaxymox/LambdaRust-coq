@@ -65,7 +65,7 @@ Section case.
   Proof.
     iIntros (Halive Hel tid qmax) "#LFT #HE Hna HL HC HT". wp_bind p.
     rewrite tctx_interp_cons. iDestruct "HT" as "[Hp HT]".
-    iApply (wp_hasty with "Hp"). iIntros ([[]|] Hv) "Hp"; try iDestruct "Hp" as "[]".
+    iApply (wp_hasty with "Hp"). iIntros ([[|l|]|] Hv) "Hp"; try iDestruct "Hp" as "[]".
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Halive with "HE HL") as (q) "[Htok Hclose]". done.
     iMod (bor_acc_cons with "LFT Hp Htok") as "[H↦ Hclose']". done.
@@ -167,9 +167,10 @@ Section case.
     iIntros (? ->). wp_op. wp_bind p2. iApply (wp_hasty with "Hp2").
     iIntros (v2 Hv2) "Hty2". iDestruct (ty_size_eq with "Hty2") as %Hlenty.
     destruct vl as [|? vl].
-    { exfalso. revert i Hty. clear - Hlen Hlenty. induction tyl=>//= -[|i] /=.
+    { exfalso. revert i Hty. clear - Hlen Hlenty.
+      induction tyl as [|ty' tyl IH]=>//= -[|i] /=.
       - intros [= ->]. simpl in *. lia.
-      - apply IHtyl. simpl in *. lia. }
+      - apply IH. simpl in *. lia. }
     rewrite heap_mapsto_vec_cons -wp_fupd. iDestruct "H↦vl" as "[H↦ H↦vl]". wp_write.
     rewrite tctx_interp_singleton tctx_hasty_val' //.
     iMod ("Hw" with "[-HLclose]") as "[HL $]"; last first.
@@ -248,9 +249,10 @@ Section case.
     rewrite typed_read_eq in Hr.
     iMod (Hr with "[] LFT HE Htl HL2 Hty2") as (l2 vl2 q) "(% & H↦2 & Hty & Hr)"=>//=.
     clear Hr. subst. assert (ty.(ty_size) ≤ length vl1).
-    { revert i Hty. rewrite Hlen. clear. induction tyl=>//= -[|i] /=.
+    { revert i Hty. rewrite Hlen. clear.
+      induction tyl as [|ty' tyl IH]=>//= -[|i] /=.
       - intros [= ->]. lia.
-      - specialize (IHtyl i). intuition lia. }
+      - specialize (IH i). intuition lia. }
     rewrite -(take_drop (ty.(ty_size)) vl1) heap_mapsto_vec_app.
     iDestruct "H↦vl1" as "[H↦vl1 H↦pad]".
     iDestruct (ty_size_eq with "Hty") as "#>%".

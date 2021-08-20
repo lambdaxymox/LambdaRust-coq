@@ -34,7 +34,7 @@ Section uniq_bor.
     iDestruct "H" as (l') "[Hfb Hvs]". iAssert (κ0⊓κ' ⊑ κ0⊓κ)%I as "#Hκ0".
     { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
     iExists l'. iSplit. by iApply (frac_bor_shorten with "[]").
-    iIntros "!> * % Htok". iApply (step_fupd_mask_mono F _ (F∖↑shrN)); try solve_ndisj.
+    iIntros "!> %F %q % Htok". iApply (step_fupd_mask_mono F _ (F∖↑shrN)); try solve_ndisj.
     iMod (lft_incl_acc with "Hκ0 Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
     iMod "Hvs'" as "[#Hshr Htok]". iMod ("Hclose" with "Htok") as "$".

@@ -31,7 +31,7 @@ Section join_handle.
     ▷ type_incl ty1 ty2 -∗ type_incl (join_handle ty1) (join_handle ty2).
   Proof.
     iIntros "#Hincl". iSplit; first done. iSplit; iModIntro.
-    - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
+    - iIntros "%tid %vl Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       simpl. iApply (join_handle_impl with "[] Hvl"). clear tid.
       iIntros "!> * Hown" (tid).
       iDestruct (box_type_incl with "Hincl") as "{Hincl} (_ & Hincl & _)".

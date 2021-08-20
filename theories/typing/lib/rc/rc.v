@@ -211,13 +211,13 @@ Section rc.
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
     iSplit; first done. iSplit; iModIntro.
-    - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
+    - iIntros "%tid %vl Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as "[(Hl1 & Hl2 & H† & Hc) | Hvl]".
       { iLeft. iFrame. iDestruct "Hsz" as %->.
         iFrame. iApply (heap_mapsto_pred_wand with "Hc"). iApply "Hoincl". }
       iDestruct "Hvl" as (γ ν q) "(#Hpersist & Htk & Hν)".
       iRight. iExists _, _, _. iFrame "#∗". by iApply rc_persist_type_incl.
-    - iIntros "* #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
+    - iIntros "%κ %tid %l #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
       iIntros "{$Hfrac} !> * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
       iModIntro. iNext. iMod "H" as "[$ H]".
       iDestruct "H" as (γ ν q') "(Hlft & Hpersist & Hna)".
@@ -584,13 +584,13 @@ Section code.
     setoid_subst; try done; last first.
     { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
       apply csum_included in Hincl. naive_solver. }
-    iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >% & Hνtok & Hν†)".
+    iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >%Hq & Hνtok & Hν†)".
     wp_read. wp_let. wp_op. rewrite shift_loc_0. wp_op. wp_write. wp_write.
     (* And closing it again. *)
     iMod (own_update with "Hrc●") as "[Hrc● Hrctok2]".
     { apply auth_update_alloc, prod_local_update_1,
       (op_local_update_discrete _ _ (Some (Cinl ((qb/2)%Qp, 1%positive))))=>-[/= Hqa _].
-      split; simpl; last done. apply frac_valid. rewrite /= -H comm_L.
+      split; simpl; last done. apply frac_valid. rewrite /= -Hq comm_L.
       by apply Qp_add_le_mono_l, Qp_div_le. }
     rewrite right_id -Some_op -Cinl_op -pair_op. iDestruct "Hνtok" as "[Hνtok1 Hνtok2]".
     iMod ("Hclose3" with "[$Hrctok] Hna") as "[Hα1 Hna]".

@@ -398,7 +398,7 @@ Section arc.
     { iIntros "!> HP". iInv N as (st) "[>H● H]" "Hclose1".
       iMod ("Hacc" with "HP") as "[Hown Hclose2]".
       iDestruct (weak_tok_auth_val with "H● Hown") as %(st' & weak & -> & Hval).
-      destruct st' as [[[[??]?]| |]|]; try done; iExists _.
+      destruct st' as [[[[q' c]?]| |]|]; try done; iExists _.
       - iDestruct "H" as (q) "(>Heq & [HP1 HP1'] & >$ & ?)". iDestruct "Heq" as %Heq.
         iIntros "!>"; iSplit; iMod ("Hclose2" with "Hown") as "HP".
         + iIntros "_ Hl". iExists (q/2)%Qp. iMod (own_update with "H●") as "[H● $]".
@@ -408,7 +408,7 @@ Section arc.
             apply frac_valid. rewrite /= -Heq comm_L.
             by apply Qp_add_le_mono_l, Qp_div_le. }
           iFrame. iApply "Hclose1". iExists _. iFrame. iExists _. iFrame.
-          rewrite /= [xH ⋅ _]comm_L frac_op [(_ + c)%Qp]comm -[(_ + _)%Qp]assoc
+          rewrite /= [xH ⋅ _]comm_L frac_op [(_ + q')%Qp]comm -[(_ + _)%Qp]assoc
                   Qp_div_2 left_id_L. auto with iFrame.
         + iIntros "Hl". iFrame. iApply ("Hclose1" with "[-]"). iExists _. iFrame.
           iExists q. auto with iFrame.
@@ -597,7 +597,7 @@ Section arc.
         iInv N as ([st w]) "[>H● H]" "Hclose".
         iDestruct (own_valid_2 with "H● H◯") as
            %[[[[=]|Hincl]%option_included _]%prod_included [Hval _]]%auth_both_valid_discrete.
-        simpl in Hincl. destruct Hincl as (? & ? & [=<-] & -> & Hincl); last first.
+        simpl in Hincl. destruct Hincl as (x1 & x2 & [=<-] & -> & Hincl); last first.
         assert (∃ q p, x2 = Cinl (q, p, Excl' ())) as (? & ? & ->).
         { destruct Hincl as [|Hincl]; first by setoid_subst; eauto.
           apply csum_included in Hincl. destruct Hincl as [->|[Hincl|(?&?&[=]&?)]]=>//.

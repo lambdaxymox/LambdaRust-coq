@@ -22,11 +22,11 @@ Section product_split.
     tctx_interp tid $ hasty_ptr_offsets p ptr tyl (off1 + off2)%nat.
   Proof.
     intros Hp.
-    revert off1 off2; induction tyl; intros off1 off2; simpl; first done.
+    revert off1 off2; induction tyl as [|ty tyl IH]; intros off1 off2; simpl; first done.
     rewrite !tctx_interp_cons. f_equiv; last first.
-    { by rewrite IHtyl assoc_L. }
+    { by rewrite IH assoc_L. }
     apply tctx_elt_interp_hasty_path. clear Hp. simpl.
-    clear. destruct (eval_path p); last done. destruct v; try done.
+    clear. destruct (eval_path p) as [v|]; last done. destruct v as [l|]; try done.
     destruct l; try done. rewrite shift_loc_assoc Nat2Z.inj_add //.
   Qed.
 
@@ -65,8 +65,8 @@ Section product_split.
     iDestruct "H" as "[Hty Htyl]". iDestruct "Hty" as (v) "[Hp Hty]".
     iDestruct "Hp" as %Hp. iDestruct (Hloc with "Hty") as %[l [=->]].
     assert (eval_path p = Some #l) as Hp'.
-    { move:Hp. simpl. clear. destruct (eval_path p); last done.
-      destruct v; try done. destruct l0; try done. rewrite shift_loc_0. done. }
+    { move:Hp. simpl. clear. destruct (eval_path p) as [v|]; last done.
+      destruct v as [l'|]; try done. destruct l'; try done. rewrite shift_loc_0. done. }
     clear Hp. destruct tyl.
     { assert (eqtype E L (ptr ty) (ptr (product2 ty unit))) as [Hincl _].
       { rewrite right_id. done. }
@@ -107,7 +107,7 @@ Section product_split.
   Proof.
     iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
-    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "(Hp1 & H1)"; try done.
+    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[|l|]|]) "(Hp1 & H1)"; try done.
     iDestruct "H1" as "(H↦1 & H†1)".
     iDestruct "H2" as (v2) "(Hp2 & H2)". simpl. iDestruct "Hp1" as %Hρ1.
     rewrite Hρ1. iDestruct "Hp2" as %[=<-]. iDestruct "H2" as "[H↦2 H†2]".
@@ -156,7 +156,7 @@ Section product_split.
   Proof.
     iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
-    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "[Hp1 H1]"; try done.
+    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[|l|]|]) "[Hp1 H1]"; try done.
     iDestruct "Hp1" as %Hp1. iDestruct "H2" as (v2) "(Hp2 & H2)". rewrite /= Hp1.
     iDestruct "Hp2" as %[=<-]. iExists #l. iFrame "%".
     iMod (bor_combine with "LFT H1 H2") as "H"; first solve_ndisj. by rewrite /= split_prod_mt.
@@ -204,7 +204,7 @@ Section product_split.
   Proof.
     iIntros (tid qmax qL) "#LFT _ $ H".
     rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
-    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[]|]) "[Hp1 Hown1]"; try done.
+    iDestruct "H" as "[H1 H2]". iDestruct "H1" as ([[|l|]|]) "[Hp1 Hown1]"; try done.
     iDestruct "Hp1" as %Hp1. iDestruct "H2" as ([[]|]) "[Hp2 Hown2]"; try done.
     rewrite /= Hp1. iDestruct "Hp2" as %[=<-]. iExists #l. by iFrame.
   Qed.

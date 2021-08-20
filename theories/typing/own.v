@@ -78,7 +78,7 @@ Section own.
   Next Obligation.
     intros _ ty κ κ' tid l. iIntros "#Hκ #H".
     iDestruct "H" as (l') "[Hfb #Hvs]".
-    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]"). iIntros "!> *% Htok".
+    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]"). iIntros "!> %F %q % Htok".
     iApply (step_fupd_mask_mono F _ (F∖↑shrN)); [solve_ndisj..|].
     iMod (lft_incl_acc with "Hκ Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
@@ -230,7 +230,7 @@ Section typing.
     Copy ty → ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n ty).
   Proof.
     rewrite typed_read_eq. iIntros (Hsz) "!>".
-    iIntros ([[]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
+    iIntros ([[|l|]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ #Hown]".
     iExists l, _, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !>".
     iExists _. auto.
@@ -240,7 +240,7 @@ Section typing.
     ⊢ typed_read E L (own_ptr n ty) ty (own_ptr n $ uninit ty.(ty_size)).
   Proof.
     rewrite typed_read_eq. iModIntro.
-    iIntros ([[]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
+    iIntros ([[|l|]|] tid F qmax qL ?) "_ _ $ $ Hown"; try done.
     iDestruct "Hown" as "[H↦ H†]". iDestruct "H↦" as (vl) "[>H↦ Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%".
     iExists l, vl, _. iFrame "∗#". iSplitR; first done. iIntros "!> Hl !> !>".

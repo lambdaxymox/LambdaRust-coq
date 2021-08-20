@@ -129,7 +129,7 @@ Section non_lexical.
           iApply (type_letalloc_n (&uniq{m}V) (own_ptr _ (&uniq{m}V))); [solve_typing..|].
             iIntros (r). simpl_subst.
           iApply type_jump; solve_typing. }
-      iIntros "!> *". inv_vec args=>r. simpl_subst.
+      iIntros "!> %k %args". inv_vec args=>r. simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_delete; [solve_typing..|].
       iApply type_delete; [solve_typing..|].

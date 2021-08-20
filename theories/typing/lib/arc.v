@@ -178,13 +178,13 @@ Section arc.
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
     iSplit; first done. iSplit; iModIntro.
-    - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
+    - iIntros "%tid %vl Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as "[(Hl1 & Hl2 & H† & Hc) | Hvl]".
       { iLeft. iFrame. iDestruct "Hsz" as %->.
         iFrame. iApply (heap_mapsto_pred_wand with "Hc"). iApply "Hoincl". }
       iDestruct "Hvl" as (γ ν q) "(#Hpersist & Htk & Hν)".
       iRight. iExists _, _, _. iFrame "#∗". by iApply arc_persist_type_incl.
-    - iIntros "* #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
+    - iIntros "%κ %tid %l #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
       iIntros "{$Hfrac} !> * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
       iModIntro. iNext. iMod "H" as "[$ H]".
       iDestruct "H" as (γ ν q') "(Hlft & Hpersist & Hna)".
@@ -291,10 +291,10 @@ Section arc.
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(#Hsz & #Hoincl & #Hsincl)".
     iSplit; first done. iSplit; iModIntro.
-    - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
+    - iIntros "%tid %vl Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as (γ ν) "(#Hpersist & Htk)".
       iExists _, _. iFrame "#∗". by iApply arc_persist_type_incl.
-    - iIntros "* #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
+    - iIntros "%κ %tid %l #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
       iIntros "{$Hfrac} !> * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
       iModIntro. iNext. iMod "H" as "[$ H]". iDestruct "H" as (γ ν) "[Hpersist Hna]".
       iExists _, _. iFrame. by iApply arc_persist_type_incl.
@@ -818,7 +818,7 @@ Section arc.
     rewrite !tctx_hasty_val [[rcx]]lock [[r]]lock. destruct rc' as [[|rc'|]|]=>//=.
     iDestruct "Hrc'" as (γ ν) "[#Hpersist Htok]". wp_bind (drop_weak _).
     iApply (drop_weak_spec with "[] [Htok]"); [by iDestruct "Hpersist" as "[$?]"|by auto|].
-    iIntros "!> * Hdrop". wp_bind (if: _ then _ else _)%E.
+    iIntros "!> %b Hdrop". wp_bind (if: _ then _ else _)%E.
     iApply (wp_wand _ _ _ (λ _, True)%I with "[Hdrop]").
     { destruct b; wp_if=>//. iDestruct "Hdrop" as "((? & H↦) & ? & ?)".
       iDestruct "H↦" as (vl) "[? Heq]". iDestruct "Heq" as %<-.
@@ -882,7 +882,7 @@ Section arc.
       iIntros "[Hr1 Hrc']". wp_seq. wp_bind (drop_weak _).
       iMod ("Hend" with "[$H† Hrc']") as "Htok"; first by eauto.
       iApply (drop_weak_spec with "Ha Htok").
-      iIntros "!> * Hdrop". wp_bind (if: _ then _ else _)%E.
+      iIntros "!> %b Hdrop". wp_bind (if: _ then _ else _)%E.
       iApply (wp_wand _ _ _ (λ _, True)%I with "[Hdrop]").
       { destruct b; wp_if=>//. iDestruct "Hdrop" as "((? & H↦) & ? & ?)".
         iDestruct "H↦" as (vl') "[? Heq]". iDestruct "Heq" as %<-.

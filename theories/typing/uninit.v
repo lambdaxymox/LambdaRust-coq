@@ -41,7 +41,7 @@ Section uninit.
        ty_shr := (uninit0 n).(ty_shr) |}.
   Next Obligation. iIntros (???) "%". done. Qed.
   Next Obligation.
-    iIntros (???????) "LFT Hvl". iApply (ty_share (uninit0 n) with "LFT"); first done.
+    iIntros (n ??????) "LFT Hvl". iApply (ty_share (uninit0 n) with "LFT"); first done.
     iApply (bor_iff with "[] Hvl"). iIntros "!> !>". setoid_rewrite uninit0_own.
     iSplit; iIntros; done.
   Qed.
