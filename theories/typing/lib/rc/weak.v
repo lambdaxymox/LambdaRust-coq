@@ -82,10 +82,10 @@ Section weak.
   Proof.
     iIntros "#Hincl". iPoseProof "Hincl" as "(Hsz & #Hoincl & #Hsincl)".
     iSplit; first done. iSplit; iModIntro.
-    - iIntros "* Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
+    - iIntros "%tid %vl Hvl". destruct vl as [|[[|vl|]|] [|]]; try done.
       iDestruct "Hvl" as (γ ν) "(#Hpersist & Htok)".
       iExists _, _. iFrame "Htok". by iApply rc_persist_type_incl.
-    - iIntros "* #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
+    - iIntros "%κ %tid %l #Hshr". iDestruct "Hshr" as (l') "[Hfrac Hshr]". iExists l'.
       iIntros "{$Hfrac} !> * % Htok". iMod ("Hshr" with "[% //] Htok") as "{Hshr} H".
       iModIntro. iNext. iMod "H" as "[$ H]". iDestruct "H" as (γ ν) "(Hpersist & Hshr)".
       iExists _, _. iFrame "Hshr". by iApply rc_persist_type_incl.
@@ -398,11 +398,11 @@ Section code.
       iDestruct "Hrcproto" as ([st weakc]) "[>Hrc● Hrcst]".
       iDestruct (own_valid_2 with "Hrc● Hwtok") as
           %[[_ Hweak%nat_included]%prod_included [Hval _]]%auth_both_valid_discrete.
-      destruct weakc; first by simpl in *; lia.
+      destruct weakc as [|weakc]; first by simpl in *; lia.
       iMod (own_update_2 with "Hrc● Hwtok") as "Hrc●".
       { apply auth_update_dealloc, prod_local_update_2,
               (cancel_local_update_unit 1%nat), _. }
-      destruct st as [[[q'' strong]| |]|]; try done.
+      destruct st as [[[q'' strong]| |]|]; [..|done|].
       - iExists _. iDestruct "Hrcst" as (q0) "(Hlw & >$ & Hrcst)". iRight.
         iSplitR; first by auto with lia. iIntros "!>?". iApply "Hclose". iFrame.
         iExists _. iFrame. iExists _. iFrame.
