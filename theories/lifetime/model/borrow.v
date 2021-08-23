@@ -3,7 +3,7 @@ From lrust.lifetime Require Export faking.
 From iris.algebra Require Import csum auth frac gmap agree gset.
 From iris.base_logic.lib Require Import boxes.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section borrow.
 Context `{!invGS Σ, !lftGS Σ userE}.

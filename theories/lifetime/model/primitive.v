@@ -3,7 +3,7 @@ From iris.algebra Require Import csum auth frac gmap agree gset proofmode_classe
 From iris.base_logic.lib Require Import boxes.
 From iris.bi Require Import fractional.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 Import uPred.
 
 Lemma lft_init `{!invGS Σ, !lftGpreS Σ} E userE :
@@ -67,7 +67,7 @@ Proof.
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move : Hγs.
   rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /to_agree_op_inv_L <-.
-  iExists γs. iSplit. done. rewrite own_op; iFrame.
+  iExists γs. iSplit; first done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_bor_into_op κ x x1 x2 :
   IsOp x x1 x2 → IntoSep (own_bor κ x) (own_bor κ x1) (own_bor κ x2).
@@ -135,7 +135,7 @@ Proof.
   iDestruct "Hx" as (γs) "[Hγs Hx]"; iDestruct "Hy" as (γs') "[Hγs' Hy]".
   iDestruct (own_valid_2 with "Hγs Hγs'") as %Hγs. move: Hγs.
   rewrite -auth_frag_op auth_frag_valid singleton_op singleton_valid=> /to_agree_op_inv_L=> <-.
-  iExists γs. iSplit. done. rewrite own_op; iFrame.
+  iExists γs. iSplit; first done. rewrite own_op; iFrame.
 Qed.
 Global Instance own_inh_into_op κ x x1 x2 :
   IsOp x x1 x2 → IntoSep (own_inh κ x) (own_inh κ x1) (own_inh κ x2).
@@ -301,7 +301,7 @@ Proof.
 Qed.
 Global Instance lft_tok_as_fractional κ q :
   AsFractional q.[κ] (λ q, q.[κ])%I q.
-Proof. split. done. apply _. Qed.
+Proof. split; first done. apply _. Qed.
 Global Instance idx_bor_own_fractional i : Fractional (λ q, idx_bor_own q i)%I.
 Proof.
   intros p q. rewrite /idx_bor_own -own_bor_op /own_bor. f_equiv=>?.
@@ -309,7 +309,7 @@ Proof.
 Qed.
 Global Instance idx_bor_own_as_fractional i q :
   AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
-Proof. split. done. apply _. Qed.
+Proof. split; first done. apply _. Qed.
 
 (** Lifetime inclusion *)
 Lemma lft_incl_acc E κ κ' q :
@@ -377,7 +377,9 @@ Proof.
     iExists qq. iFrame. iIntros "!> Hqq".
     iDestruct ("Hclose" with "Hqq") as "[Hκ' Hκ'']".
     iMod ("Hclose'" with "Hκ'") as "$". by iApply "Hclose''".
-  - rewrite -lft_dead_or. iIntros "[H†|H†]". by iApply "H1†". by iApply "H2†".
+  - rewrite -lft_dead_or. iIntros "[H†|H†]".
+    + by iApply "H1†".
+    + by iApply "H2†".
 Qed.
 
 Lemma lft_intersect_mono κ1 κ1' κ2 κ2' :
@@ -394,14 +396,16 @@ Proof.
   iIntros "#HPP' HP". unfold raw_bor. iDestruct "HP" as (s) "[HiP HP]".
   iExists s. iFrame. iDestruct "HP" as (P0) "[#Hiff ?]". iExists P0. iFrame.
   iNext. iModIntro. iSplit; iIntros.
-  by iApply "HPP'"; iApply "Hiff". by iApply "Hiff"; iApply "HPP'".
+  - by iApply "HPP'"; iApply "Hiff".
+  - by iApply "Hiff"; iApply "HPP'".
 Qed.
 
 Lemma idx_bor_iff κ i P P' : ▷ □ (P ↔ P') -∗ &{κ,i}P -∗ &{κ,i}P'.
 Proof.
   unfold idx_bor. iIntros "#HPP' [$ HP]". iDestruct "HP" as (P0) "[#HP0P Hs]".
   iExists P0. iFrame. iNext. iModIntro. iSplit; iIntros.
-  by iApply "HPP'"; iApply "HP0P". by iApply "HP0P"; iApply "HPP'".
+  - by iApply "HPP'"; iApply "HP0P".
+  - by iApply "HP0P"; iApply "HPP'".
 Qed.
 
 Lemma bor_unfold_idx κ P : &{κ}P ⊣⊢ ∃ i, &{κ,i}P ∗ idx_bor_own 1 i.

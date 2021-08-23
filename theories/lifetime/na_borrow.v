@@ -1,7 +1,7 @@
 From lrust.lifetime Require Export lifetime.
 From iris.base_logic.lib Require Export na_invariants.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition na_bor `{!invGS Σ, !lftGS Σ userE, !na_invG Σ}
            (κ : lft) (tid : na_inv_pool_name) (N : namespace) (P : iProp Σ) :=
@@ -45,7 +45,7 @@ Section na_bor.
     iIntros (???) "#LFT#HP Hκ Hnaown".
     iDestruct "HP" as (i) "(#Hpers&#Hinv)".
     iMod (na_inv_acc with "Hinv Hnaown") as "(>Hown&Hnaown&Hclose)"; try done.
-    iMod (idx_bor_acc with "LFT Hpers Hown Hκ") as "[HP Hclose']". done.
+    iMod (idx_bor_acc with "LFT Hpers Hown Hκ") as "[HP Hclose']"; first done.
     iIntros "{$HP $Hnaown} !> HP Hnaown".
     iMod ("Hclose'" with "HP") as "[Hown $]". iApply "Hclose". by iFrame.
   Qed.

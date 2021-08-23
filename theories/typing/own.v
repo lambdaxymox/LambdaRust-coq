@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang.lib Require Import memcpy.
 From lrust.typing Require Export type.
 From lrust.typing Require Import util uninit type_context programs.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section own.
   Context `{!typeGS Σ}.
@@ -36,7 +36,9 @@ Section own.
     destruct sz1; [|destruct sz2;[|rewrite /freeable_sz plus_Sn_m; destruct n]].
     - by rewrite left_id shift_loc_0.
     - by rewrite right_id Nat.add_0_r.
-    - iSplit. by iIntros "[[]?]". by iIntros "[]".
+    - iSplit.
+      + by iIntros "[[]?]".
+      + by iIntros "[]".
     - rewrite heap_freeable_op_eq. f_equiv.
       by rewrite -Qp_div_add_distr pos_to_Qp_add -Nat2Pos.inj_add.
   Qed.
@@ -78,7 +80,7 @@ Section own.
   Next Obligation.
     intros _ ty κ κ' tid l. iIntros "#Hκ #H".
     iDestruct "H" as (l') "[Hfb #Hvs]".
-    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]"). iIntros "!> %F %q % Htok".
+    iExists l'. iSplit; first by iApply (frac_bor_shorten with "[]"). iIntros "!> %F %q % Htok".
     iApply (step_fupd_mask_mono F _ (F∖↑shrN)); [solve_ndisj..|].
     iMod (lft_incl_acc with "Hκ Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
@@ -99,7 +101,7 @@ Section own.
       iApply "Ho".
     - iIntros (???) "H". iDestruct "H" as (l') "[Hfb #Hvs]".
       iExists l'. iFrame. iIntros "!>". iIntros (F' q) "% Htok".
-      iMod ("Hvs" with "[%] Htok") as "Hvs'". done. iModIntro. iNext.
+      iMod ("Hvs" with "[%] Htok") as "Hvs'"; first done. iModIntro. iNext.
       iMod "Hvs'" as "[Hshr $]". iApply ("Hs" with "Hshr").
   Qed.
 
@@ -322,7 +324,7 @@ Section typing.
       { (* TODO : simpl_subst should be able to do this. *)
         unfold subst=>/=. repeat f_equal.
         - by rewrite bool_decide_true.
-        - eapply is_closed_subst. done. set_solver. }
+        - eapply is_closed_subst; first done. set_solver. }
       iApply type_assign; [|solve_typing|by eapply write_own|solve_typing].
       apply subst_is_closed; last done. apply is_closed_of_val.
   Qed.
@@ -345,9 +347,9 @@ Section typing.
               (xv <-{ty.(ty_size)} !p ;; subst x xv e)%E) as ->.
       { (* TODO : simpl_subst should be able to do this. *)
         unfold subst=>/=. repeat f_equal.
-        - eapply (is_closed_subst []). apply is_closed_of_val. set_solver.
+        - eapply (is_closed_subst []); last set_solver. apply is_closed_of_val.
         - by rewrite bool_decide_true.
-        - eapply is_closed_subst. done. set_solver. }
+        - eapply is_closed_subst; first done. set_solver. }
       rewrite Nat2Z.id. iApply type_memcpy.
       + apply subst_is_closed; last done. apply is_closed_of_val.
       + solve_typing.

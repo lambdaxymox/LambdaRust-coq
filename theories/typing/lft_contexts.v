@@ -3,7 +3,7 @@ From iris.bi Require Import fractional.
 From lrust.lang Require Import proofmode.
 From lrust.typing Require Export base.
 From lrust.lifetime Require Import frac_borrow.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition elctx_elt : Type := lft * lft.
 Notation elctx := (list elctx_elt).

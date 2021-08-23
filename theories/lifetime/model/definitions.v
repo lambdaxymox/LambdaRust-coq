@@ -1,7 +1,7 @@
 From iris.algebra Require Import csum auth frac gmap agree gset numbers.
 From iris.base_logic.lib Require Import boxes.
 From lrust.lifetime Require Export lifetime_sig.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 Import uPred.
 
 Definition inhN : namespace := lftN .@ "inh".

@@ -4,7 +4,7 @@ From lrust.lang.lib Require Import memcpy lock.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing option.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition mutexN := lrustN .@ "mutex".
 

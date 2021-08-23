@@ -2,7 +2,7 @@ From lrust.lifetime Require Import borrow accessors.
 From iris.algebra Require Import csum auth frac gmap agree gset numbers.
 From iris.base_logic.lib Require Import boxes.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section reborrow.
 Context `{!invGS Σ, !lftGS Σ userE}.
@@ -120,8 +120,9 @@ Proof.
   iDestruct "Halive" as (B) "(Hbox & >H● & HB)".
   iDestruct (own_bor_valid_2 with "H● Hbor")
     as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
-  iMod (slice_empty _ _ true with "Hs' Hbox") as "[Hidx Hbox]".
-    solve_ndisj. by rewrite lookup_fmap EQB.
+  iMod (slice_empty _ _ true with "Hs' Hbox") as "[Hidx Hbox]";
+    first solve_ndisj.
+  { by rewrite lookup_fmap EQB. }
   iAssert (▷ idx_bor_own 1 (κ, i))%I with "[Hidx]" as ">Hidx"; [by iApply "HP'"|].
   iDestruct (own_bor_auth with "HI [Hidx]") as %HI; [by rewrite /idx_bor_own|].
   iDestruct (big_sepS_elem_of_acc _ _ κ with "Hinv") as "[Hinvκ Hclose']";

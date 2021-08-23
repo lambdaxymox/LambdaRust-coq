@@ -1,5 +1,6 @@
 From stdpp Require Import namespaces.
 From lrust.lang Require Export proofmode.
+From iris.prelude Require Import options.
 
 (* Last, so that we make sure we shadow the defintion of delete for
    sets coming from the prelude. *)

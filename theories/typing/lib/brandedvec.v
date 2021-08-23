@@ -4,7 +4,7 @@ From lrust.lang Require Import proofmode notation lib.new_delete.
 From lrust.lifetime Require Import meta.
 From lrust.typing Require Import typing.
 From lrust.typing.lib Require Import option.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition brandidx_stR := max_natUR.
 Class brandidxG Σ := BrandedIdxG {

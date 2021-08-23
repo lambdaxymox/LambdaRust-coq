@@ -1,6 +1,6 @@
 From lrust.lang Require Export notation.
 From lrust.lang Require Import heap proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition memcpy : val :=
   rec: "memcpy" ["dst";"len";"src"] :=

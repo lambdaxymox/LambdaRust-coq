@@ -1,6 +1,6 @@
 From lrust.lang Require Export notation.
 From lrust.lang Require Import heap proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition swap : val :=
   rec: "swap" ["p1";"p2";"len"] :=

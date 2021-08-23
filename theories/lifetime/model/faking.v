@@ -2,7 +2,7 @@ From lrust.lifetime Require Export primitive.
 From iris.algebra Require Import csum auth frac gmap agree gset numbers.
 From iris.base_logic.lib Require Import boxes.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section faking.
 Context `{!invGS Σ, !lftGS Σ userE}.
@@ -41,7 +41,9 @@ Proof.
     - rewrite /lft_inv_dead. iExists True%I. iFrame "Hcnt".
       iSplitL "Hbor"; last by iApply "Hinh".
       rewrite /lft_bor_dead. iExists ∅, True%I. rewrite !gset_to_gmap_empty.
-      iSplitL "Hbor". iExists γs. by iFrame. iApply box_alloc.
+      iSplitL "Hbor".
+      + iExists γs. by iFrame.
+      + iApply box_alloc.
     - rewrite lft_inv_alive_unfold. iExists True%I, True%I. iSplitL "Hbor".
       { rewrite /lft_bor_alive. iExists ∅.
         rewrite /to_borUR !fmap_empty big_sepM_empty.

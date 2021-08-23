@@ -1,7 +1,7 @@
 From iris.proofmode Require Import proofmode.
 From lrust.typing Require Export type.
 From lrust.typing Require Import lft_contexts type_context programs.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section shr_bor.
   Context `{!typeGS Σ}.
@@ -78,7 +78,7 @@ Section typing.
     iIntros (Hκκ' tid ??) "#LFT #HE HL [H _]". iDestruct (Hκκ' with "HL HE") as "%".
     iFrame. rewrite /tctx_interp /=.
     iDestruct "H" as ([[]|]) "[% #Hshr]"; try done. iModIntro. iSplit.
-    - iExists _. iSplit. done. iApply (ty_shr_mono with "[] Hshr").
+    - iExists _. iSplit; first done. iApply (ty_shr_mono with "[] Hshr").
       by iApply lft_incl_syn_sem.
     - iSplit=> //. iExists _. auto.
   Qed.

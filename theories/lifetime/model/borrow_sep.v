@@ -3,7 +3,7 @@ From lrust.lifetime Require Export faking reborrow.
 From iris.algebra Require Import csum auth frac gmap agree.
 From iris.base_logic.lib Require Import boxes.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section borrow.
 Context `{!invGS Σ, !lftGS Σ userE}.
@@ -77,10 +77,10 @@ Lemma bor_combine E κ P Q :
 Proof.
   iIntros (?) "#LFT HP HQ". rewrite {1 2}/bor.
   iDestruct "HP" as (κ1) "[#Hκ1 Hbor1]". iDestruct "HQ" as (κ2) "[#Hκ2 Hbor2]".
-  iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor1") as "Hbor1".
-    done. by apply gmultiset_disj_union_subseteq_l.
-  iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor2") as "Hbor2".
-    done. by apply gmultiset_disj_union_subseteq_r.
+  iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor1") as "Hbor1"; first solve_ndisj.
+  { by apply gmultiset_disj_union_subseteq_l. }
+  iMod (raw_bor_shorten _ _ (κ1 ⊓ κ2) with "LFT Hbor2") as "Hbor2"; first solve_ndisj.
+  { by apply gmultiset_disj_union_subseteq_r. }
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose". unfold raw_bor, idx_bor_own.
   iDestruct "Hbor1" as (j1) "[Hbor1 Hslice1]". iDestruct "Hbor2" as (j2) "[Hbor2 Hslice2]".
   iDestruct "Hslice1" as (P') "[#HPP' Hslice1]".
@@ -127,8 +127,9 @@ Proof.
     rewrite /to_borUR -!fmap_delete -!fmap_insert. iFrame "Hbox H●".
     rewrite !big_sepM_insert /=.
     + rewrite (big_sepM_delete _ _ _ _ EQB1) /=. iNext. simpl.
-      rewrite [([∗ map] _ ∈ delete _ _, _)%I](big_sepM_delete _ _ j2 Bor_in) /=.
-      by iDestruct "HB" as "[_ $]". rewrite lookup_delete_ne //.
+      rewrite [([∗ map] _ ∈ delete _ _, _)%I](big_sepM_delete _ _ j2 Bor_in) /=; last first.
+      { rewrite lookup_delete_ne //. }
+      by iDestruct "HB" as "[_ $]".
     + rewrite -fmap_None -lookup_fmap !fmap_delete //.
   - iDestruct "Hinv" as (Pinh) "(Hdead & Hcnt & Hinh)".
     iMod (raw_bor_fake with "Hdead") as "[Hdead Hbor]"; first solve_ndisj.

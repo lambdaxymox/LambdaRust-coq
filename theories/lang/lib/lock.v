@@ -2,7 +2,7 @@ From iris.program_logic Require Import weakestpre.
 From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import excl.
 From lrust.lang Require Import lang proofmode notation.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition mklock_unlocked : val := λ: ["l"], "l" <- #false.
 Definition mklock_locked : val := λ: ["l"], "l" <- #true.

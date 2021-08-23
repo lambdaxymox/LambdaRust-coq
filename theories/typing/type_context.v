@@ -1,6 +1,6 @@
 From iris.proofmode Require Import proofmode.
 From lrust.typing Require Import type lft_contexts.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition path := expr.
 Bind Scope expr_scope with path.
@@ -33,7 +33,7 @@ Section type_context.
 
   Lemma eval_path_of_val (v : val) :
     eval_path v = Some v.
-  Proof. destruct v. done. simpl. rewrite (decide_True_pi _). done. Qed.
+  Proof. destruct v; first done. simpl. rewrite (decide_True_pi _). done. Qed.
 
   Lemma wp_eval_path E p v :
     eval_path p = Some v → ⊢ WP p @ E {{ v', ⌜v' = v⌝ }}.
@@ -213,7 +213,7 @@ Section type_context.
   Proof.
     remember (p ◁ ty). induction 1 as [|???? IH]; subst.
     - apply (tctx_incl_frame_r _ [_] [_;_]), copy_tctx_incl, _.
-    - etrans. by apply (tctx_incl_frame_l [_]), IH, reflexivity.
+    - etrans; first by apply (tctx_incl_frame_l [_]), IH, reflexivity.
       apply contains_tctx_incl, submseteq_swap.
   Qed.
 

@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing.
 From lrust.typing.lib.rwlock Require Import rwlock rwlockwriteguard.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section rwlockwriteguard_functions.
   Context `{!typeGS Σ, !rwlockG Σ}.
@@ -30,7 +30,7 @@ Section rwlockwriteguard_functions.
     iDestruct "Hx'" as (l') "#[Hfrac Hshr]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose)";
       [solve_typing..|].
-    iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]". done.
+    iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]"; first done.
     rewrite heap_mapsto_vec_singleton.
     iMod (lctx_lft_alive_tok_noend β with "HE HL") as (qβ) "(Hβ & HL & Hclose')";
       [solve_typing..|].
@@ -72,19 +72,19 @@ Section rwlockwriteguard_functions.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
-    iMod (bor_exists with "LFT Hx'") as (vl) "H". done.
-    iMod (bor_sep with "LFT H") as "[H↦ H]". done.
+    iMod (bor_exists with "LFT Hx'") as (vl) "H"; first done.
+    iMod (bor_sep with "LFT H") as "[H↦ H]"; first done.
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
     destruct vl as [|[[|l|]|][]];
       try by iMod (bor_persistent with "LFT H Hα") as "[>[] _]".
     rewrite heap_mapsto_vec_singleton.
-    iMod (bor_exists with "LFT H") as (γ) "H". done.
-    iMod (bor_exists with "LFT H") as (δ) "H". done.
-    iMod (bor_exists with "LFT H") as (tid_shr) "H". done.
-    iMod (bor_sep with "LFT H") as "[Hb H]". done.
-    iMod (bor_sep with "LFT H") as "[Hβδ _]". done.
-    iMod (bor_persistent with "LFT Hβδ Hα") as "[#Hβδ Hα]". done.
-    iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hcloseα]". done.
+    iMod (bor_exists with "LFT H") as (γ) "H"; first done.
+    iMod (bor_exists with "LFT H") as (δ) "H"; first done.
+    iMod (bor_exists with "LFT H") as (tid_shr) "H"; first done.
+    iMod (bor_sep with "LFT H") as "[Hb H]"; first done.
+    iMod (bor_sep with "LFT H") as "[Hβδ _]"; first done.
+    iMod (bor_persistent with "LFT Hβδ Hα") as "[#Hβδ Hα]"; first done.
+    iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hcloseα]"; first done.
     wp_bind (!(LitV lx'))%E. iMod (bor_unnest with "LFT Hb") as "Hb"; first done.
     wp_read. wp_op. wp_let. iMod "Hb".
     iMod ("Hcloseα" with "[$H↦]") as "[_ Hα]". iMod ("Hclose" with "Hα HL") as "HL".
@@ -93,8 +93,8 @@ Section rwlockwriteguard_functions.
             with "[] LFT HE Hna HL Hk"); last first.
     { rewrite tctx_interp_cons tctx_interp_singleton tctx_hasty_val tctx_hasty_val' //.
       iFrame. iApply (bor_shorten with "[] Hb"). iApply lft_incl_glb.
-      iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem.
-      by iApply lft_incl_refl. }
+      - iApply lft_incl_trans; last done. by iApply lft_incl_syn_sem.
+      - by iApply lft_incl_refl. }
     iApply (type_letalloc_1 (&uniq{α}ty)); [solve_typing..|].
     iIntros (r). simpl_subst. iApply type_delete; [solve_typing..|].
     iApply type_jump; solve_typing.
@@ -122,7 +122,7 @@ Section rwlockwriteguard_functions.
     iDestruct "Hx'" as (γ β tid_own) "(Hx' & #Hαβ & #Hinv & H◯)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)";
       [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]"; first done.
     wp_bind (#lx' <-ˢᶜ #0)%E.
     iMod (at_bor_acc_tok with "LFT Hinv Hβ") as "[INV Hcloseβ]"; [done..|].
     iDestruct "INV" as (st) "(H↦ & H● & INV)". wp_write.

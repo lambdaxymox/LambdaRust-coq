@@ -1,6 +1,6 @@
 From iris.proofmode Require Import proofmode.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (* Minimal support for panic. Lambdarust does not support unwinding the
    stack. Instead, we just end the current thread by not calling any

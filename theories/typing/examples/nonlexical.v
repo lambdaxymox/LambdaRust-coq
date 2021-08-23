@@ -1,5 +1,6 @@
 From iris.proofmode Require Import proofmode.
 From lrust.typing Require Import typing lib.option.
+From iris.prelude Require Import options.
 
 (* Typing "problem case #3" from:
      http://smallcultfollowing.com/babysteps/blog/2016/04/27/non-lexical-lifetimes-introduction/
@@ -74,7 +75,7 @@ Section non_lexical.
 
     Lemma get_default_type :
       typed_val get_default (fn(∀ m, ∅; &uniq{m} hashmap, K) → &uniq{m} V).
-    Proof.
+    Proof using Type*.
       intros E L. iApply type_fn; [solve_typing..|]. iIntros "/= !>".
         iIntros (m ϝ ret p). inv_vec p=>map key. simpl_subst.
       iApply type_let; [iApply get_mut_type|solve_typing|].

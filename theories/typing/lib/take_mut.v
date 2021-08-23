@@ -3,7 +3,7 @@ From lrust.lang.lib Require Import memcpy.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section code.
   Context `{!typeGS Σ}.

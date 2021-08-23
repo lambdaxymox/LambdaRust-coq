@@ -3,7 +3,7 @@ From stdpp Require Export gmultiset strings.
 From iris.base_logic.lib Require Export invariants.
 From iris.base_logic.lib Require Import boxes.
 From iris.bi Require Import fractional.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition lftN : namespace := nroot .@ "lft".
 

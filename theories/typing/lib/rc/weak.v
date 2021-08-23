@@ -5,7 +5,7 @@ From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing option.
 From lrust.typing.lib Require Export rc.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section weak.
   Context `{!typeGS Σ, !rcG Σ}.
@@ -260,8 +260,9 @@ Section code.
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
                %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
-    { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
-      apply csum_included in Hincl. naive_solver. }
+    { exfalso. destruct Hincl as [Hincl|Hincl].
+      - by inversion Hincl.
+      - apply csum_included in Hincl. naive_solver. }
     iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hrcst)".
     wp_read. wp_let. wp_op. wp_op. wp_write. wp_write.
     (* And closing it again. *)

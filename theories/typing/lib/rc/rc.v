@@ -4,7 +4,7 @@ From lrust.lang.lib Require Import memcpy.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing option.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition rc_stR :=
   prodUR (optionUR (csumR (prodR fracR positiveR) (exclR unitO))) natUR.
@@ -271,7 +271,7 @@ Section code.
      }}}.
   Proof.
     iIntros (? Φ) "[Hna [(Hl1 & Hl2 & H† & Hown)|Hown]] HΦ".
-    - wp_read. iApply "HΦ". iFrame "Hl1". iLeft. iSplit. done. iSplit.
+    - wp_read. iApply "HΦ". iFrame "Hl1". iLeft. iSplit; first done. iSplit.
       + iExists _. iFrame "Hl2". iLeft. iFrame. iSplit; first done.
         iApply step_fupd_intro; auto.
       + iIntros "Hl1". iFrame. iApply step_fupd_intro; first done.
@@ -418,8 +418,9 @@ Section code.
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
                %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
-    { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
-      apply csum_included in Hincl. naive_solver. }
+    { exfalso. destruct Hincl as [Hincl|Hincl].
+      - by inversion Hincl.
+      - apply csum_included in Hincl. naive_solver. }
     iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >% & Hνtok & Hν†)".
     wp_read. wp_let.
     (* And closing it again. *)
@@ -477,8 +478,9 @@ Section code.
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 weak0]| |]&[=<-]&?&Hincl)]
                %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
-    { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
-      apply csum_included in Hincl. naive_solver. }
+    { exfalso. destruct Hincl as [Hincl|Hincl].
+      - by inversion Hincl.
+      - apply csum_included in Hincl. naive_solver. }
     iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >% & Hνtok & Hν†)".
     wp_read. wp_let.
     (* And closing it again. *)
@@ -582,8 +584,9 @@ Section code.
     iDestruct (own_valid_2 with "Hrc● Hrctok") as %[[[[=]|(?&[[q0 s0]| |]&[=<-]&?&Hincl)]
                %option_included _]%prod_included [Hval _]]%auth_both_valid_discrete;
     setoid_subst; try done; last first.
-    { exfalso. destruct Hincl as [Hincl|Hincl]. by inversion Hincl.
-      apply csum_included in Hincl. naive_solver. }
+    { exfalso. destruct Hincl as [Hincl|Hincl].
+      - by inversion Hincl.
+      - apply csum_included in Hincl. naive_solver. }
     iDestruct "Hrcst" as (qb) "(Hl'1 & Hl'2 & Hl'† & >%Hq & Hνtok & Hν†)".
     wp_read. wp_let. wp_op. rewrite shift_loc_0. wp_op. wp_write. wp_write.
     (* And closing it again. *)
@@ -637,7 +640,7 @@ Section code.
     iMod ("Hclose2" with "[$Hrc'↦]") as "Hα2". iIntros "!> [Hα1 #Hproto] !>".
     iDestruct "Hproto" as (γ ν q'') "#(Hαν & Hpersist & _)".
     iDestruct "Hpersist" as (ty') "(_ & _ & [Hshr|Hν†] & _)"; last first.
-    { iMod (lft_incl_dead with "Hαν Hν†") as "Hα†". done.
+    { iMod (lft_incl_dead with "Hαν Hν†") as "Hα†"; first done.
       iDestruct (lft_tok_dead with "Hα1 Hα†") as "[]". }
     wp_op. wp_write. iMod ("Hclose1" with "[$Hα1 $Hα2] HL") as "HL".
     (* Finish up the proof. *)
@@ -1040,7 +1043,7 @@ Section code.
         iApply type_jump; solve_typing.
       + wp_op; case_bool_decide; first lia. wp_if. wp_op. rewrite shift_loc_0. wp_write. wp_op.
         wp_op. wp_write. wp_bind (new _). iSpecialize ("Hrc" with "Hl1 Hl2").
-        iApply (wp_step_fupd with "Hrc"); [done..|]. iApply wp_new; first lia. done.
+        iApply (wp_step_fupd with "Hrc"); [done..|]. iApply wp_new; first lia; first done.
         rewrite -!lock Nat2Z.id.
         iNext. iIntros (lr) "/= ([H†|%] & H↦lr) [Hty Hproto] !>"; last lia.
         rewrite 2!heap_mapsto_vec_cons. iDestruct "H↦lr" as "(Hlr1 & Hlr2 & Hlr3)".
@@ -1064,7 +1067,7 @@ Section code.
                   tctx_hasty_val' //. unlock. iFrame. }
         iApply type_assign; [solve_typing..|].
         iApply type_jump; solve_typing.
-    - wp_apply wp_new; first lia. done.
+    - wp_apply wp_new; first lia; first done.
       iIntros (lr) "/= ([H†|%] & H↦lr)"; last lia.
       iDestruct "Hc" as "[[% ?]|[% [Hproto _]]]"; first lia.
       iMod ("Hproto" with "Hl1") as "[Hna Hty]". wp_let. wp_op.
@@ -1086,7 +1089,8 @@ Section code.
       iDestruct "Hs" as "[Hs|Hν']"; last by iDestruct (lft_tok_dead with "Hν Hν'") as "[]".
       wp_bind (of_val clone). iApply (wp_wand with "[Hna]").
       { iApply (Hclone _ [] $! _ 1%Qp with "LFT HE Hna").
-          by rewrite /llctx_interp. by rewrite /tctx_interp. }
+        - by rewrite /llctx_interp.
+        - by rewrite /tctx_interp. }
       clear clone Hclone. iIntros (clone) "(Hna & _ & Hclone)".
       wp_let. wp_let. rewrite tctx_interp_singleton tctx_hasty_val.
       iDestruct (lft_intersect_acc with "Hα2 Hν") as (q'') "[Hαν Hclose3]".
@@ -1100,7 +1104,7 @@ Section code.
       iDestruct "Hcl" as "[Hcl Hcl†]". iDestruct "Hcl" as (vl) "[Hcl↦ Hown]".
       iDestruct (ty_size_eq with "Hown") as %Hsz.
       iDestruct ("Hclose3" with "Hαν") as "[Hα2 Hν]".
-      wp_apply wp_new=>//. lia. iIntros (l') "(Hl'† & Hl')". wp_let. wp_op.
+      wp_apply wp_new=>//; first lia. iIntros (l') "(Hl'† & Hl')". wp_let. wp_op.
       rewrite shift_loc_0. rewrite -!lock Nat2Z.id.
       rewrite !heap_mapsto_vec_cons shift_loc_assoc.
       iDestruct "Hl'" as "(Hl' & Hl'1 & Hl'2)". wp_write. wp_op. wp_write. wp_op.
@@ -1123,7 +1127,10 @@ Section code.
                 !tctx_hasty_val' //. unlock. iFrame. iRight. iExists γ, ν, _.
         unfold rc_persist, tc_opaque. iFrame "∗#". eauto. }
       iApply type_letalloc_1; [solve_typing..|]. iIntros (rcold). simpl_subst.
-      iApply type_let. apply rc_drop_type. solve_typing. iIntros (drop). simpl_subst.
+      iApply type_let.
+      { apply rc_drop_type. }
+      { solve_typing. }
+      iIntros (drop). simpl_subst.
       iApply (type_letcall ()); [solve_typing..|]. iIntros (content). simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_assign; [solve_typing..|].

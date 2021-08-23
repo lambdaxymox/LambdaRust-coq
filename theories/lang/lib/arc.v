@@ -4,7 +4,7 @@ From iris.proofmode Require Import proofmode.
 From iris.bi Require Import fractional.
 From iris.algebra Require Import excl csum frac auth numbers.
 From lrust.lang Require Import lang proofmode notation new_delete.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (* JH: while working on Arc, I think figured that the "weak count
 locking" mechanism that Rust is using and that is verified below may

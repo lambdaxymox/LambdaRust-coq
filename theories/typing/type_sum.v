@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import memcpy.
 From lrust.typing Require Import uninit uniq_bor shr_bor own sum.
 From lrust.typing Require Import lft_contexts type_context programs product.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section case.
   Context `{!typeGS Σ}.
@@ -67,8 +67,8 @@ Section case.
     rewrite tctx_interp_cons. iDestruct "HT" as "[Hp HT]".
     iApply (wp_hasty with "Hp"). iIntros ([[|l|]|] Hv) "Hp"; try iDestruct "Hp" as "[]".
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
-    iMod (Halive with "HE HL") as (q) "[Htok Hclose]". done.
-    iMod (bor_acc_cons with "LFT Hp Htok") as "[H↦ Hclose']". done.
+    iMod (Halive with "HE HL") as (q) "[Htok Hclose]"; first done.
+    iMod (bor_acc_cons with "LFT Hp Htok") as "[H↦ Hclose']"; first done.
     iDestruct "H↦" as (vl) "[H↦ Hown]".
     iDestruct "Hown" as (i vl' vl'') "(>% & >EQlen & Hown)". subst.
     iDestruct "EQlen" as %[=EQlen].
@@ -85,7 +85,7 @@ Section case.
         iExists (#i::vl'2++vl''). iIntros "!>". iNext.
         iDestruct (ty.(ty_size_eq) with "Hown") as %EQlenvl'2.
         rewrite heap_mapsto_vec_cons heap_mapsto_vec_app EQlenvl' EQlenvl'2.
-        iFrame. iExists _, _, _. iSplit. by auto.
+        iFrame. iExists _, _, _. iSplit; first by auto.
         rewrite /= -EQlen !app_length EQlenvl' EQlenvl'2 nth_lookup EQty /=. auto. }
       { iExists vl'. iFrame. }
       iMod ("Hclose" with "Htok") as "HL".
@@ -124,8 +124,8 @@ Section case.
     iApply (wp_hasty with "Hp"). iIntros ([[]|] Hv) "Hp"; try done.
     iDestruct "Hp" as (i) "[#Hb Hshr]".
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
-    iMod (Halive with "HE HL") as (q) "[Htok Hclose]". done.
-    iMod (frac_bor_acc with "LFT Hb Htok") as (q') "[[H↦i H↦vl''] Hclose']". done.
+    iMod (Halive with "HE HL") as (q) "[Htok Hclose]"; first done.
+    iMod (frac_bor_acc with "LFT Hb Htok") as (q') "[[H↦i H↦vl''] Hclose']"; first done.
     rewrite nth_lookup.
     destruct (tyl !! i) as [ty|] eqn:EQty; last done.
     edestruct @Forall2_lookup_l as (e & He & Hety); eauto.
@@ -203,7 +203,7 @@ Section case.
     wp_bind p. iApply (wp_hasty with "Hp"). iIntros (v Hv) "Hty".
     rewrite typed_write_eq in Hw.
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
-    iMod (Hw with "[] LFT HE HL Hty") as (l vl) "(H & H↦ & Hw)". done.
+    iMod (Hw with "[] LFT HE HL Hty") as (l vl) "(H & H↦ & Hw)"; first done.
     simpl. destruct vl as [|? vl]; iDestruct "H" as %[[= Hlen] ->].
     rewrite heap_mapsto_vec_cons -wp_fupd. iDestruct "H↦" as "[H↦0 H↦vl]".
     wp_write. rewrite tctx_interp_singleton tctx_hasty_val' //.

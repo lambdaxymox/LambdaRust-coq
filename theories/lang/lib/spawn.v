@@ -4,7 +4,7 @@ From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import excl.
 From lrust.lang Require Import proofmode notation.
 From lrust.lang Require Export lang.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition spawn : val :=
   λ: ["f"],

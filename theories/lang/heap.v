@@ -6,7 +6,7 @@ From iris.bi Require Import fractional.
 From iris.base_logic Require Export lib.own.
 From iris.proofmode Require Export proofmode.
 From lrust.lang Require Export lang.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 Import uPred.
 
 Definition lock_stateR : cmra :=
@@ -42,7 +42,7 @@ Section definitions.
 
   Definition heap_mapsto_def (l : loc) (q : Qp) (v: val) : iProp Σ :=
     heap_mapsto_st (RSt 0) l q v.
-  Definition heap_mapsto_aux : seal (@heap_mapsto_def). by eexists. Qed.
+  Definition heap_mapsto_aux : seal (@heap_mapsto_def). Proof. by eexists. Qed.
   Definition heap_mapsto := unseal heap_mapsto_aux.
   Definition heap_mapsto_eq : @heap_mapsto = @heap_mapsto_def :=
     seal_eq heap_mapsto_aux.
@@ -55,7 +55,7 @@ Section definitions.
 
   Definition heap_freeable_def (l : loc) (q : Qp) (n: nat) : iProp Σ :=
     own heap_freeable_name (◯ {[ l.1 := (q, inter (l.2) n) ]}).
-  Definition heap_freeable_aux : seal (@heap_freeable_def). by eexists. Qed.
+  Definition heap_freeable_aux : seal (@heap_freeable_def). Proof. by eexists. Qed.
   Definition heap_freeable := unseal heap_freeable_aux.
   Definition heap_freeable_eq : @heap_freeable = @heap_freeable_def :=
     seal_eq heap_freeable_aux.
@@ -122,7 +122,7 @@ Section heap.
   Qed.
   Global Instance heap_mapsto_as_fractional l q v:
     AsFractional (l ↦{q} v) (λ q, l ↦{q} v)%I q.
-  Proof. split. done. apply _. Qed.
+  Proof. split; first done. apply _. Qed.
 
   Global Instance heap_mapsto_vec_timeless l q vl : Timeless (l ↦∗{q} vl).
   Proof. rewrite /heap_mapsto_vec. apply _. Qed.
@@ -134,7 +134,7 @@ Section heap.
   Qed.
   Global Instance heap_mapsto_vec_as_fractional l q vl:
     AsFractional (l ↦∗{q} vl) (λ q, l ↦∗{q} vl)%I q.
-  Proof. split. done. apply _. Qed.
+  Proof. split; first done. apply _. Qed.
 
   Global Instance heap_freeable_timeless q l n : Timeless (†{q}l…n).
   Proof. rewrite heap_freeable_eq /heap_freeable_def. apply _. Qed.
@@ -243,7 +243,7 @@ Section heap.
   Qed.
   Global Instance heap_mapsto_pred_as_fractional l q (P : list val → iProp Σ):
     (∀ vl, Persistent (P vl)) → AsFractional (l ↦∗{q}: P) (λ q, l ↦∗{q}: P)%I q.
-  Proof. split. done. apply _. Qed.
+  Proof. split; first done. apply _. Qed.
 
   Lemma inter_lookup_Some i j (n : nat):
     i ≤ j < i+n → inter i n !! j = Excl' ().
@@ -266,7 +266,7 @@ Section heap.
     - by rewrite !inter_lookup_None; try lia.
   Qed.
   Lemma inter_valid i n : ✓ inter i n.
-  Proof. revert i. induction n as [|n IH]=>i. done. by apply insert_valid. Qed.
+  Proof. revert i. induction n as [|n IH]=>i; first done. by apply insert_valid. Qed.
 
   Lemma heap_freeable_op_eq l q1 q2 n n' :
     †{q1}l…n ∗ †{q2}l+ₗn … n' ⊣⊢ †{q1+q2}l…(n+n').
@@ -370,12 +370,13 @@ Section heap.
     { apply auth_update_alloc,
         (alloc_singleton_local_update _ (l.1) (1%Qp, inter (l.2) (Z.to_nat n))).
       - eauto using heap_freeable_rel_None.
-      - split. done. apply inter_valid. }
+      - split; first done. apply inter_valid. }
     iModIntro. iSplitL "Hvalσ HhF".
     { iExists _. iFrame. iPureIntro.
       auto using heap_freeable_rel_init_mem. }
-    rewrite heap_freeable_eq /heap_freeable_def heap_mapsto_vec_combine //.
-    iFrame. destruct (Z.to_nat n); done.
+    rewrite heap_freeable_eq /heap_freeable_def heap_mapsto_vec_combine //; last first.
+    { destruct (Z.to_nat n); done. }
+    iFrame. 
   Qed.
 
   Lemma heap_free_vs σ l vl :
@@ -437,7 +438,9 @@ Section heap.
       [/Some_pair_included [_ Hincl] /to_agree_included->].
     destruct ls as [|n], ls'' as [|n''],
        Hincl as [[[|n'|]|] [=]%leibniz_equiv]; subst.
-    by exists O. eauto. exists O. by rewrite Nat.add_0_r.
+    - by exists O.
+    - eauto.
+    - exists O. by rewrite Nat.add_0_r.
   Qed.
 
   Lemma heap_mapsto_lookup_1 σ l ls v :

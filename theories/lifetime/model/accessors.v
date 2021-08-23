@@ -2,7 +2,7 @@ From lrust.lifetime Require Export primitive.
 From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import csum auth frac gmap agree gset.
 From iris.base_logic.lib Require Import boxes.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section accessors.
 Context `{!invGS Σ, !lftGS Σ userE}.
@@ -21,11 +21,13 @@ Proof.
   iDestruct (own_bor_valid_2 with "Hown Hbor")
     as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
   iMod (slice_empty _ _ true with "Hslice Hbox") as "[$ Hbox]".
-    solve_ndisj. by rewrite lookup_fmap EQB.
+  { solve_ndisj. } { by rewrite lookup_fmap EQB. }
   rewrite -(fmap_insert bor_filled _ _ (Bor_open q)).
-  iMod (own_bor_update_2 with "Hown Hbor") as "Hbor". apply auth_update.
-  { eapply singleton_local_update. by rewrite lookup_fmap EQB.
-    by apply (exclusive_local_update _ (1%Qp, to_agree (Bor_open q))). }
+  iMod (own_bor_update_2 with "Hown Hbor") as "Hbor".
+  { apply auth_update.
+    eapply singleton_local_update.
+    - by rewrite lookup_fmap EQB.
+    - by apply (exclusive_local_update _ (1%Qp, to_agree (Bor_open q))). }
   rewrite own_bor_op -fmap_insert. iDestruct "Hbor" as "[Hown $]".
   iExists _. iFrame "∗".
   rewrite -insert_delete_insert big_sepM_insert ?lookup_delete // big_sepM_delete /=; last done.
@@ -43,11 +45,13 @@ Proof.
   iDestruct (own_bor_valid_2 with "Hown Hbor")
     as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
   iMod (slice_fill _ _ true with "Hslice HP Hbox") as "Hbox".
-    solve_ndisj. by rewrite lookup_fmap EQB.
+  { solve_ndisj. } { by rewrite lookup_fmap EQB. }
   rewrite -(fmap_insert bor_filled _ _ Bor_in).
-  iMod (own_bor_update_2 with "Hown Hbor") as "Hbor". apply auth_update.
-  { eapply singleton_local_update. by rewrite lookup_fmap EQB.
-    by apply (exclusive_local_update _ (1%Qp, to_agree Bor_in)). }
+  iMod (own_bor_update_2 with "Hown Hbor") as "Hbor".
+  { apply auth_update.
+    eapply singleton_local_update.
+    - by rewrite lookup_fmap EQB.
+    - by apply (exclusive_local_update _ (1%Qp, to_agree Bor_in)). }
   rewrite own_bor_op -fmap_insert. iDestruct "Hbor" as "[Hown $]".
   rewrite big_sepM_delete //. simpl. iDestruct "HB" as "[>$ HB]".
   iExists _. iFrame "Hbox Hown".
@@ -60,7 +64,7 @@ Lemma add_vs Pb Pb' P Q Pi κ :
 Proof.
   iIntros "#HEQ Hvs HvsQ". iApply (lft_vs_cons with "[-Hvs] Hvs").
   iIntros "[HQ HPb'] #H†".
-  iApply fupd_mask_mono; last iMod ("HvsQ" with "HQ H†") as "HP". set_solver.
+  iApply fupd_mask_mono; last iMod ("HvsQ" with "HQ H†") as "HP"; first set_solver.
   iModIntro. iNext. iRewrite "HEQ". iFrame.
 Qed.
 
@@ -72,9 +76,10 @@ Lemma idx_bor_acc E q κ i P :
 Proof.
   unfold idx_bor. iIntros (HE) "#LFT [#Hle #Hs] Hbor Htok".
   iDestruct "Hs" as (P') "[#HPP' Hs]".
-  iMod (lft_incl_acc with "Hle Htok") as (q') "[Htok Hclose]". solve_ndisj.
+  iMod (lft_incl_acc with "Hle Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose'".
-  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'. by unfold idx_bor_own.
+  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'.
+  { by unfold idx_bor_own. }
   rewrite big_sepS_later big_sepS_elem_of_acc ?elem_of_dom //
           /lfts_inv /lft_inv /lft_inv_dead /lft_alive_in lft_inv_alive_unfold.
   iDestruct "Hinv" as "[[[Hinv >%]|[Hinv >%]] Hclose'']".
@@ -93,8 +98,8 @@ Proof.
     iDestruct "Hinv" as "[[[Hinv >%]|[Hinv >Hdead_in]] Hclose'']".
     + rewrite lft_inv_alive_unfold.
       iDestruct "Hinv" as (Pb Pi) "(Halive & Hvs & Hinh)".
-      iMod (bor_close_internal with "Hs Halive Hf HP") as "(Halive & $ & Htok)".
-        solve_ndisj.
+      iMod (bor_close_internal with "Hs Halive Hf HP") as "(Halive & $ & Htok)";
+        first solve_ndisj.
       iMod ("Hclose'" with "[-Htok Hclose]") as "_"; last by iApply "Hclose".
       iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''".
       iLeft. iFrame "%". iExists _, _. iFrame.
@@ -103,7 +108,7 @@ Proof.
         as %[(_ & <- & INCL%option_included)%singleton_included_l _]%auth_both_valid_discrete.
       by destruct INCL as [[=]|(? & ? & [=<-] &
         [[_<-]%lookup_gset_to_gmap_Some [[_ ?%(inj to_agree)]|[]%(exclusive_included _)]])].
-  - iMod (lft_dead_in_tok with "HA") as "[_ H†]". done.
+  - iMod (lft_dead_in_tok with "HA") as "[_ H†]"; first done.
     iDestruct (lft_tok_dead with "Htok H†") as "[]".
 Qed.
 
@@ -125,21 +130,24 @@ Proof.
     iDestruct "Halive" as (B) "(Hbox & >Hown & HB)".
     iDestruct (own_bor_valid_2 with "Hown Hbor")
       as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
-    iMod (slice_empty _ _ true with "Hs Hbox") as "[HP' Hbox]".
-      solve_ndisj. by rewrite lookup_fmap EQB.
+    iMod (slice_empty _ _ true with "Hs Hbox") as "[HP' Hbox]";
+      first solve_ndisj.
+    { by rewrite lookup_fmap EQB. }
     iDestruct ("HPP'" with "HP'") as "$".
-    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!>HP'". solve_ndisj.
+    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!>HP'"; first solve_ndisj.
     iDestruct ("HPP'" with "HP'") as "HP".
-    iMod "Hclose" as "_". iMod (slice_fill _ _ true with "Hs HP Hbox") as "Hbox".
-      solve_ndisj. by rewrite lookup_insert. iFrame.
+    iMod "Hclose" as "_". iMod (slice_fill _ _ true with "Hs HP Hbox") as "Hbox";
+      first solve_ndisj.
+    { by rewrite lookup_insert. }
+    iFrame.
     iApply "Hclose'". iExists _, _. iFrame. rewrite big_sepS_later.
     iApply "Hclose''". iLeft. iFrame "%". iExists _, _. iFrame.
     iExists _. iFrame.
     rewrite insert_insert -(fmap_insert _ _ _ Bor_in) insert_id //.
-  - iRight. iMod (lft_dead_in_tok with "HA") as "[HA #H†]". done.
+  - iRight. iMod (lft_dead_in_tok with "HA") as "[HA #H†]"; first done.
     iMod ("Hclose'" with "[-Hbor]") as "_".
     + iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''". eauto.
-    + iMod (lft_incl_dead with "Hle H†"). done. iFrame.
+    + iMod (lft_incl_dead with "Hle H†"); first done. iFrame.
       iApply fupd_mask_subseteq. solve_ndisj.
 Qed.
 
@@ -153,15 +161,16 @@ Proof.
   unfold bor, raw_bor. iIntros (HE) "#LFT Hbor Htok".
   iDestruct "Hbor" as (κ'') "(#Hle & Htmp)". iDestruct "Htmp" as (s'') "(Hbor & #Hs)".
   iDestruct "Hs" as (P') "[#HPP' Hs]".
-  iMod (lft_incl_acc with "Hle Htok") as (q') "[Htok Hclose]". solve_ndisj.
+  iMod (lft_incl_acc with "Hle Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose'".
-  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'. by unfold idx_bor_own.
+  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'.
+  { by unfold idx_bor_own. }
   rewrite big_sepS_later big_sepS_elem_of_acc ?elem_of_dom //
           /lfts_inv /lft_inv /lft_inv_dead /lft_alive_in lft_inv_alive_unfold.
   iDestruct "Hinv" as "[[[Hinv >%]|[Hinv >%]] Hclose'']".
   - iDestruct "Hinv" as (Pb Pi) "(Halive & Hvs & Hinh)".
     iMod (bor_open_internal _ _ (κ'', s'') with "Hs Halive Hbor Htok")
-      as "(Halive & Hbor & HP')". solve_ndisj.
+      as "(Halive & Hbor & HP')"; first solve_ndisj.
     iDestruct ("HPP'" with "HP'") as "$".
     iMod ("Hclose'" with "[-Hbor Hclose]") as "_".
     { iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''".
@@ -177,8 +186,9 @@ Proof.
       iDestruct "Halive" as (B) "(Hbox & >Hown & HB)".
       iDestruct (own_bor_valid_2 with "Hown Hbor")
         as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
-      iMod (slice_delete_empty _ _ true with "Hs Hbox") as (Pb') "[EQ Hbox]".
-        solve_ndisj. by rewrite lookup_fmap EQB.
+      iMod (slice_delete_empty _ _ true with "Hs Hbox") as (Pb') "[EQ Hbox]";
+        first solve_ndisj.
+      { by rewrite lookup_fmap EQB. }
       iDestruct (add_vs with "EQ Hvs [HvsQ]") as "Hvs".
       { iNext. iIntros "HQ H†". iApply "HPP'". iApply ("HvsQ" with "HQ H†"). }
       iMod (slice_insert_empty _ _ true _ Q with "Hbox") as (j) "(% & #Hs' & Hbox)".
@@ -191,11 +201,12 @@ Proof.
                   -fmap_None -lookup_fmap fmap_delete //. }
       rewrite own_bor_op. iDestruct "Hown" as "[Hown Hbor]".
       iMod (bor_close_internal _ _ (_, _) with "Hs' [Hbox Hown HB] Hbor HQ")
-        as "(Halive & Hbor & Htok)". solve_ndisj.
+        as "(Halive & Hbor & Htok)"; first solve_ndisj.
       { rewrite -!fmap_delete -fmap_insert -(fmap_insert _ _ _ (Bor_open q'))
                 /lft_bor_alive. iExists _. iFrame "Hbox Hown".
-        rewrite big_sepM_insert. by rewrite big_sepM_delete.
-        by rewrite -fmap_None -lookup_fmap fmap_delete. }
+        rewrite big_sepM_insert.
+        - by rewrite big_sepM_delete.
+        - by rewrite -fmap_None -lookup_fmap fmap_delete. }
       iMod ("Hclose'" with "[-Hbor Htok Hclose]") as "_".
       { iExists _, _. iFrame. rewrite big_sepS_later /lft_bor_alive. iApply "Hclose''".
         iLeft. iFrame "%". iExists _, _. iFrame. }
@@ -207,7 +218,7 @@ Proof.
         as %[(_ & <- & INCL%option_included)%singleton_included_l _]%auth_both_valid_discrete.
       by destruct INCL as [[=]|(? & ? & [=<-] &
         [[_<-]%lookup_gset_to_gmap_Some [[_?%(inj to_agree)]|[]%(exclusive_included _)]])].
-  - iMod (lft_dead_in_tok with "HA") as "[_ H†]". done.
+  - iMod (lft_dead_in_tok with "HA") as "[_ H†]"; first done.
     iDestruct (lft_tok_dead with "Htok H†") as "[]".
 Qed.
 
@@ -222,7 +233,8 @@ Proof.
   iDestruct "Hbor" as (i) "((#Hle & #Hs) & Hbor)".
   iDestruct "Hs" as (P') "[#HPP' Hs]".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose'".
-  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'. by unfold idx_bor_own.
+  iDestruct (own_bor_auth with "HI [Hbor]") as %Hκ'.
+  { by unfold idx_bor_own. }
   rewrite big_sepS_later big_sepS_elem_of_acc ?elem_of_dom //
           /lfts_inv /lft_inv /lft_inv_dead /lft_alive_in lft_inv_alive_unfold.
   iDestruct "Hinv" as "[[[Hinv >%]|[Hinv >%]] Hclose'']".
@@ -232,13 +244,15 @@ Proof.
     iDestruct "Halive" as (B) "(Hbox & >Hown & HB)".
     iDestruct (own_bor_valid_2 with "Hown Hbor")
       as %[EQB%to_borUR_included _]%auth_both_valid_discrete.
-    iMod (slice_delete_full _ _ true with "Hs Hbox") as (Pb') "(HP' & EQ & Hbox)".
-      solve_ndisj. by rewrite lookup_fmap EQB. iDestruct ("HPP'" with "HP'") as "$".
-    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!> %Q HvsQ HQ". solve_ndisj.
+    iMod (slice_delete_full _ _ true with "Hs Hbox") as (Pb') "(HP' & EQ & Hbox)";
+      first solve_ndisj.
+    { by rewrite lookup_fmap EQB. }
+    iDestruct ("HPP'" with "HP'") as "$".
+    iMod fupd_mask_subseteq as "Hclose"; last iIntros "!> %Q HvsQ HQ"; first solve_ndisj.
     iMod "Hclose" as "_". iDestruct (add_vs with "EQ Hvs [HvsQ]") as "Hvs".
     { iNext. iIntros "HQ H†". iApply "HPP'". iApply ("HvsQ" with "HQ H†"). }
-    iMod (slice_insert_full _ _ true with "HQ Hbox") as (j) "(% & #Hs' & Hbox)".
-      solve_ndisj.
+    iMod (slice_insert_full _ _ true with "HQ Hbox") as (j) "(% & #Hs' & Hbox)";
+      first solve_ndisj.
     iMod (own_bor_update_2 with "Hown Hbor") as "Hown".
     { apply auth_update. etrans.
       - apply delete_singleton_local_update, _.
@@ -253,12 +267,13 @@ Proof.
     iLeft. iFrame "%". iExists _, _. iFrame. iNext.
     rewrite -!fmap_delete -fmap_insert -(fmap_insert _ _ _ Bor_in).
     iExists _. iFrame "Hbox H●".
-    rewrite big_sepM_insert. by rewrite big_sepM_delete.
-      by rewrite -fmap_None -lookup_fmap fmap_delete.
-  - iRight. iMod (lft_dead_in_tok with "HA") as "[HA #H†]". done.
+    rewrite big_sepM_insert; last first.
+    { by rewrite -fmap_None -lookup_fmap fmap_delete. }
+    by rewrite big_sepM_delete.
+  - iRight. iMod (lft_dead_in_tok with "HA") as "[HA #H†]"; first done.
     iMod ("Hclose'" with "[-Hbor]") as "_".
     + iExists _, _. iFrame. rewrite big_sepS_later. iApply "Hclose''". eauto.
-    + iMod (lft_incl_dead with "Hle H†") as "$". done.
-      iApply fupd_mask_subseteq. solve_ndisj.
+    + iMod (lft_incl_dead with "Hle H†") as "$"; first done.
+      iApply fupd_mask_subseteq; first solve_ndisj.
 Qed.
 End accessors.

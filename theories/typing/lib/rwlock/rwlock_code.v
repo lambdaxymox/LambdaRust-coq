@@ -5,7 +5,7 @@ From lrust.lang.lib Require Import memcpy.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing option.
 From lrust.typing.lib.rwlock Require Import rwlock rwlockreadguard rwlockwriteguard.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section rwlock_functions.
   Context `{!typeGS Σ, !rwlockG Σ}.
@@ -160,7 +160,7 @@ Section rwlock_functions.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)";
       [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[[Hβtok1 Hβtok2] Hclose']". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[[Hβtok1 Hβtok2] Hclose']"; first done.
     wp_bind (!ˢᶜ(LitV lx))%E.
     iMod (at_bor_acc_tok with "LFT Hinv Hβtok1") as "[INV Hclose'']"; try done.
     iDestruct "INV" as (st) "(Hlx & INV)". wp_read.
@@ -199,15 +199,15 @@ Section rwlock_functions.
             iFrame "∗#". iExists _. rewrite Z.add_comm /=. iFrame. iExists _, _.
             iFrame "∗#". iSplitR; first by rewrite /= Hag agree_idemp.
             rewrite (comm Qp_add) (assoc Qp_add) Qp_div_2 (comm Qp_add). auto.
-          - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". solve_ndisj.
+          - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]"; first solve_ndisj.
             iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply
               auth_update_alloc, (op_local_update_discrete _ _ (reading_st (1/2)%Qp ν)).
             rewrite (right_id None). iExists _, _. iFrame "Htok1 Hreading".
             iDestruct (lft_intersect_acc with "Hβtok2 Htok2") as (q) "[Htok Hclose]".
-            iApply (fupd_mask_mono (↑lftN)). solve_ndisj.
-            iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]". solve_ndisj.
+            iApply (fupd_mask_mono (↑lftN)); first solve_ndisj.
+            iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]"; first solve_ndisj.
             { iApply lft_intersect_incl_l. }
-            iMod (ty_share with "LFT Hst Htok") as "[#Hshr Htok]". solve_ndisj.
+            iMod (ty_share with "LFT Hst Htok") as "[#Hshr Htok]"; first solve_ndisj.
             iFrame "#". iDestruct ("Hclose" with "Htok") as "[$ Htok2]".
             iExists _. iFrame. iExists _, _. iSplitR; first done. iFrame "#∗".
             rewrite Qp_div_2. iSplitL; last done.
@@ -231,7 +231,7 @@ Section rwlock_functions.
         iSpecialize ("Hk" with "[]"); first solve_typing.
         iApply ("Hk" $! [#] with "Hna HL").
         rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val. iFrame.
-        iExists _. iSplit. done. simpl. eauto.
+        iExists _. iSplit; first done. simpl. eauto.
   Qed.
 
   (* Acquiring a write lock. *)
@@ -267,7 +267,7 @@ Section rwlock_functions.
     iDestruct "HT" as "(Hx & Hx' & Hr)". destruct x' as [[|lx|]|]; try done.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβtok Hclose']". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβtok Hclose']"; first done.
     wp_bind (CAS _ _ _).
     iMod (at_bor_acc_tok with "LFT Hinv Hβtok") as "[INV Hclose'']"; try done.
     iDestruct "INV" as (st) "(Hlx & >Hownst & Hst)". destruct st as [c|].
@@ -294,7 +294,7 @@ Section rwlock_functions.
                      #lx ◁ rwlockwriteguard α ty]
               with "[] LFT HE Hna HL Hk"); first last.
       { rewrite 2!tctx_interp_cons tctx_interp_singleton !tctx_hasty_val
-                tctx_hasty_val' //. iFrame.  iExists _, _, _. iFrame "∗#". }
+                tctx_hasty_val' //. iFrame. iExists _, _, _. iFrame "∗#". }
       iApply (type_sum_assign (option $ rwlockwriteguard α ty)); [solve_typing..|].
       simpl. iApply type_jump; solve_typing.
   Qed.

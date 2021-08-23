@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing.
 From lrust.typing.lib.refcell Require Import refcell.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition refcell_refN := refcellN .@ "ref".
 
@@ -39,26 +39,26 @@ Section ref.
   Next Obligation. iIntros (???[|[[]|][|[[]|][]]]) "?"; auto. Qed.
   Next Obligation.
     iIntros (α ty E κ l tid q ?) "#LFT Hb Htok".
-    iMod (bor_exists with "LFT Hb") as (vl) "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]". done.
-    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦". done.
+    iMod (bor_exists with "LFT Hb") as (vl) "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]"; first done.
+    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦"; first done.
     destruct vl as [|[[|lv|]|][|[[|lrc|]|][]]];
       try by iMod (bor_persistent with "LFT Hb Htok") as "[>[] _]".
-    iMod (bor_exists with "LFT Hb") as (ν) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (q') "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (β) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (ty') "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[Hshr Hb]". done.
-    iMod (bor_persistent with "LFT Hshr Htok") as "[#Hshr Htok]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hαβ Hb]". done.
-    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ Htok]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hinv Hb]". done.
-    iMod (bor_persistent with "LFT Hinv Htok") as "[#Hinv $]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hκν Hb]". done.
+    iMod (bor_exists with "LFT Hb") as (ν) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (q') "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (γ) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (β) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (ty') "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hshr Hb]"; first done.
+    iMod (bor_persistent with "LFT Hshr Htok") as "[#Hshr Htok]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hαβ Hb]"; first done.
+    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ Htok]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hinv Hb]"; first done.
+    iMod (bor_persistent with "LFT Hinv Htok") as "[#Hinv $]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hκν Hb]"; first done.
     iDestruct (frac_bor_lft_incl with "LFT [> Hκν]") as "#Hκν".
     { iApply bor_fracture; try done. by rewrite Qp_mul_1_r. }
-    iMod (bor_na with "Hb") as "#Hb". done. eauto 20.
+    iMod (bor_na with "Hb") as "#Hb"; first done. eauto 20.
   Qed.
   Next Obligation.
     iIntros (??????) "#? H". iDestruct "H" as (ν q γ β ty' lv lrc) "H".

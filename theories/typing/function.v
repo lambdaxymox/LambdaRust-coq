@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import vector list.
 From lrust.typing Require Export type.
 From lrust.typing Require Import own programs cont.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section fn.
   Context `{!typeGS Σ} {A : Type} {n : nat}.

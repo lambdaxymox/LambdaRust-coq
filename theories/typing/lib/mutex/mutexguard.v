@@ -4,7 +4,7 @@ From lrust.lang.lib Require Import memcpy lock.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing util option mutex.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (* This type is an experiment in defining a Rust type on top of a non-typesysten-specific
    interface, like the one provided by lang.lib.lock.
@@ -58,7 +58,7 @@ Section mguard.
     iExists _. iFrame "H↦". iApply delay_sharing_nested; try done.
     (* FIXME: "iApply lft_intersect_mono" only preserves the later on the last
        goal, as does "iApply (lft_intersect_mono with ">")". *)
-    iNext. iApply lft_intersect_mono. done. iApply lft_incl_refl.
+    iNext. iApply lft_intersect_mono; first done. iApply lft_incl_refl.
   Qed.
   Next Obligation.
     iIntros (??????) "#? H". iDestruct "H" as (l') "[#Hf #H]".
@@ -66,10 +66,10 @@ Section mguard.
     - by iApply frac_bor_shorten.
     - iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
-      { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
-      iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
+      { iApply lft_intersect_mono; last done. iApply lft_incl_refl. }
+      iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
-      iApply ty_shr_mono; try done. iApply lft_intersect_mono. iApply lft_incl_refl. done.
+      iApply ty_shr_mono; try done. iApply lft_intersect_mono; last done. iApply lft_incl_refl.
   Qed.
 
   Global Instance mutexguard_wf α ty `{!TyWf ty} : TyWf (mutexguard α ty) :=
@@ -108,7 +108,7 @@ Section mguard.
       iDestruct "H" as "[$ #H]". iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
       { iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl. }
-      iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
+      iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
       iApply ty_shr_mono; try done.
       + iApply lft_intersect_mono; first by iApply lft_incl_syn_sem.

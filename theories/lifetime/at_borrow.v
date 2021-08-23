@@ -1,7 +1,7 @@
 From iris.algebra Require Import gmap auth frac.
 From iris.proofmode Require Import proofmode.
 From lrust.lifetime Require Export lifetime.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (** Atomic persistent bors  *)
 (* TODO : update the TEX with the fact that we can choose the namespace. *)
@@ -34,7 +34,7 @@ Section atomic_bors.
   Proof.
     iIntros (HN) "HP". rewrite bor_unfold_idx. iDestruct "HP" as (i) "(#?&Hown)".
     iExists i. iFrame "#".
-    iLeft. iSplitR. done. by iMod (inv_alloc with "[Hown]") as "$"; auto.
+    iLeft. iSplitR; first done. by iMod (inv_alloc with "[Hown]") as "$"; auto.
   Qed.
 
   Lemma bor_share_lftN E κ :
@@ -42,7 +42,7 @@ Section atomic_bors.
   Proof.
     iIntros (?) "HP". rewrite bor_unfold_idx. iDestruct "HP" as (i) "(#?&Hown)".
     iExists i. iFrame "#". subst.
-    iRight. iSplitR. done. by iMod (inv_alloc with "[Hown]") as "$"; auto.
+    iRight. iSplitR; first done. by iMod (inv_alloc with "[Hown]") as "$"; auto.
   Qed.
 
   Lemma at_bor_acc E κ :
@@ -52,12 +52,12 @@ Section atomic_bors.
   Proof.
     iIntros (??) "#LFT #HP". iDestruct "HP" as (i) "#[Hidx [[% Hinv]|[% Hinv]]]".
     - iInv N as ">Hi" "Hclose". iMod (idx_bor_atomic_acc with "LFT Hidx Hi")
-        as "[[HP Hclose']|[H† Hclose']]". solve_ndisj.
+        as "[[HP Hclose']|[H† Hclose']]"; first solve_ndisj.
       + iLeft. iFrame. iIntros "!>HP". iMod ("Hclose'" with "HP"). by iApply "Hclose".
       + iRight. iFrame. iIntros "!>". iMod "Hclose'". by iApply "Hclose".
     - subst. rewrite difference_twice_L. iInv lftN as (q') ">[Hq'0 Hq'1]" "Hclose".
-      iMod ("Hclose" with "[Hq'1]") as "_". by eauto.
-      iMod (idx_bor_atomic_acc with "LFT Hidx Hq'0") as "[[HP Hclose]|[H† Hclose]]". done.
+      iMod ("Hclose" with "[Hq'1]") as "_"; first solve_ndisj.
+      iMod (idx_bor_atomic_acc with "LFT Hidx Hq'0") as "[[HP Hclose]|[H† Hclose]]"; first done.
       + iLeft. iFrame. iIntros "!>HP". by iMod ("Hclose" with "HP").
       + iRight. iFrame. iIntros "!>". by iMod "Hclose".
   Qed.
@@ -68,7 +68,7 @@ Section atomic_bors.
   Proof.
     iIntros (??) "#LFT #HP Hκ". iDestruct "HP" as (i) "#[Hidx [[% Hinv]|[% Hinv]]]".
     - iInv N as ">Hi" "Hclose".
-      iMod (idx_bor_acc with "LFT Hidx Hi Hκ") as "[$ Hclose']". solve_ndisj.
+      iMod (idx_bor_acc with "LFT Hidx Hi Hκ") as "[$ Hclose']"; first solve_ndisj.
       iIntros "!> H". iMod ("Hclose'" with "H") as "[? $]". by iApply "Hclose".
     - iMod (at_bor_acc with "LFT []") as "[[$ Hclose]|[H† _]]"; try done.
       + iExists i. auto.

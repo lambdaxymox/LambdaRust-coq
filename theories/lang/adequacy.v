@@ -2,7 +2,7 @@ From iris.program_logic Require Export adequacy weakestpre.
 From iris.algebra Require Import auth.
 From lrust.lang Require Export heap.
 From lrust.lang Require Import proofmode notation.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Class lrustGpreS Σ := HeapGpreS {
   lrustGpreS_irig :> invGpreS Σ;

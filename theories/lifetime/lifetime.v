@@ -2,7 +2,7 @@ From lrust.lifetime Require Export lifetime_sig.
 From lrust.lifetime.model Require definitions primitive accessors faking borrow
      borrow_sep reborrow creation.
 From iris.proofmode Require Import proofmode.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Module Export lifetime : lifetime_sig.
   Definition lft := gmultiset positive.
@@ -190,7 +190,7 @@ Proof.
   iMod (bor_create _ κ' with "LFT Hidx") as "[Hidx Hinh]"; first done.
   iMod (idx_bor_unnest with "LFT Hbor Hidx") as "Hbor'"; first done.
   iDestruct (bor_shorten with "[] Hbor'") as "$".
-  { iApply lft_incl_glb. done. iApply lft_incl_refl. }
+  { iApply lft_incl_glb; first done. iApply lft_incl_refl. }
   iIntros "!> H†". iMod ("Hinh" with "H†") as ">Hidx". auto with iFrame.
 Qed.
 
@@ -210,7 +210,7 @@ Qed.
 Lemma lft_incl_static κ : ⊢ κ ⊑ static.
 Proof.
   iApply lft_incl_intro. iIntros "!>". iSplitR.
-  - iIntros (q) "?". iExists 1%Qp. iSplitR. by iApply lft_tok_static. auto.
+  - iIntros (q) "?". iExists 1%Qp. iSplitR; last by auto. by iApply lft_tok_static.
   - iIntros "Hst". by iDestruct (lft_dead_static with "Hst") as "[]".
 Qed.
 

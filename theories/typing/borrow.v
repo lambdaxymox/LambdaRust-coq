@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import proofmode.
 From lrust.typing Require Export uniq_bor shr_bor own.
 From lrust.typing Require Import lft_contexts type_context programs.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (** The rules for borrowing and derferencing borrowed non-Copy pointers are in
   a separate file so make sure that own.v and uniq_bor.v can be compiled
@@ -16,10 +16,10 @@ Section borrow.
   Proof.
     iIntros (tid ??)  "#LFT _ $ [H _]".
     iDestruct "H" as ([[]|]) "[% Hown]"; try done. iDestruct "Hown" as "[Hmt ?]".
-    iMod (bor_create with "LFT Hmt") as "[Hbor Hext]". done.
+    iMod (bor_create with "LFT Hmt") as "[Hbor Hext]"; first done.
     iModIntro. rewrite /tctx_interp /=. iSplitL "Hbor"; last iSplit; last done.
     - iExists _. auto.
-    - iExists _. iSplit. done. by iFrame.
+    - iExists _. iSplit; first done. by iFrame.
   Qed.
 
   Lemma tctx_share E L p κ ty :
@@ -69,7 +69,8 @@ Section borrow.
                        ((p ◁{κ} own_ptr n ty)::T).
   Proof.
     intros. apply (tctx_incl_frame_r _ [_] [_;_]). rewrite subtype_tctx_incl.
-    by apply tctx_borrow. by f_equiv.
+    - by apply tctx_borrow.
+    - by f_equiv.
   Qed.
 
   (* See the comment above [tctx_extract_hasty_share]. *)
@@ -91,13 +92,13 @@ Section borrow.
     iDestruct (llctx_interp_acc_noend with "HL") as "[HL HLclose]".
     iMod (Hκ with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
     wp_apply (wp_hasty with "Hp"). iIntros ([[|l|]|]) "_ Hown"; try done.
-    iMod (bor_acc_cons with "LFT Hown Htok") as "[H↦ Hclose']". done.
+    iMod (bor_acc_cons with "LFT Hown Htok") as "[H↦ Hclose']"; first done.
     iDestruct "H↦" as ([|[[|l'|]|][]]) "[>H↦ Hown]"; try iDestruct "Hown" as ">[]".
       iDestruct "Hown" as "[Hown H†]". rewrite heap_mapsto_vec_singleton -wp_fupd. wp_read.
     iMod ("Hclose'" $! (l↦#l' ∗ freeable_sz n (ty_size ty) l' ∗ _)%I
           with "[] [H↦ Hown H†]") as "[Hbor Htok]"; last 1 first.
-    - iMod (bor_sep with "LFT Hbor") as "[_ Hbor]". done.
-      iMod (bor_sep with "LFT Hbor") as "[_ Hbor]". done.
+    - iMod (bor_sep with "LFT Hbor") as "[_ Hbor]"; first done.
+      iMod (bor_sep with "LFT Hbor") as "[_ Hbor]"; first done.
       iMod ("Hclose" with "Htok") as "HL".
       iDestruct ("HLclose" with "HL") as "$".
       by rewrite tctx_interp_singleton tctx_hasty_val' //=.
@@ -124,7 +125,7 @@ Section borrow.
     iMod (Hκ with "HE HL") as (q) "[[Htok1 Htok2] Hclose]"; first solve_ndisj.
     wp_apply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hown"; try done.
     iDestruct "Hown" as (l') "#[H↦b #Hown]".
-    iMod (frac_bor_acc with "LFT H↦b Htok1") as (q''') "[>H↦ Hclose']". done.
+    iMod (frac_bor_acc with "LFT H↦b Htok1") as (q''') "[>H↦ Hclose']"; first done.
     iApply (wp_step_fupd _ _ (_∖_) with "[Hown Htok2]"); try done.
     - iApply ("Hown" with "[%] Htok2"); first solve_ndisj.
     - iApply wp_fupd. wp_read. iIntros "!>[#Hshr Htok2]".
@@ -152,11 +153,11 @@ Section borrow.
     iDestruct (Hincl with "HL HE") as "%".
     iMod (Hκ with "HE HL") as (q) "[Htok Hclose]"; first solve_ndisj.
     wp_apply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hown"; try done.
-    iMod (bor_exists with "LFT Hown") as (vl) "Hbor". done.
-    iMod (bor_sep with "LFT Hbor") as "[H↦ Hbor]". done.
+    iMod (bor_exists with "LFT Hown") as (vl) "Hbor"; first done.
+    iMod (bor_sep with "LFT Hbor") as "[H↦ Hbor]"; first done.
     destruct vl as [|[[]|][]];
       try by iMod (bor_persistent with "LFT Hbor Htok") as "[>[] _]".
-    iMod (bor_acc with "LFT H↦ Htok") as "[>H↦ Hclose']". done.
+    iMod (bor_acc with "LFT H↦ Htok") as "[>H↦ Hclose']"; first done.
     rewrite heap_mapsto_vec_singleton.
     iMod (bor_unnest with "LFT Hbor") as "Hbor"; [done|].
     iApply wp_fupd. wp_read.
@@ -165,7 +166,7 @@ Section borrow.
     iDestruct ("HLclose" with "HL") as "$".
     rewrite tctx_interp_singleton tctx_hasty_val' //.
     iApply (bor_shorten with "[] Hbor").
-    iApply lft_incl_glb. by iApply lft_incl_syn_sem. iApply lft_incl_refl.
+    iApply lft_incl_glb; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
   Qed.
 
   Lemma type_deref_uniq_uniq {E L} κ κ' x p e ty C T T' :
@@ -186,7 +187,7 @@ Section borrow.
     iMod (Hκ with "HE HL") as (q) "[[Htok1 Htok2] Hclose]"; first solve_ndisj.
     wp_apply (wp_hasty with "Hp"). iIntros ([[]|]) "_ Hshr"; try done.
     iDestruct "Hshr" as (l') "[H↦ Hown]".
-    iMod (frac_bor_acc with "LFT H↦ Htok1") as (q'') "[>H↦ Hclose']". done.
+    iMod (frac_bor_acc with "LFT H↦ Htok1") as (q'') "[>H↦ Hclose']"; first done.
     iAssert (κ ⊑ κ' ⊓ κ)%I as "#Hincl'".
     { iApply lft_incl_glb.
       + by iApply lft_incl_syn_sem.

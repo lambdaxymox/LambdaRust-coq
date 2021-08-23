@@ -1,7 +1,7 @@
 From iris.program_logic Require Import weakestpre.
 From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import lang proofmode notation.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section tests.
   Context `{!lrustGS Σ}.

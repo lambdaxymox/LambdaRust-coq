@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From iris.algebra Require Import list numbers.
 From lrust.typing Require Import lft_contexts.
 From lrust.typing Require Export type.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section product.
   Context `{!typeGS Σ}.
@@ -22,7 +22,7 @@ Section product.
 
   Global Instance unit0_copy : Copy unit0.
   Proof.
-    split. by apply _. iIntros (????????) "_ _ Htok $".
+    split; first by apply _. iIntros (????????) "_ _ Htok $".
     iDestruct (na_own_acc with "Htok") as "[$ Htok]"; first solve_ndisj.
     iExists 1%Qp. iModIntro. iSplitR.
     { iExists []. iSplitL; last by auto. rewrite heap_mapsto_vec_nil. auto. }
@@ -96,7 +96,7 @@ Section product.
     iDestruct ("H2" with "HE") as "#(% & #Ho2 & #Hs2)". clear H2.
     iSplit; first by (iPureIntro; simpl; f_equal). iSplit; iModIntro.
     - iIntros (??) "H". iDestruct "H" as (vl1 vl2) "(% & Hown1 & Hown2)".
-      iExists _, _. iSplit. done. iSplitL "Hown1".
+      iExists _, _. iSplit; first done. iSplitL "Hown1".
       + by iApply "Ho1".
       + by iApply "Ho2".
     - iIntros (???) "#[Hshr1 Hshr2]". iSplit.
@@ -128,7 +128,9 @@ Section product.
     iDestruct (ty_size_eq with "H2") as "#>%".
     iDestruct "H↦1" as "[H↦1 H↦1f]". iDestruct "H↦2" as "[H↦2 H↦2f]".
     iIntros "!>". iSplitL "H↦1 H1 H↦2 H2".
-    - iNext. iSplitL "H↦1 H1". iExists vl1. by iFrame. iExists vl2. by iFrame.
+    - iNext. iSplitL "H↦1 H1".
+      + iExists vl1. by iFrame.
+      + iExists vl2. by iFrame.
     - iIntros "Htl [H1 H2]". iDestruct ("Htlclose" with "Htl") as "Htl".
       iDestruct "H1" as (vl1') "[H↦1 H1]". iDestruct "H2" as (vl2') "[H↦2 H2]".
       iDestruct (ty_size_eq with "H1") as "#>%".
@@ -136,8 +138,8 @@ Section product.
       iCombine "H↦1" "H↦1f" as "H↦1". iCombine "H↦2" "H↦2f" as "H↦2".
       rewrite !heap_mapsto_vec_op; [|congruence..].
       iDestruct "H↦1" as "[_ H↦1]". iDestruct "H↦2" as "[_ H↦2]".
-      iMod ("Hclose2" with "Htl [H2 H↦2]") as "[Htl $]". by iExists _; iFrame.
-      iMod ("Hclose1" with "Htl [H1 H↦1]") as "[$$]". by iExists _; iFrame. done.
+      iMod ("Hclose2" with "Htl [H2 H↦2]") as "[Htl $]"; first by iExists _; iFrame.
+      iMod ("Hclose1" with "Htl [H1 H↦1]") as "[$$]"; last done. by iExists _; iFrame.
   Qed.
 
   Global Instance product2_send `{!Send ty1} `{!Send ty2} :
@@ -203,10 +205,10 @@ Section typing.
     iSplit; first by rewrite /= assoc. iSplit; iIntros "!> *"; iSplit; iIntros "H".
     - iDestruct "H" as (vl1 vl') "(% & Ho1 & H)".
       iDestruct "H" as (vl2 vl3) "(% & Ho2 & Ho3)". subst.
-      iExists _, _. iSplit. by rewrite assoc. iFrame. iExists _, _. by iFrame.
+      iExists _, _. iSplit; first by rewrite assoc. iFrame. iExists _, _. by iFrame.
     - iDestruct "H" as (vl1 vl') "(% & H & Ho3)".
       iDestruct "H" as (vl2 vl3) "(% & Ho1 & Ho2)". subst.
-      iExists _, _. iSplit. by rewrite -assoc. iFrame. iExists _, _. by iFrame.
+      iExists _, _. iSplit; first by rewrite -assoc. iFrame. iExists _, _. by iFrame.
     - iDestruct "H" as "(Hs1 & Hs2 & Hs3)". rewrite shift_loc_assoc_nat.
       by iFrame.
     - iDestruct "H" as "[[Hs1 Hs2] Hs3]". rewrite /= shift_loc_assoc_nat.
@@ -239,7 +241,7 @@ Section typing.
     eqtype E L (Π(tyl1 ++ Π tyl2 :: tyl3)) (Π(tyl1 ++ tyl2 ++ tyl3)).
   Proof.
     unfold product. induction tyl1; simpl; last by f_equiv.
-    induction tyl2. by rewrite left_id. by rewrite /= -assoc; f_equiv.
+    induction tyl2; first by rewrite left_id. by rewrite /= -assoc; f_equiv.
   Qed.
 
   Lemma prod_flatten_l E L tyl1 tyl2 :

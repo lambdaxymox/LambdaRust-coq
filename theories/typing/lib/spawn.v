@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import spawn.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition spawnN := lrustN .@ "spawn".
 

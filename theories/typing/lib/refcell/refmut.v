@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing util.
 From lrust.typing.lib.refcell Require Import refcell.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section refmut.
   Context `{!typeGS Σ, !refcellG Σ}.
@@ -40,22 +40,22 @@ Section refmut.
   Qed.
   Next Obligation.
     iIntros (α ty E κ l tid q HE) "#LFT Hb Htok".
-    iMod (bor_exists with "LFT Hb") as (vl) "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]". done.
-    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦". done.
+    iMod (bor_exists with "LFT Hb") as (vl) "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]"; first done.
+    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦"; first done.
     destruct vl as [|[[|lv|]|][|[[|lrc|]|][]]];
       try by iMod (bor_persistent with "LFT Hb Htok") as "[>[] _]".
-    iMod (bor_exists with "LFT Hb") as (ν) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (q') "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (β) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (ty') "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[Hb H]". done.
-    iMod (bor_sep with "LFT H") as "[Hαβ H]". done.
-    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ $]". done.
-    iMod (bor_sep with "LFT H") as "[_ H]". done.
-    iMod (bor_sep with "LFT H") as "[H _]". done.
-    iMod (bor_fracture (λ q, (q' * q).[ν])%I with "LFT [H]") as "H". done.
+    iMod (bor_exists with "LFT Hb") as (ν) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (q') "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (γ) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (β) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (ty') "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hb H]"; first done.
+    iMod (bor_sep with "LFT H") as "[Hαβ H]"; first done.
+    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ $]"; first done.
+    iMod (bor_sep with "LFT H") as "[_ H]"; first done.
+    iMod (bor_sep with "LFT H") as "[H _]"; first done.
+    iMod (bor_fracture (λ q, (q' * q).[ν])%I with "LFT [H]") as "H"; first done.
     { by rewrite Qp_mul_1_r. }
     iDestruct (frac_bor_lft_incl with "LFT H") as "#Hκν". iClear "H".
     iExists _, _. iFrame "H↦". iApply delay_sharing_nested; try done.
@@ -68,10 +68,10 @@ Section refmut.
     - by iApply frac_bor_shorten.
     - iIntros "!> * % Htok".
       iMod (lft_incl_acc with "[] Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
-      { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
-      iMod ("H" with "[] Htok") as "Hshr". done. iModIntro. iNext.
+      { iApply lft_intersect_mono; last done. iApply lft_incl_refl. }
+      iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
-      iApply ty_shr_mono; try done. iApply lft_intersect_mono. iApply lft_incl_refl. done.
+      iApply ty_shr_mono; try done. iApply lft_intersect_mono; last done. iApply lft_incl_refl.
   Qed.
 
   Global Instance refmut_wf α ty `{!TyWf ty} : TyWf (refmut α ty) :=
@@ -106,7 +106,7 @@ Section refmut.
       iMod ("H" with "[] Htok") as "Hshr"; first done. iModIntro. iNext.
       iMod "Hshr" as "[Hshr Htok]". iMod ("Hclose" with "Htok") as "$".
       iApply ty_shr_mono; try done.
-      + iApply lft_intersect_mono. by iApply lft_incl_syn_sem. iApply lft_incl_refl.
+      + iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
       + by iApply "Hs".
   Qed.
   Global Instance refmut_mono_flip E L :

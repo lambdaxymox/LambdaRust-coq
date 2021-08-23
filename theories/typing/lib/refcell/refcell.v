@@ -3,7 +3,7 @@ From iris.algebra Require Import auth csum frac agree numbers.
 From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition refcell_stR :=
   optionUR (prodR (prodR
@@ -118,7 +118,7 @@ Section refcell.
   Qed.
   Next Obligation.
     iIntros (ty E κ l tid q ?) "#LFT Hb Htok".
-    iMod (bor_acc_cons with "LFT Hb Htok") as "[H Hclose]". done.
+    iMod (bor_acc_cons with "LFT Hb Htok") as "[H Hclose]"; first done.
     iDestruct "H" as ([|[[| |n]|]vl]) "[H↦ H]"; try iDestruct "H" as ">[]".
     iDestruct "H" as "Hown".
     iMod ("Hclose" $! ((∃ n:Z, l ↦ #n) ∗
@@ -128,34 +128,36 @@ Section refcell.
       iExists (#n'::vl'). rewrite heap_mapsto_vec_cons. iFrame. }
     { iNext. rewrite heap_mapsto_vec_cons. iDestruct "H↦" as "[Hn Hvl]".
       iSplitL "Hn"; eauto with iFrame. }
-    iMod (bor_sep with "LFT H") as "[Hn Hvl]". done.
-    iMod (bor_acc_cons with "LFT Hn Htok") as "[H Hclose]". done.
+    iMod (bor_sep with "LFT H") as "[Hn Hvl]"; first done.
+    iMod (bor_acc_cons with "LFT Hn Htok") as "[H Hclose]"; first done.
     iAssert ((q / 2).[κ] ∗ ▷ ∃ γ, refcell_inv tid l γ κ ty)%I with "[> -Hclose]"
       as "[$ HQ]"; last first.
     { iMod ("Hclose" with "[] HQ") as "[Hb $]".
       - iIntros "!> H !>". iNext. iDestruct "H" as (γ st) "(H & _ & _)". eauto.
-      - iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
-        iExists κ, γ. iSplitR. by iApply lft_incl_refl. by iApply bor_na. }
+      - iMod (bor_exists with "LFT Hb") as (γ) "Hb"; first done.
+        iExists κ, γ. iSplitR.
+        + by iApply lft_incl_refl.
+        + by iApply bor_na. }
     clear dependent n. iDestruct "H" as ([|n|n]) "Hn"; try lia.
     - iFrame. iMod (own_alloc (● None)) as (γ) "Hst"; first by apply auth_auth_valid.
       iExists γ, None. by iFrame.
-    - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
+    - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]"; first done.
       iMod (own_alloc (● (refcell_st_to_R $ Some (ν, false, (1/2)%Qp, n)))) as (γ) "Hst".
       { by apply auth_auth_valid. }
       iApply (fupd_mask_mono (↑lftN)); first done.
-      iMod (rebor _ _ (κ ⊓ ν) with "LFT [] Hvl") as "[Hvl Hh]". done.
+      iMod (rebor _ _ (κ ⊓ ν) with "LFT [] Hvl") as "[Hvl Hh]"; first done.
       { iApply lft_intersect_incl_l. }
       iDestruct (lft_intersect_acc with "Htok' Htok1") as (q') "[Htok Hclose]".
-      iMod (ty_share with "LFT Hvl Htok") as "[Hshr Htok]". done.
+      iMod (ty_share with "LFT Hvl Htok") as "[Hshr Htok]"; first done.
       iDestruct ("Hclose" with "Htok") as "[$ Htok]".
       iExists γ, _. iFrame "Hst Hn Hshr".
       iSplitR "Htok2"; last by iExists _; iFrame; rewrite Qp_div_2.
       iIntros "!> !> Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro. iNext. iMod "Hν".
-      iApply fupd_mask_mono; last iApply "Hh". set_solver+. rewrite -lft_dead_or. auto.
+      iApply fupd_mask_mono; last iApply "Hh"; first set_solver+. rewrite -lft_dead_or. auto.
     - iMod (own_alloc (● (refcell_st_to_R $ Some (static, true, (1/2)%Qp, n)))) as (γ) "Hst".
       { by apply auth_auth_valid. }
       iFrame "Htok'". iExists γ, _. iFrame. iSplitR.
-      { rewrite -step_fupd_intro. auto. set_solver+. }
+      { rewrite -step_fupd_intro; first auto. set_solver+. }
       iSplitR; [|done]. iExists (1/2)%Qp. rewrite Qp_div_2. iSplitR; [done|].
       iApply lft_tok_static.
   Qed.
@@ -194,7 +196,8 @@ Section refcell.
     - iIntros "!> %α %tid %l H". simpl.
       iDestruct "H" as (a γ) "[Ha H]". iExists a, γ. iFrame.
       iApply na_bor_iff; last done. iNext; iModIntro; iSplit; iIntros "H".
-      by iApply "Hty1ty2". by iApply "Hty2ty1".
+      + by iApply "Hty1ty2".
+      + by iApply "Hty2ty1".
   Qed.
   Lemma refcell_mono' E L ty1 ty2 :
     eqtype E L ty1 ty2 → subtype E L (refcell ty1) (refcell ty2).

@@ -2,7 +2,7 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import heap.
 From lrust.typing Require Export type.
 From lrust.typing Require Import util lft_contexts type_context programs.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section uniq_bor.
   Context `{!typeGS Σ}.
@@ -32,8 +32,8 @@ Section uniq_bor.
   Next Obligation.
     intros κ0 ty κ κ' tid l. iIntros "#Hκ #H".
     iDestruct "H" as (l') "[Hfb Hvs]". iAssert (κ0⊓κ' ⊑ κ0⊓κ)%I as "#Hκ0".
-    { iApply lft_intersect_mono. iApply lft_incl_refl. done. }
-    iExists l'. iSplit. by iApply (frac_bor_shorten with "[]").
+    { iApply lft_intersect_mono; last done. iApply lft_incl_refl. }
+    iExists l'. iSplit; first by iApply (frac_bor_shorten with "[]").
     iIntros "!> %F %q % Htok". iApply (step_fupd_mask_mono F _ (F∖↑shrN)); try solve_ndisj.
     iMod (lft_incl_acc with "Hκ0 Htok") as (q') "[Htok Hclose]"; first solve_ndisj.
     iMod ("Hvs" with "[%] Htok") as "Hvs'"; first solve_ndisj. iModIntro. iNext.
@@ -81,7 +81,7 @@ Section uniq_bor.
   Qed.
   Global Instance uniq_mono_flip E L :
     Proper (lctx_lft_incl E L ==> eqtype E L ==> flip (subtype E L)) uniq_bor.
-  Proof. intros ??????. apply uniq_mono. done. by symmetry. Qed.
+  Proof. intros ??????. apply uniq_mono; first done. by symmetry. Qed.
   Global Instance uniq_proper E L :
     Proper (lctx_lft_eq E L ==> eqtype E L ==> eqtype E L) uniq_bor.
   Proof. intros ??[]; split; by apply uniq_mono. Qed.
@@ -131,7 +131,7 @@ Section typing.
     iDestruct (lft_incl_syn_sem κ' κ H) as "Hκκ'".
     iFrame. rewrite tctx_interp_singleton tctx_interp_cons tctx_interp_singleton.
     iDestruct "H" as ([[]|]) "[% Hb]"; try done.
-    iMod (rebor with "LFT Hκκ' Hb") as "[Hb Hext]". done. iModIntro.
+    iMod (rebor with "LFT Hκκ' Hb") as "[Hb Hext]"; first done. iModIntro.
     iSplitL "Hb"; iExists _; auto.
   Qed.
 
@@ -154,7 +154,7 @@ Section typing.
     iDestruct "H↦" as (vl) "[>H↦ #Hown]".
     iDestruct (ty_size_eq with "Hown") as "#>%". iIntros "!>".
     iExists _, _, _. iSplit; first done. iFrame "∗#". iIntros "H↦".
-    iMod ("Hclose'" with "[H↦]") as "[$ Htok]". by iExists _; iFrame.
+    iMod ("Hclose'" with "[H↦]") as "[$ Htok]"; first by iExists _; iFrame.
     by iMod ("Hclose" with "Htok") as "($ & $ & $)".
   Qed.
 
@@ -168,7 +168,7 @@ Section typing.
     iDestruct "H↦" as (vl) "[>H↦ Hown]". rewrite ty.(ty_size_eq).
     iDestruct "Hown" as ">%". iModIntro. iExists _, _. iSplit; first done.
     iFrame. iIntros "Hown". iDestruct "Hown" as (vl') "[H↦ Hown]".
-    iMod ("Hclose'" with "[H↦ Hown]") as "[$ Htok]". by iExists _; iFrame.
+    iMod ("Hclose'" with "[H↦ Hown]") as "[$ Htok]"; first by iExists _; iFrame.
     by iMod ("Hclose" with "Htok") as "($ & $ & $)".
   Qed.
 End typing.

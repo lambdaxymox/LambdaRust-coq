@@ -5,7 +5,7 @@ From lrust.lang.lib Require Import memcpy.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing option.
 From lrust.typing.lib.refcell Require Import refcell ref refmut.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section refcell_functions.
   Context `{!typeGS Σ, !refcellG Σ}.
@@ -154,7 +154,7 @@ Section refcell_functions.
     iDestruct "HT" as "(Hx & Hx' & Hr)". destruct x' as [[|lx|]|]=>//=.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[[Hβtok1 Hβtok2] Hclose']". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[[Hβtok1 Hβtok2] Hclose']"; first done.
     iMod (na_bor_acc with "LFT Hinv Hβtok1 Hna") as "(INV & Hna & Hclose'')"; try done.
     iDestruct "INV" as (st) "(Hlx & Hownst & Hst)". wp_read. wp_let. wp_op; case_bool_decide; wp_if.
     - iMod ("Hclose''" with "[Hlx Hownst Hst] Hna") as "[Hβtok1 Hna]";
@@ -190,15 +190,15 @@ Section refcell_functions.
           iFrame "∗#". iExists (Some (ν, false, _, _)). iFrame "∗#".
           rewrite [_ ⋅ _]comm -Some_op -!pair_op agree_idemp. iFrame.
           iExists _. iFrame. rewrite -(assoc Qp_add) Qp_div_2 //.
-        - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
+        - iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]"; first done.
           iMod (own_update with "Hownst") as "[Hownst Hreading]"; first by apply
             auth_update_alloc, (op_local_update_discrete _ _ (reading_stR (1/2)%Qp ν)).
           rewrite (right_id None). iExists _, _. iFrame "Htok1 Hreading".
           iDestruct (lft_intersect_acc with "Hβtok2 Htok2") as (q) "[Htok Hclose]".
           iApply (fupd_mask_mono (↑lftN)); first done.
-          iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]". done.
+          iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hst") as "[Hst Hh]"; first done.
           { iApply lft_intersect_incl_l. }
-          iMod (ty_share with "LFT Hst Htok") as "[#Hshr Htok]". done. iFrame "Hshr".
+          iMod (ty_share with "LFT Hst Htok") as "[#Hshr Htok]"; first done. iFrame "Hshr".
           iDestruct ("Hclose" with "Htok") as "[$ Htok2]". iExists _. iFrame "∗#".
           iSplitR "Htok2".
           + iIntros "!> Hν". iMod ("Hhν" with "Hν") as "Hν". iModIntro.
@@ -218,7 +218,7 @@ Section refcell_functions.
         rewrite tctx_hasty_val' //. rewrite /= freeable_sz_full. iFrame.
         iExists [_; _]. rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton.
         iFrame. simpl. iExists _, _, _, _, _. iFrame "∗#". iApply ty_shr_mono; try by auto.
-        iApply lft_intersect_mono. done. iApply lft_incl_refl. }
+        iApply lft_intersect_mono; first done. iApply lft_incl_refl. }
       iApply (type_sum_memcpy (option $ ref α ty)); [solve_typing..|].
       simpl. iApply type_delete; [solve_typing..|].
       iApply type_jump; solve_typing.
@@ -264,7 +264,7 @@ Section refcell_functions.
     iDestruct "HT" as "(Hx & Hx' & Hr)". destruct x' as [[|lx|]|]=>//=.
     iDestruct "Hx'" as (β γ) "#[Hαβ Hinv]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβtok Hclose']". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβtok Hclose']"; first done.
     iMod (na_bor_acc with "LFT Hinv Hβtok Hna") as "(INV & Hna & Hclose'')"; try done.
     iDestruct "INV" as (st) "(Hlx & Hownst & Hb)". wp_read. wp_let. wp_op; case_bool_decide; wp_if.
     - wp_write. wp_apply wp_new; [done..|].
@@ -272,13 +272,13 @@ Section refcell_functions.
       rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton.
       iDestruct "Hlref" as "[Hlref0 Hlref1]". wp_op. wp_write. wp_op. wp_write.
       destruct st as [[[[ν []] s] n]|]; try done.
-      iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]". done.
+      iMod (lft_create with "LFT") as (ν) "[[Htok1 Htok2] #Hhν]"; first done.
       iMod (own_update with "Hownst") as "[Hownst ?]".
       { by eapply auth_update_alloc,
           (op_local_update_discrete _ _ (refcell_st_to_R $ Some (ν, true, (1/2)%Qp, xH))). }
       rewrite (right_id None).
       iApply fupd_wp. iApply (fupd_mask_mono (↑lftN)); first done.
-      iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hb") as "[Hb Hbh]". done.
+      iMod (rebor _ _ (β ⊓ ν) with "LFT [] Hb") as "[Hb Hbh]"; first done.
       { iApply lft_intersect_incl_l. }
       iModIntro. iMod ("Hclose''" with "[Hlx Hownst Hbh Htok1] Hna") as "[Hβtok Hna]".
       { iExists _. iFrame. iNext. iSplitL "Hbh".

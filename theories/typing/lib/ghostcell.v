@@ -4,7 +4,7 @@ From iris.bi Require Import lib.fractional.
 From lrust.lang Require Import proofmode notation.
 From lrust.lifetime Require Import meta.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition ghostcellN := lrustN .@ "ghostcell".
 Definition ghosttokenN := lrustN .@ "ghosttoken".

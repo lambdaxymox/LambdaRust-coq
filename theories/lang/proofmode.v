@@ -3,7 +3,7 @@ From iris.proofmode Require Export proofmode.
 From iris.program_logic Require Export weakestpre.
 From iris.program_logic Require Import lifting.
 From lrust.lang Require Export tactics lifting.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 Import uPred.
 
 Lemma tac_wp_value `{!lrustGS Σ} Δ E Φ e v :

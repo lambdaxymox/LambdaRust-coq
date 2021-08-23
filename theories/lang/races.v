@@ -1,7 +1,7 @@
 From stdpp Require Import gmap.
 From iris.program_logic Require Import adequacy.
 From lrust.lang Require Import tactics.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Inductive access_kind : Type := ReadAcc | WriteAcc | FreeAcc.
 
@@ -139,11 +139,11 @@ Proof.
   assert (FREE : ∀ l n i, 0 ≤ i ∧ i < n → free_mem l (Z.to_nat n) σ !! (l +ₗ i) = None).
   { clear. intros l n i Hi.
     replace n with (Z.of_nat (Z.to_nat n)) in Hi by (apply Z2Nat.id; lia).
-    revert l i Hi. induction (Z.to_nat n) as [|? IH]=>/=l i Hi. lia.
+    revert l i Hi. induction (Z.to_nat n) as [|? IH]=>/=l i Hi; first lia.
     destruct (decide (i = 0)).
     - subst. by rewrite /shift_loc Z.add_0_r -surjective_pairing lookup_delete.
     - replace i with (1+(i-1)) by lia.
-      rewrite lookup_delete_ne -shift_loc_assoc ?IH //. lia.
+      rewrite lookup_delete_ne -shift_loc_assoc ?IH //; first lia.
       destruct l; intros [=?]. lia. }
   assert (FREE' : σ' !! l = None).
   { inversion Ha1; clear Ha1; inv_head_step. auto. }
@@ -163,8 +163,8 @@ Proof.
   destruct (elem_of_list_split _ _ Hi) as (?&?&->).
   eapply Hsafe; last by (apply: fill_not_val; subst).
   - eapply rtc_l, rtc_l, rtc_refl.
-    + eexists. econstructor. done. done. econstructor; done.
-    + eexists. econstructor. done. done. econstructor; done.
+    + eexists. econstructor; [done..|]. econstructor; done.
+    + eexists. econstructor; [done..|]. econstructor; done.
   - subst. set_solver+.
 Qed.
 
@@ -180,7 +180,7 @@ Proof.
   destruct (elem_of_list_split _ _ Hi) as (?&?&->).
   eapply Hsafe; last by (apply: fill_not_val; subst).
   - eapply rtc_l, rtc_refl.
-    + eexists. econstructor. done. done. econstructor; done.
+    + eexists. econstructor; [done..|]. econstructor; done.
   - subst. set_solver+.
 Qed.
 
@@ -191,7 +191,7 @@ Theorem safe_nonracing el σ :
 Proof.
   intros Hsafe l a1 a2 (t1&?&t2&?&t3&->&(K1&e1&Ha1&->)&(K2&e2&Ha2&->)).
 
-  assert (to_val e1 = None). by destruct Ha1.
+  assert (to_val e1 = None) by by destruct Ha1.
   assert (Hrede1:head_reducible e1 σ).
   { eapply (next_access_head_reductible_ctx e1 σ σ a1 l K1), Hsafe, fill_not_val=>//.
     abstract set_solver. }
@@ -211,11 +211,13 @@ Proof.
   { destruct a1 as [a1 []]=>// _.
     eapply (next_access_head_reductible_ctx e1' σ1' σ1' (a1, Na2Ord) l K1), Hsafe,
            fill_not_val=>//.
-    by auto. abstract set_solver. by destruct Hstep1; inversion Ha1. }
+    - by auto.
+    - abstract set_solver.
+    - by destruct Hstep1; inversion Ha1. }
   assert (Hnse1: head_reduce_not_to_stuck e1' σ1').
   { eapply (safe_step_not_reduce_to_stuck _ _ K1); first done; last done. set_solver+. }
 
-  assert (to_val e2 = None). by destruct Ha2.
+  assert (to_val e2 = None) by by destruct Ha2.
   assert (Hrede2:head_reducible e2 σ).
   { eapply (next_access_head_reductible_ctx e2 σ σ a2 l K2), Hsafe, fill_not_val=>//.
     abstract set_solver. }
@@ -235,7 +237,9 @@ Proof.
   { destruct a2 as [a2 []]=>// _.
     eapply (next_access_head_reductible_ctx e2' σ2' σ2' (a2, Na2Ord) l K2), Hsafe,
            fill_not_val=>//.
-    by auto. abstract set_solver. by destruct Hstep2; inversion Ha2. }
+    - by auto.
+    - abstract set_solver.
+    - by destruct Hstep2; inversion Ha2. }
   assert (Hnse2':head_reduce_not_to_stuck e2' σ2').
   { eapply (safe_step_not_reduce_to_stuck _ _ K2); first done; last done. set_solver+. }
 
@@ -247,7 +251,7 @@ Proof.
     abstract set_solver. }
   assert (Hnse1_2:head_reduce_not_to_stuck e2 σ1').
   { eapply (safe_not_reduce_to_stuck _ _ K2).
-    - intros. eapply Hsafe. etrans; last done. done. done. done.
+    - intros. eapply Hsafe; [|done..]. etrans; last done. done.
     - set_solver+. }
   assert (Hσe1'1:=
     λ Hord, next_access_head_reducible_state _ _ _ _ (Ha1' Hord) (Hrede1 Hord) Hnse1).
@@ -262,7 +266,7 @@ Proof.
     abstract set_solver. }
   assert (Hnse2_1:head_reduce_not_to_stuck e1 σ2').
   { eapply (safe_not_reduce_to_stuck _ _ K1).
-    - intros. eapply Hsafe. etrans; last done. done. done. done.
+    - intros. eapply Hsafe; [|done..]. etrans; last done. done.
     - set_solver+. }
   assert (Hσe2'1:=
     λ Hord, next_access_head_reducible_state _ _ _ _ (Ha2'1 Hord) Hrede2_1 Hnse2_1).
@@ -298,6 +302,7 @@ Corollary adequate_nonracing e1 t2 σ1 σ2 φ :
   nonracing_threadpool t2 σ2.
 Proof.
   intros [_ Had] Hrtc. apply safe_nonracing. intros el' σ' e' ?? He'.
-  edestruct (Had el' σ' e') as [He''|]; try done. etrans; eassumption.
-  rewrite /language.to_val /= He' in He''. by edestruct @is_Some_None.
+  edestruct (Had el' σ' e') as [He''|]; try done.
+  - etrans; eassumption.
+  - rewrite /language.to_val /= He' in He''. by edestruct @is_Some_None.
 Qed.

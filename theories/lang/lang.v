@@ -1,7 +1,7 @@
 From iris.program_logic Require Export language ectx_language ectxi_language.
 From stdpp Require Export strings binders.
 From stdpp Require Import gmap.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Open Scope Z_scope.
 
@@ -451,7 +451,7 @@ Lemma alloc_fresh n σ :
   0 < n →
   head_step (Alloc $ Lit $ LitInt n) σ [] (Lit $ LitLoc l) (init_mem l (Z.to_nat n) σ) [].
 Proof.
-  intros l init Hn. apply AllocS. auto.
+  intros l init Hn. apply AllocS; first done.
   - intros i. apply (is_fresh_block _ i).
 Qed.
 
@@ -473,10 +473,10 @@ Lemma is_closed_weaken X Y e : is_closed X e → X ⊆ Y → is_closed Y e.
 Proof.
   revert e X Y. fix FIX 1; intros e; destruct e=>X Y/=; try naive_solver.
   - naive_solver set_solver.
-  - rewrite !andb_True. intros [He Hel] HXY. split. by eauto.
+  - rewrite !andb_True. intros [He Hel] HXY. split; first by eauto.
     rename select (list expr) into el.
     induction el=>/=; naive_solver.
-  - rewrite !andb_True. intros [He Hel] HXY. split. by eauto.
+  - rewrite !andb_True. intros [He Hel] HXY. split; first by eauto.
     rename select (list expr) into el.
     induction el=>/=; naive_solver.
 Qed.

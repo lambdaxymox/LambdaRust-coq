@@ -5,7 +5,7 @@ From lrust.lang.lib Require Import memcpy arc.
 From lrust.lifetime Require Import at_borrow.
 From lrust.typing Require Export type.
 From lrust.typing Require Import typing option.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition arcN := lrustN .@ "arc".
 Definition arc_invN := arcN .@ "inv".
@@ -442,7 +442,7 @@ Section arc.
     iMod ("Hclose2" with "[$Hrc'↦]") as "Hα2". iIntros "!> [Hα1 #Hproto] !>".
     iDestruct "Hproto" as (γ ν q'') "#(Hαν & Hpersist & _)".
     iDestruct "Hpersist" as "(_ & [Hshr|Hν†] & _)"; last first.
-    { iMod (lft_incl_dead with "Hαν Hν†") as "Hα†". done.
+    { iMod (lft_incl_dead with "Hαν Hν†") as "Hα†"; first done.
       iDestruct (lft_tok_dead with "Hα1 Hα†") as "[]". }
     wp_op. wp_write. iMod ("Hclose1" with "[$Hα1 $Hα2] HL") as "HL".
     (* Finish up the proof. *)
@@ -486,7 +486,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (c) "[Hα _]". iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -529,7 +529,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (c) "[Hα _]". iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -574,7 +574,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros (q'') "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -618,7 +618,7 @@ Section arc.
        with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>$ Hclose1]"; [solve_ndisj..|].
-      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -662,7 +662,7 @@ Section arc.
               with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>Htok Hclose1]"; [solve_ndisj..|].
-      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iExists _. iFrame. iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros "[Hα Hown]". wp_seq. iMod ("Hclose1" with "Hα HL") as "HL".
     (* Finish up the proof. *)
@@ -709,7 +709,7 @@ Section arc.
               with "[] [] [$Hα1 $Hα2]"); first by iDestruct "Hpersist" as "[$ _]".
     { iIntros "!> Hα".
       iMod (at_bor_acc_tok with "LFT Hrctokb Hα") as "[>$ Hclose1]"; [solve_ndisj..|].
-      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro. set_solver.
+      iMod fupd_mask_subseteq as "Hclose2"; last iModIntro; first set_solver.
       iIntros "Htok". iMod "Hclose2" as "_". by iApply "Hclose1". }
     iIntros ([] q') "[Hα Hown]"; wp_if; iMod ("Hclose1" with "Hα HL") as "HL".
     - (* Finish up the proof (sucess). *)
@@ -1048,7 +1048,7 @@ Section arc.
       iApply type_jump; solve_typing.
     - iIntros "[Hν Hweak]". wp_case. iSpecialize ("Hc" with "Hν"). wp_bind (new _). 
       iApply wp_mask_mono; last iApply (wp_step_fupd with "Hc"); [solve_ndisj..|].
-      wp_apply wp_new=>//. lia. iIntros (l) "(H† & Hlvl) (#Hν & Hown & H†') !>".
+      wp_apply wp_new=>//; first lia. iIntros (l) "(H† & Hlvl) (#Hν & Hown & H†') !>".
       rewrite -!lock Nat2Z.id.
       wp_let. wp_op. rewrite !heap_mapsto_vec_cons shift_loc_assoc shift_loc_0.
       iDestruct "Hlvl" as "(Hrc0 & Hrc1 & Hrc2)". wp_write. wp_op. wp_write.
@@ -1089,7 +1089,7 @@ Section arc.
       iDestruct "Hcl" as "[Hcl Hcl†]". iDestruct "Hcl" as (vl) "[Hcl↦ Hown]".
       iDestruct (ty_size_eq with "Hown") as %Hsz.
       iDestruct ("Hclose3" with "Hαν") as "[Hα2 Hν]".
-      wp_apply wp_new=>//. lia. iIntros (l') "(Hl'† & Hl')". wp_let. wp_op.
+      wp_apply wp_new=>//; first lia. iIntros (l') "(Hl'† & Hl')". wp_let. wp_op.
       rewrite shift_loc_0. rewrite -!lock Nat2Z.id.
       rewrite !heap_mapsto_vec_cons shift_loc_assoc.
       iDestruct "Hl'" as "(Hl' & Hl'1 & Hl'2)". wp_write. wp_op. wp_write. wp_op.
@@ -1112,7 +1112,10 @@ Section arc.
                 !tctx_hasty_val' //. unlock. iFrame. iRight.
         iExists _, _, _. iFrame "∗#". }
       iApply type_letalloc_1; [solve_typing..|]. iIntros (rcold). simpl_subst.
-      iApply type_let. apply arc_drop_type. solve_typing. iIntros (drop). simpl_subst.
+      iApply type_let.
+      { apply arc_drop_type. }
+      {  solve_typing. }
+      iIntros (drop). simpl_subst.
       iApply (type_letcall ()); [solve_typing..|]. iIntros (content). simpl_subst.
       iApply type_delete; [solve_typing..|].
       iApply type_assign; [solve_typing..|].

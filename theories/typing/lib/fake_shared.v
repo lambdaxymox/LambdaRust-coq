@@ -1,6 +1,6 @@
 From iris.proofmode Require Import proofmode.
 From lrust.typing Require Import typing.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section fake_shared.
   Context `{!typeGS Σ}.
@@ -24,7 +24,7 @@ Section fake_shared.
       iNext. destruct vl as [|[[|l'|]|][]]; try done. iExists l'. iSplit.
       { iApply frac_bor_iff; last done. iIntros "!>!> *".
         rewrite heap_mapsto_vec_singleton. iSplit; auto. }
-      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro. set_solver.
+      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro; first set_solver.
       simpl. iApply ty_shr_mono; last done.
       by iApply lft_incl_syn_sem. }
     do 2 wp_seq.
@@ -55,7 +55,7 @@ Section fake_shared.
       iNext. destruct vl as [|[[|l'|]|][]]; try done. iExists l'. iSplit.
       { iApply frac_bor_iff; last done. iIntros "!>!> *".
         rewrite heap_mapsto_vec_singleton. iSplit; auto. }
-      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro. set_solver.
+      iDestruct "H" as "#H". iIntros "!> * % $". iApply step_fupd_intro; first set_solver.
       simpl. iApply ty_shr_mono; last done.
       by iApply lft_intersect_incl_l.
     }

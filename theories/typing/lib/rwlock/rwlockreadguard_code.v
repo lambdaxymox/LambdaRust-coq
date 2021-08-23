@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import lifetime na_borrow.
 From lrust.typing Require Import typing.
 From lrust.typing.lib.rwlock Require Import rwlock rwlockreadguard.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section rwlockreadguard_functions.
   Context `{!typeGS Σ, !rwlockG Σ}.
@@ -29,7 +29,7 @@ Section rwlockreadguard_functions.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
     iDestruct "Hx'" as (l') "#[Hfrac Hshr]".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
-    iMod (frac_bor_acc with "LFT Hfrac Hα") as (qlx') "[H↦ Hcloseα]". done.
+    iMod (frac_bor_acc with "LFT Hfrac Hα") as (qlx') "[H↦ Hcloseα]"; first done.
     rewrite heap_mapsto_vec_singleton. wp_read. wp_op. wp_let.
     iMod ("Hcloseα" with "[$H↦]") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
     iDestruct (lctx_lft_incl_incl α β with "HL HE") as %?; [solve_typing..|].
@@ -74,7 +74,7 @@ Section rwlockreadguard_functions.
     destruct x' as [[|lx'|]|]; try done. simpl.
     iDestruct "Hx'" as (ν q γ β tid_own) "(Hx' & #Hαβ & #Hinv & Hν & H◯ & H†)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)"; [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]"; first done.
     wp_bind (!ˢᶜ#lx')%E.
     iMod (at_bor_acc_tok with "LFT Hinv Hβ") as "[INV Hcloseβ]"; [done..|].
     iDestruct "INV" as (st) "[H↦ INV]". wp_read.
@@ -102,7 +102,7 @@ Section rwlockreadguard_functions.
           iMod "Hclose" as "_". iIntros "!> Hlx". iExists None. iFrame.
           iApply (own_update_2 with "H● H◯"). apply auth_update_dealloc.
           rewrite -(right_id None op (Some _)). apply cancel_local_update_unit, _.
-        - iApply step_fupd_intro. set_solver. iNext. iIntros "Hlx".
+        - iApply step_fupd_intro; first set_solver. iNext. iIntros "Hlx".
           apply csum_included in Hle.
           destruct Hle as [|[(?&?&[=]&?)|(?&[[agν q']n]&[=<-]&->&Hle%prod_included)]];
             [by subst|].
@@ -120,7 +120,7 @@ Section rwlockreadguard_functions.
           { rewrite pos_op_plus -Pplus_one_succ_l Pos.succ_pred // =>?. by subst. }
           rewrite {1}EQn -{1}(agree_idemp (to_agree _)) 2!pair_op Cinr_op Some_op.
           apply (cancel_local_update_unit (reading_st q ν)) , _. }
-      iApply (wp_step_fupd with "INV"). set_solver.
+      iApply (wp_step_fupd with "INV"); first set_solver.
       iApply (wp_cas_int_suc with "Hlx"); try done. iNext. iIntros "Hlx INV !>".
       iMod ("INV" with "Hlx") as "INV". iMod ("Hcloseβ" with "[$INV]") as "Hβ".
       iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
@@ -132,7 +132,8 @@ Section rwlockreadguard_functions.
       iApply type_new; [solve_typing..|]. iIntros (r). simpl_subst.
       iApply type_jump; solve_typing.
     + iApply (wp_cas_int_fail with "Hlx"); try done. iNext. iIntros "Hlx".
-      iMod ("Hcloseβ" with "[Hlx H● Hst]") as "Hβ". by iExists _; iFrame.
+      iMod ("Hcloseβ" with "[Hlx H● Hst]") as "Hβ".
+      { by iExists _; iFrame. }
       iMod ("Hcloseα" with "Hβ") as "Hα". iMod ("Hclose" with "Hα HL") as "HL".
       iModIntro. wp_if.
       iApply (type_type _ _ _ [ x ◁ box (uninit 1); #lx' ◁ rwlockreadguard α ty]

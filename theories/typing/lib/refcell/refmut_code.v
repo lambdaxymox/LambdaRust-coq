@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing.
 From lrust.typing.lib.refcell Require Import refcell refmut.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section refmut_functions.
   Context `{!typeGS Σ, !refcellG Σ}.
@@ -29,7 +29,7 @@ Section refmut_functions.
     iDestruct "Hx'" as (lv lrc) "#(Hfrac & #Hshr)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "([Hα1 Hα2] & HL & Hclose')";
       [solve_typing..|].
-    iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]". done.
+    iMod (frac_bor_acc with "LFT Hfrac Hα1") as (qlx') "[H↦ Hcloseα1]"; first done.
     rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton.
     iMod (lctx_lft_alive_tok_noend β with "HE HL") as (qβ) "(Hβ & HL & Hclose'')";
       [solve_typing..|].
@@ -64,27 +64,27 @@ Section refmut_functions.
     iIntros (tid qmax) "#LFT #HE Hna HL Hk HT". simpl_subst.
     rewrite tctx_interp_cons tctx_interp_singleton !tctx_hasty_val.
     iDestruct "HT" as "[Hx Hx']". destruct x' as [[|lx'|]|]; try done.
-    iMod (bor_exists with "LFT Hx'") as (vl) "H". done.
-    iMod (bor_sep with "LFT H") as "[H↦ H]". done.
+    iMod (bor_exists with "LFT Hx'") as (vl) "H"; first done.
+    iMod (bor_sep with "LFT H") as "[H↦ H]"; first done.
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose')";
       [solve_typing..|].
     destruct vl as [|[[|lv|]|][|[[|lrc|]|][]]]; simpl;
       try by iMod (bor_persistent with "LFT H Hα") as "[>[] _]".
-    iMod (bor_exists with "LFT H") as (ν) "H". done.
-    iMod (bor_exists with "LFT H") as (q) "H". done.
-    iMod (bor_exists with "LFT H") as (γ) "H". done.
-    iMod (bor_exists with "LFT H") as (δ) "H". done.
-    iMod (bor_exists with "LFT H") as (ty') "H". done.
-    iMod (bor_sep with "LFT H") as "[Hb H]". done.
-    iMod (bor_sep with "LFT H") as "[Hβδ H]". done.
-    iMod (bor_persistent with "LFT Hβδ Hα") as "[#Hβδ Hα]". done.
-    iMod (bor_sep with "LFT H") as "[_ H]". done.
-    iMod (bor_sep with "LFT H") as "[H _]". done.
-    iMod (bor_fracture (λ q', (q * q').[ν])%I with "LFT [H]") as "H". done.
+    iMod (bor_exists with "LFT H") as (ν) "H"; first done.
+    iMod (bor_exists with "LFT H") as (q) "H"; first done.
+    iMod (bor_exists with "LFT H") as (γ) "H"; first done.
+    iMod (bor_exists with "LFT H") as (δ) "H"; first done.
+    iMod (bor_exists with "LFT H") as (ty') "H"; first done.
+    iMod (bor_sep with "LFT H") as "[Hb H]"; first done.
+    iMod (bor_sep with "LFT H") as "[Hβδ H]"; first done.
+    iMod (bor_persistent with "LFT Hβδ Hα") as "[#Hβδ Hα]"; first done.
+    iMod (bor_sep with "LFT H") as "[_ H]"; first done.
+    iMod (bor_sep with "LFT H") as "[H _]"; first done.
+    iMod (bor_fracture (λ q', (q * q').[ν])%I with "LFT [H]") as "H"; first done.
     { by rewrite Qp_mul_1_r. }
     iDestruct (frac_bor_lft_incl _ _ q with "LFT H") as "#Hαν". iClear "H".
-    rewrite heap_mapsto_vec_cons. iMod (bor_sep with "LFT H↦") as "[H↦ _]". done.
-    iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hcloseα]". done.
+    rewrite heap_mapsto_vec_cons. iMod (bor_sep with "LFT H↦") as "[H↦ _]"; first done.
+    iMod (bor_acc with "LFT H↦ Hα") as "[H↦ Hcloseα]"; first done.
     wp_bind (!#lx')%E. iMod (bor_unnest with "LFT Hb") as "Hb"; first done.
     wp_read. wp_let. iMod "Hb".
     iMod ("Hcloseα" with "[$H↦]") as "[_ Hα]". iMod ("Hclose'" with "Hα HL") as "HL".
@@ -124,7 +124,7 @@ Section refmut_functions.
     iDestruct "Hx" as (ν q γ β ty') "(Hb & #Hαβ & #Hinv & Hν & H◯)".
     iMod (lctx_lft_alive_tok α with "HE HL") as (qα) "(Hα & HL & Hclose)";
       [solve_typing..|].
-    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]". done.
+    iMod (lft_incl_acc with "Hαβ Hα") as (qβ) "[Hβ Hcloseα]"; first done.
     iMod (na_bor_acc with "LFT Hinv Hβ Hna") as "(INV & Hna & Hcloseβ)"; [done..|].
     iDestruct "INV" as (st) "(H↦lrc & H● & INV)". wp_read. wp_let. wp_op. wp_write.
     iAssert (|={↑lftN ∪ lft_userE}[lft_userE]▷=> refcell_inv tid lrc γ β ty')%I
@@ -193,7 +193,7 @@ Section refmut_functions.
     rewrite {1}heap_mapsto_vec_cons heap_mapsto_vec_singleton.
     iDestruct "Href" as "[[Href↦1 Href↦2] Href]".
     iDestruct "Href" as (ν q γ β ty') "(Hbor & #Hαβ & #Hinv & >Hν & Hγ)".
-    wp_read. wp_let. wp_apply wp_new; first done. done.
+    wp_read. wp_let. wp_apply wp_new; [done..|].
     iIntros (lx) "(H† & Hlx)". rewrite heap_mapsto_vec_singleton.
     wp_let. wp_write. wp_let. rewrite tctx_hasty_val.
     iMod (lctx_lft_alive_tok α with "HE HL") as (?) "(Hα & HL & Hclose1)";[solve_typing..|].
@@ -298,7 +298,7 @@ Section refmut_functions.
     { rewrite heap_mapsto_vec_cons heap_mapsto_vec_singleton /= freeable_sz_full.
       iFrame. }
     iIntros "_".
-    iMod (lft_incl_acc  with "Hαβ Hα") as (?) "[Hβ Hβclose]". done.
+    iMod (lft_incl_acc  with "Hαβ Hα") as (?) "[Hβ Hβclose]"; first done.
     iMod (na_bor_acc with "LFT Hinv Hβ Hna") as "(INV & Hna & Hclosena)"; [done..|].
     wp_seq. wp_op. wp_read.
     iDestruct "INV" as (st) "(Hlrc & H● & Hst)".

@@ -4,8 +4,8 @@ From iris.proofmode Require Import proofmode.
 From lrust.lang Require Import races adequacy proofmode notation.
 From lrust.lifetime Require Import lifetime frac_borrow.
 From lrust.typing Require Import typing.
+From iris.prelude Require Import options.
 
-Set Default Proof Using "Type".
 
 Class typeGpreS Σ := PreTypeG {
   type_preG_lrustGS :> lrustGpreS Σ;
@@ -32,16 +32,16 @@ Section type_soundness.
   Proof.
     intros Hmain Hrtc.
     cut (adequate NotStuck (main [exit_cont]%E) ∅ (λ _ _, True)).
-    { split. by eapply adequate_nonracing.
+    { split; first by eapply adequate_nonracing.
       intros. by eapply (adequate_not_stuck _ (main [exit_cont]%E)). }
     apply: lrust_adequacy=>?. iIntros "_".
     iMod (lft_init _ lft_userE) as (?) "#LFT"; [done|solve_ndisj|].
     iMod na_alloc as (tid) "Htl". set (Htype := TypeG _ _ _ _ _).
     wp_bind (of_val main). iApply (wp_wand with "[Htl]").
-    iApply (Hmain Htype [] [] $! tid 1%Qp with "LFT [] Htl [] []").
-    { by rewrite /elctx_interp big_sepL_nil. }
-    { by rewrite /llctx_interp big_sepL_nil. }
-    { by rewrite tctx_interp_nil. }
+    { iApply (Hmain Htype [] [] $! tid 1%Qp with "LFT [] Htl [] []").
+      - by rewrite /elctx_interp big_sepL_nil.
+      - by rewrite /llctx_interp big_sepL_nil.
+      - by rewrite tctx_interp_nil. }
     clear Hrtc Hmain main. iIntros (main) "(Htl & _ & Hmain & _)".
     iDestruct "Hmain" as (?) "[EQ Hmain]".
     rewrite eval_path_of_val. iDestruct "EQ" as %[= <-].

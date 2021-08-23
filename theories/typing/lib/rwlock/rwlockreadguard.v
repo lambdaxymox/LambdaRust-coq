@@ -4,7 +4,7 @@ From iris.bi Require Import fractional.
 From lrust.lifetime Require Import na_borrow.
 From lrust.typing Require Import typing.
 From lrust.typing.lib.rwlock Require Import rwlock.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section rwlockreadguard.
   Context `{!typeGS Σ, !rwlockG Σ}.
@@ -33,23 +33,23 @@ Section rwlockreadguard.
   Next Obligation. intros α ty tid [|[[]|] []]; auto. Qed.
   Next Obligation.
     iIntros (α ty E κ l tid q ?) "#LFT Hb Htok".
-    iMod (bor_exists with "LFT Hb") as (vl) "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]". done.
-    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦". done.
+    iMod (bor_exists with "LFT Hb") as (vl) "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[H↦ Hb]"; first done.
+    iMod (bor_fracture (λ q, l ↦∗{q} vl)%I with "LFT H↦") as "#H↦"; first done.
     destruct vl as [|[[|l'|]|][]];
       try by iMod (bor_persistent with "LFT Hb Htok") as "[>[] _]".
-    iMod (bor_exists with "LFT Hb") as (ν) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (q') "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (γ) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (β) "Hb". done.
-    iMod (bor_exists with "LFT Hb") as (tid_own) "Hb". done.
-    iMod (bor_sep with "LFT Hb") as "[Hshr Hb]". done.
-    iMod (bor_persistent with "LFT Hshr Htok") as "[#Hshr Htok]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hαβ Hb]". done.
-    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ Htok]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hinv Hb]". done.
-    iMod (bor_persistent with "LFT Hinv Htok") as "[#Hinv $]". done.
-    iMod (bor_sep with "LFT Hb") as "[Hκν _]". done.
+    iMod (bor_exists with "LFT Hb") as (ν) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (q') "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (γ) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (β) "Hb"; first done.
+    iMod (bor_exists with "LFT Hb") as (tid_own) "Hb"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hshr Hb]"; first done.
+    iMod (bor_persistent with "LFT Hshr Htok") as "[#Hshr Htok]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hαβ Hb]"; first done.
+    iMod (bor_persistent with "LFT Hαβ Htok") as "[#Hαβ Htok]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hinv Hb]"; first done.
+    iMod (bor_persistent with "LFT Hinv Htok") as "[#Hinv $]"; first done.
+    iMod (bor_sep with "LFT Hb") as "[Hκν _]"; first done.
     iDestruct (frac_bor_lft_incl with "LFT [> Hκν]") as "#Hκν".
     { iApply bor_fracture; try done. by rewrite Qp_mul_1_r. }
     iExists _. iFrame "#". iApply ty_shr_mono; last done.
@@ -93,7 +93,9 @@ Section rwlockreadguard.
         iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.
       + iApply lft_incl_trans; first by iApply lft_incl_syn_sem. done.
       + iApply (at_bor_iff with "[] Hinv").
-        iIntros "!> !>"; iSplit; iIntros "H". by iApply "Hty1ty2". by iApply "Hty2ty1".
+        iIntros "!> !>"; iSplit; iIntros "H". 
+        * by iApply "Hty1ty2".
+        * by iApply "Hty2ty1".
     - iIntros (κ tid l) "H". iDestruct "H" as (l') "[Hf Hshr]". iExists l'.
       iFrame. iApply ty_shr_mono; last by iApply "Hs".
       iApply lft_intersect_mono; first by iApply lft_incl_syn_sem. iApply lft_incl_refl.

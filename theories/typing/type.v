@@ -4,7 +4,7 @@ From lrust.lang Require Export proofmode notation.
 From lrust.lifetime Require Export frac_borrow.
 From lrust.typing Require Export base.
 From lrust.typing Require Import lft_contexts.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Class typeGS Σ := TypeG {
   type_lrustGS :> lrustGS Σ;
@@ -216,7 +216,7 @@ Section ofe.
     - (* TODO: automate this *)
       repeat apply limit_preserving_and; repeat (apply limit_preserving_forall; intros ?).
       + apply bi.limit_preserving_Persistent=> n ty1 ty2 Hty; apply Hty.
-      + apply bi.limit_preserving_entails=> n ty1 ty2 Hty. apply Hty. by rewrite Hty.
+      + apply bi.limit_preserving_entails=> n ty1 ty2 Hty; first by apply Hty. by rewrite Hty.
       + apply bi.limit_preserving_entails=> n ty1 ty2 Hty; repeat f_equiv; apply Hty.
       + apply bi.limit_preserving_entails=> n ty1 ty2 Hty; repeat f_equiv; apply Hty.
   Qed.
@@ -251,7 +251,7 @@ Section ofe.
 
   Global Instance ty_of_st_ne : NonExpansive ty_of_st.
   Proof.
-    intros n ?? EQ. constructor; try apply EQ. done.
+    intros n ?? EQ. constructor; try apply EQ; first done.
     - simpl. intros; repeat f_equiv. apply EQ.
   Qed.
   Global Instance ty_of_st_proper : Proper ((≡) ==> (≡)) ty_of_st.
@@ -287,7 +287,7 @@ Section type_dist2.
 
   Global Instance type_dist2_later_equivalence n :
     Equivalence (type_dist2_later n).
-  Proof. destruct n as [|n]. by split. apply type_dist2_equivalence. Qed.
+  Proof. destruct n as [|n]; first by split. apply type_dist2_equivalence. Qed.
 
   (* The hierarchy of metrics:
      dist n → type_dist2 n → dist_later n → type_dist2_later. *)
@@ -587,7 +587,7 @@ Section subtyping.
     iDestruct (H12 with "HL") as "#H12".
     iDestruct (H23 with "HL") as "#H23".
     iClear "∗". iIntros "!> #HE".
-    iApply (type_incl_trans with "[#]"). by iApply "H12". by iApply "H23".
+    iApply (type_incl_trans with "[#]"); first by iApply "H12". by iApply "H23".
   Qed.
 
   Lemma subtype_Forall2_llctx_noend E L tys1 tys2 qmax qL :

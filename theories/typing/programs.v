@@ -1,6 +1,6 @@
 From lrust.lang Require Import proofmode memcpy.
 From lrust.typing Require Export type lft_contexts type_context cont_context.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Section typing.
   Context `{!typeGS Σ}.
@@ -70,7 +70,7 @@ Section typing.
         ∃ (l : loc) vl, ⌜length vl = ty.(ty_size) ∧ v = #l⌝ ∗ l ↦∗ vl ∗
           (▷ l ↦∗: ty.(ty_own) tid ={F}=∗
             llctx_interp_noend qmax L qL ∗ ty2.(ty_own) tid [v]))%I.
-  Definition typed_write_aux : seal (@typed_write_def). by eexists. Qed.
+  Definition typed_write_aux : seal (@typed_write_def). Proof. by eexists. Qed.
   Definition typed_write := typed_write_aux.(unseal).
   Definition typed_write_eq : @typed_write = @typed_write_def := typed_write_aux.(seal_eq).
   Global Arguments typed_write _ _ _%T _%T _%T.
@@ -91,7 +91,7 @@ Section typing.
         ∃ (l : loc) vl q, ⌜v = #l⌝ ∗ l ↦∗{q} vl ∗ ▷ ty.(ty_own) tid vl ∗
               (l ↦∗{q} vl ={F}=∗ na_own tid F ∗
                               llctx_interp_noend qmax L qL ∗ ty2.(ty_own) tid [v]))%I.
-  Definition typed_read_aux : seal (@typed_read_def). by eexists. Qed.
+  Definition typed_read_aux : seal (@typed_read_def). Proof. by eexists. Qed.
   Definition typed_read := typed_read_aux.(unseal).
   Definition typed_read_eq : @typed_read = @typed_read_def := typed_read_aux.(seal_eq).
   Global Arguments typed_read _ _ _%T _%T _%T.
@@ -229,7 +229,7 @@ Section typing_rules.
     ⊢ typed_instruction_ty E L [p ◁ ty] p ty.
   Proof.
     iIntros (??) "_ _ $$ [? _]".
-    iApply (wp_hasty with "[-]"). done. iIntros (v) "_ Hv".
+    iApply (wp_hasty with "[-]"); first done. iIntros (v) "_ Hv".
     rewrite tctx_interp_singleton. iExists v. iFrame. by rewrite eval_path_of_val.
   Qed.
 

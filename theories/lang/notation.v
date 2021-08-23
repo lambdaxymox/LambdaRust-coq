@@ -1,5 +1,5 @@
 From lrust.lang Require Export lang.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Coercion LitInt : Z >-> base_lit.
 Coercion LitLoc : loc >-> base_lit.

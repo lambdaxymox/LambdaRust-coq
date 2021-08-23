@@ -1,7 +1,7 @@
 From iris.algebra Require Import dyn_reservation_map agree.
 From iris.proofmode Require Import proofmode.
 From lrust.lifetime Require Export lifetime.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (** This module provides support for attaching metadata (specifically, a
 [gname]) to a lifetime (as is required for types using branding). *)

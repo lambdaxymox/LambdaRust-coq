@@ -3,7 +3,7 @@ From iris.program_logic Require Export weakestpre.
 From iris.program_logic Require Import ectx_lifting.
 From lrust.lang Require Export lang heap.
 From lrust.lang Require Import tactics.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 Import uPred.
 
 Class lrustGS Σ := LRustGS {

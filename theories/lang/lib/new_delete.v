@@ -1,6 +1,6 @@
 From lrust.lang Require Export notation.
 From lrust.lang Require Import heap proofmode memcpy.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 Definition new : val :=
   λ: ["n"],
@@ -24,7 +24,7 @@ Section specs.
     iIntros (? Φ) "_ HΦ". wp_lam. wp_op; case_bool_decide.
     - wp_if. assert (n = 0) as -> by lia. iApply "HΦ".
       rewrite heap_mapsto_vec_nil. auto.
-    - wp_if. wp_alloc l as "H↦" "H†". lia. iApply "HΦ". subst. iFrame.
+    - wp_if. wp_alloc l as "H↦" "H†"; first lia. iApply "HΦ". subst. iFrame.
   Qed.
 
   Lemma wp_delete E (n:Z) l vl :

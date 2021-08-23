@@ -1,6 +1,6 @@
 From stdpp Require Import fin_maps.
 From lrust.lang Require Export lang.
-Set Default Proof Using "Type".
+From iris.prelude Require Import options.
 
 (** We define an alternative representation of expressions in which the
 embedding of values and closed expressions is explicit. By reification of
