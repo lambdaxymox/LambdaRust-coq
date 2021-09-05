@@ -18,7 +18,6 @@ Instance lrustGS_irisGS `{!lrustGS Σ} : irisGS lrust_lang Σ := {
   num_laters_per_step _ := 0%nat;
   state_interp_mono _ _ _ _ := fupd_intro _ _
 }.
-Global Opaque iris_invGS.
 
 Ltac inv_lit :=
   repeat match goal with
