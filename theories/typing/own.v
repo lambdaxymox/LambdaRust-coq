@@ -39,7 +39,7 @@ Section own.
     - iSplit.
       + by iIntros "[[]?]".
       + by iIntros "[]".
-    - rewrite heap_freeable_op_eq. f_equiv.
+    - rewrite heap_freeable_op_eq. f_equiv; [|done..].
       by rewrite -Qp_div_add_distr pos_to_Qp_add -Nat2Pos.inj_add.
   Qed.
 

@@ -101,8 +101,8 @@ Section ghostcell.
   Proof.
     rewrite /Fractional=>q1 q2.
     rewrite -own_op /ghosttoken_st_to_R /=. f_equiv.
-    rewrite -Cinr_op. f_equiv.
-    rewrite -pair_op. f_equiv.
+    rewrite -Cinr_op. eapply Cinr_proper.
+    rewrite -pair_op. f_equiv; [|done..].
     rewrite agree_idemp. done.
   Qed.
 
