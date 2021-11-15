@@ -76,7 +76,7 @@ Class ghostcellG Σ := GhostcellG {
 Definition ghostcellΣ : gFunctors
   := #[GFunctor ghosttoken_stR ; lft_metaΣ].
 
-Instance subG_ghostcellΣ {Σ} : subG ghostcellΣ Σ → ghostcellG Σ.
+Global Instance subG_ghostcellΣ {Σ} : subG ghostcellΣ Σ → ghostcellG Σ.
 Proof. solve_inG. Qed.
 
 (* There are two possible states:
@@ -374,8 +374,6 @@ Section ghostcell.
     eqtype E L ty1 ty2 →
     eqtype E L (ghostcell κ1 ty1) (ghostcell κ2 ty2).
   Proof. intros. by apply ghostcell_proper. Qed.
-
-  Hint Resolve ghostcell_mono' ghostcell_proper' : lrust_typing.
 
   Global Instance ghostcell_send α ty :
     Send ty → Send (ghostcell α ty).
@@ -753,3 +751,5 @@ Section ghostcell.
   Qed.
 
 End ghostcell.
+
+Global Hint Resolve ghostcell_mono' ghostcell_proper' : lrust_typing.

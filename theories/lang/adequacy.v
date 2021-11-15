@@ -14,7 +14,7 @@ Definition lrustΣ : gFunctors :=
   #[invΣ;
     GFunctor (constRF (authR heapUR));
     GFunctor (constRF (authR heap_freeableUR))].
-Instance subG_lrustGpreS {Σ} : subG lrustΣ Σ → lrustGpreS Σ.
+Global Instance subG_lrustGpreS {Σ} : subG lrustΣ Σ → lrustGpreS Σ.
 Proof. solve_inG. Qed.
 
 Definition lrust_adequacy Σ `{!lrustGpreS Σ} e σ φ :

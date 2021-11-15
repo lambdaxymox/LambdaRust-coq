@@ -113,7 +113,7 @@ Section fn.
   Qed.
 End fn.
 
-Arguments fn_params {_ _} _.
+Global Arguments fn_params {_ _} _.
 
 (* We use recursive notation for binders as well, to allow patterns
    like '(a, b) to be used. In practice, only one binder is ever used,
@@ -139,7 +139,7 @@ Notation "'fn(' E ')' '→' R" :=
   (at level 99, R at level 200,
    format "'fn(' E ')'  '→'  R") : lrust_type_scope.
 
-Instance elctx_empty : Empty (lft → elctx) := λ ϝ, [].
+Global Instance elctx_empty : Empty (lft → elctx) := λ ϝ, [].
 
 Section typing.
   Context `{!typeGS Σ}.

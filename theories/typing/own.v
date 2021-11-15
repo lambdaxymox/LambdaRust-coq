@@ -13,7 +13,7 @@ Section own.
     | _, 0%nat => False
     | sz, n => †{pos_to_Qp (Pos.of_nat sz) / pos_to_Qp (Pos.of_nat n)}l…sz
     end%I.
-  Arguments freeable_sz : simpl never.
+  Global Arguments freeable_sz : simpl never.
 
   Global Instance freeable_sz_timeless n sz l : Timeless (freeable_sz n sz l).
   Proof. destruct sz, n; apply _. Qed.

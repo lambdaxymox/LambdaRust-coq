@@ -67,8 +67,8 @@ Section definitions.
 End definitions.
 
 Typeclasses Opaque heap_mapsto heap_freeable heap_mapsto_vec.
-Instance: Params (@heap_mapsto) 4 := {}.
-Instance: Params (@heap_freeable) 5 := {}.
+Global Instance: Params (@heap_mapsto) 4 := {}.
+Global Instance: Params (@heap_freeable) 5 := {}.
 
 Notation "l ↦{ q } v" := (heap_mapsto l q v)
   (at level 20, q at level 50, format "l  ↦{ q }  v") : bi_scope.

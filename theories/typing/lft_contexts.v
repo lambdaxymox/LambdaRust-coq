@@ -406,14 +406,14 @@ Section lft_contexts.
   Proof. iIntros (??) "_ !> ?". done. Qed.
 End lft_contexts.
 
-Arguments lctx_lft_incl {_ _} _ _ _ _.
-Arguments lctx_lft_eq {_ _} _ _ _ _.
-Arguments lctx_lft_alive {_ _ _} _ _ _.
-Arguments elctx_sat {_ _} _ _ _.
-Arguments lctx_lft_incl_incl {_ _ _ _ _} _ _.
-Arguments lctx_lft_incl_incl_noend {_ _ _ _} _ _.
-Arguments lctx_lft_alive_tok {_ _ _ _ _} _ _ _.
-Arguments lctx_lft_alive_tok_noend {_ _ _ _ _} _ _ _.
+Global Arguments lctx_lft_incl {_ _} _ _ _ _.
+Global Arguments lctx_lft_eq {_ _} _ _ _ _.
+Global Arguments lctx_lft_alive {_ _ _} _ _ _.
+Global Arguments elctx_sat {_ _} _ _ _.
+Global Arguments lctx_lft_incl_incl {_ _ _ _ _} _ _.
+Global Arguments lctx_lft_incl_incl_noend {_ _ _ _} _ _.
+Global Arguments lctx_lft_alive_tok {_ _ _ _ _} _ _ _.
+Global Arguments lctx_lft_alive_tok_noend {_ _ _ _ _} _ _ _.
 
 Lemma elctx_sat_submseteq `{!invGS Σ, !lftGS Σ lft_userE} E E' L :
   E' ⊆+ E → elctx_sat E L E'.

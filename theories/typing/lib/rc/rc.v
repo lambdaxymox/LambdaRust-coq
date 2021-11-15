@@ -11,7 +11,7 @@ Definition rc_stR :=
 Class rcG Σ :=
   RcG :> inG Σ (authR rc_stR).
 Definition rcΣ : gFunctors := #[GFunctor (authR rc_stR)].
-Instance subG_rcΣ {Σ} : subG rcΣ Σ → rcG Σ.
+Global Instance subG_rcΣ {Σ} : subG rcΣ Σ → rcG Σ.
 Proof. solve_inG. Qed.
 
 Definition rc_tok q : authR rc_stR :=

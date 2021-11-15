@@ -104,11 +104,11 @@ End typing.
 Definition typed_instruction_ty `{!typeGS Σ} (E : elctx) (L : llctx) (T : tctx)
     (e : expr) (ty : type) : iProp Σ :=
   typed_instruction E L T e (λ v, [v ◁ ty]).
-Arguments typed_instruction_ty {_ _} _ _ _ _%E _%T.
+Global Arguments typed_instruction_ty {_ _} _ _ _ _%E _%T.
 
 Definition typed_val `{!typeGS Σ} (v : val) (ty : type) : Prop :=
   ∀ E L, ⊢ typed_instruction_ty E L [] (of_val v) ty.
-Arguments typed_val _ _ _%V _%T.
+Global Arguments typed_val _ _ _%V _%T.
 
 Section typing_rules.
   Context `{!typeGS Σ}.

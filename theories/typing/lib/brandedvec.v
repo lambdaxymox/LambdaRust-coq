@@ -14,7 +14,7 @@ Class brandidxG Σ := BrandedIdxG {
 
 Definition brandidxΣ : gFunctors
   := #[GFunctor (authR brandidx_stR); lft_metaΣ].
-Instance subG_brandidxΣ {Σ} : subG brandidxΣ Σ → brandidxG Σ.
+Global Instance subG_brandidxΣ {Σ} : subG brandidxΣ Σ → brandidxG Σ.
 Proof. solve_inG. Qed.
 
 Definition brandidxN := lrustN .@ "brandix".

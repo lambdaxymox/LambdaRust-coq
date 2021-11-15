@@ -59,9 +59,9 @@ Fixpoint is_closed (X : list string) (e : expr) : bool :=
   end.
 
 Class Closed (X : list string) (e : expr) := closed : is_closed X e.
-Instance closed_proof_irrel env e : ProofIrrel (Closed env e).
+Global Instance closed_proof_irrel env e : ProofIrrel (Closed env e).
 Proof. rewrite /Closed. apply _. Qed.
-Instance closed_decision env e : Decision (Closed env e).
+Global Instance closed_decision env e : Decision (Closed env e).
 Proof. rewrite /Closed. apply _. Qed.
 
 Inductive val :=
@@ -347,10 +347,10 @@ Proof.
   revert v; induction e; intros v ?; simplify_option_eq; auto with f_equal.
 Qed.
 
-Instance of_val_inj : Inj (=) (=) of_val.
+Global Instance of_val_inj : Inj (=) (=) of_val.
 Proof. by intros ?? Hv; apply (inj Some); rewrite -!to_of_val Hv. Qed.
 
-Instance fill_item_inj Ki : Inj (=) (=) (fill_item Ki).
+Global Instance fill_item_inj Ki : Inj (=) (=) (fill_item Ki).
 Proof. destruct Ki; intros ???; simplify_eq/=; auto with f_equal. Qed.
 
 Lemma fill_item_val Ki e :
@@ -404,7 +404,7 @@ Proof. rewrite /shift_loc /=. f_equal. lia. Qed.
 Lemma shift_loc_0_nat l : l +ₗ 0%nat = l.
 Proof. destruct l as [b o]. rewrite /shift_loc /=. f_equal. lia. Qed.
 
-Instance shift_loc_inj l : Inj (=) (=) (shift_loc l).
+Global Instance shift_loc_inj l : Inj (=) (=) (shift_loc l).
 Proof. destruct l as [b o]; intros n n' [=?]; lia. Qed.
 
 Lemma shift_loc_block l n : (l +ₗ n).1 = l.1.
@@ -548,11 +548,11 @@ Lemma stuck_not_head_step σ e' κ σ' ef :
 Proof. inversion 1. Qed.
 
 (** Equality and other typeclass stuff *)
-Instance base_lit_dec_eq : EqDecision base_lit.
+Global Instance base_lit_dec_eq : EqDecision base_lit.
 Proof. solve_decision. Defined.
-Instance bin_op_dec_eq : EqDecision bin_op.
+Global Instance bin_op_dec_eq : EqDecision bin_op.
 Proof. solve_decision. Defined.
-Instance un_op_dec_eq : EqDecision order.
+Global Instance un_op_dec_eq : EqDecision order.
 Proof. solve_decision. Defined.
 
 Fixpoint expr_beq (e : expr) (e' : expr) : bool :=
@@ -597,17 +597,17 @@ Proof.
       specialize (FIX el1h). naive_solver. }
     clear FIX. naive_solver.
 Qed.
-Instance expr_dec_eq : EqDecision expr.
+Global Instance expr_dec_eq : EqDecision expr.
 Proof.
  refine (λ e1 e2, cast_if (decide (expr_beq e1 e2))); by rewrite -expr_beq_correct.
 Defined.
-Instance val_dec_eq : EqDecision val.
+Global Instance val_dec_eq : EqDecision val.
 Proof.
  refine (λ v1 v2, cast_if (decide (of_val v1 = of_val v2))); abstract naive_solver.
 Defined.
 
-Instance expr_inhabited : Inhabited expr := populate (Lit LitPoison).
-Instance val_inhabited : Inhabited val := populate (LitV LitPoison).
+Global Instance expr_inhabited : Inhabited expr := populate (Lit LitPoison).
+Global Instance val_inhabited : Inhabited val := populate (LitV LitPoison).
 
 Canonical Structure stateO := leibnizO state.
 Canonical Structure valO := leibnizO val.

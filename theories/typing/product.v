@@ -263,7 +263,7 @@ Section typing.
   Qed.
 End typing.
 
-Arguments product : simpl never.
+Global Arguments product : simpl never.
 Global Hint Opaque product : lrust_typing lrust_typing_merge.
 Global Hint Resolve product_mono' product_proper' ty_outlives_E_elctx_sat_product
   : lrust_typing.

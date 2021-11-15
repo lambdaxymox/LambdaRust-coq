@@ -11,7 +11,7 @@ Class lrustGS Σ := LRustGS {
   lrustGS_heapGS :> heapGS Σ
 }.
 
-Instance lrustGS_irisGS `{!lrustGS Σ} : irisGS lrust_lang Σ := {
+Global Instance lrustGS_irisGS `{!lrustGS Σ} : irisGS lrust_lang Σ := {
   iris_invGS := lrustGS_invGS;
   state_interp σ _ κs _ := heap_ctx σ;
   fork_post _ := True%I;
@@ -39,8 +39,8 @@ Local Hint Resolve to_of_val : core.
 
 Class AsRec (e : expr) (f : binder) (xl : list binder) (erec : expr) :=
   as_rec : e = Rec f xl erec.
-Instance AsRec_rec f xl e : AsRec (Rec f xl e) f xl e := eq_refl.
-Instance AsRec_rec_locked_val v f xl e :
+Global Instance AsRec_rec f xl e : AsRec (Rec f xl e) f xl e := eq_refl.
+Global Instance AsRec_rec_locked_val v f xl e :
   AsRec (of_val v) f xl e → AsRec (of_val (locked v)) f xl e.
 Proof. by unlock. Qed.
 
@@ -51,13 +51,13 @@ Global Hint Extern 0 (DoSubst _ _ _ _) =>
 
 Class DoSubstL (xl : list binder) (esl : list expr) (e er : expr) :=
   do_subst_l : subst_l xl esl e = Some er.
-Instance do_subst_l_nil e : DoSubstL [] [] e e.
+Global Instance do_subst_l_nil e : DoSubstL [] [] e e.
 Proof. done. Qed.
-Instance do_subst_l_cons x xl es esl e er er' :
+Global Instance do_subst_l_cons x xl es esl e er er' :
   DoSubstL xl esl e er' → DoSubst x es er' er →
   DoSubstL (x :: xl) (es :: esl) e er.
 Proof. rewrite /DoSubstL /DoSubst /= => -> <- //. Qed.
-Instance do_subst_vec xl (vsl : vec val (length xl)) e :
+Global Instance do_subst_vec xl (vsl : vec val (length xl)) e :
   DoSubstL xl (of_val <$> vec_to_list vsl) e (subst_v xl vsl e).
 Proof. by rewrite /DoSubstL subst_v_eq. Qed.
 

@@ -17,7 +17,7 @@ Section arc.
 
   (* Preliminary definitions. *)
   Let P1 ν q := (q.[ν])%I.
-  Instance P1_fractional ν : Fractional (P1 ν).
+  Local Instance P1_fractional ν : Fractional (P1 ν).
   Proof. unfold P1. apply _. Qed.
   Let P2 l n := († l…(2 + n) ∗ (l +ₗ 2) ↦∗: λ vl, ⌜length vl = n⌝)%I.
   Definition arc_persist tid ν (γ : gname) (l : loc) (ty : type) : iProp Σ :=

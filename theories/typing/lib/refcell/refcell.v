@@ -13,7 +13,7 @@ Definition refcell_stR :=
 Class refcellG Σ :=
   RefCellG :> inG Σ (authR refcell_stR).
 Definition refcellΣ : gFunctors := #[GFunctor (authR refcell_stR)].
-Instance subG_refcellΣ {Σ} : subG refcellΣ Σ → refcellG Σ.
+Global Instance subG_refcellΣ {Σ} : subG refcellΣ Σ → refcellG Σ.
 Proof. solve_inG. Qed.
 
 Definition refcell_st := option ((lft * Datatypes.bool) * frac * positive).

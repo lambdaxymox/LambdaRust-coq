@@ -110,7 +110,7 @@ Definition arc_stR :=
 Class arcG Σ :=
   RcG :> inG Σ (authR arc_stR).
 Definition arcΣ : gFunctors := #[GFunctor (authR arc_stR)].
-Instance subG_arcΣ {Σ} : subG arcΣ Σ → arcG Σ.
+Global Instance subG_arcΣ {Σ} : subG arcΣ Σ → arcG Σ.
 Proof. solve_inG. Qed.
 
 Section def.
@@ -161,7 +161,7 @@ Section arc.
   Context `{!lrustGS Σ, !arcG Σ} (P1 : Qp → iProp Σ) {HP1:Fractional P1}
           (P2 : iProp Σ) (N : namespace).
 
-  Instance P1_AsFractional q : AsFractional (P1 q) P1 q.
+  Local Instance P1_AsFractional q : AsFractional (P1 q) P1 q.
   Proof using HP1. done. Qed.
 
   Global Instance arc_inv_ne n :

@@ -10,7 +10,7 @@ Definition rwlock_stR :=
 Class rwlockG Σ :=
   RwLockG :> inG Σ (authR rwlock_stR).
 Definition rwlockΣ : gFunctors := #[GFunctor (authR rwlock_stR)].
-Instance subG_rwlockΣ {Σ} : subG rwlockΣ Σ → rwlockG Σ.
+Global Instance subG_rwlockΣ {Σ} : subG rwlockΣ Σ → rwlockG Σ.
 Proof. solve_inG. Qed.
 
 Definition Z_of_rwlock_st (st : rwlock_stR) : Z :=

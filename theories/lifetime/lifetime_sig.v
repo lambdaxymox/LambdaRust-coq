@@ -23,7 +23,7 @@ Module Type lifetime_sig.
   (** * Definitions *)
   Parameter lft : Type.
   Parameter static : lft.
-  Declare Instance lft_intersect : Meet lft.
+  Global Declare Instance lft_intersect : Meet lft.
 
   Parameter lft_ctx : ∀ `{!invGS Σ, !lftGS Σ userE}, iProp Σ.
 

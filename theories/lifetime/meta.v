@@ -11,7 +11,7 @@ Class lft_metaG Σ := LftMetaG {
 }.
 Definition lft_metaΣ : gFunctors :=
   #[GFunctor (dyn_reservation_mapR (agreeR gnameO))].
-Instance subG_lft_meta Σ :
+Global Instance subG_lft_meta Σ :
   subG (lft_metaΣ) Σ → lft_metaG Σ.
 Proof. solve_inG. Qed.
 

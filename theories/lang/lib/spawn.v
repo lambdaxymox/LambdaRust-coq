@@ -31,7 +31,7 @@ Definition join : val :=
 Class spawnG Σ := SpawnG { spawn_tokG :> inG Σ (exclR unitO) }.
 Definition spawnΣ : gFunctors := #[GFunctor (exclR unitO)].
 
-Instance subG_spawnΣ {Σ} : subG spawnΣ Σ → spawnG Σ.
+Global Instance subG_spawnΣ {Σ} : subG spawnΣ Σ → spawnG Σ.
 Proof. solve_inG. Qed.
 
 (** Now we come to the Iris part of the proof. *)

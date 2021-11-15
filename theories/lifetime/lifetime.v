@@ -18,7 +18,7 @@ End lifetime.
 
 Notation lft_intersect_list l := (foldr (⊓) static l).
 
-Instance lft_inhabited : Inhabited lft := populate static.
+Global Instance lft_inhabited : Inhabited lft := populate static.
 
 Canonical lftO := leibnizO lft.
 

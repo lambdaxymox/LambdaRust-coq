@@ -50,11 +50,11 @@ Global Instance: Params (@ty_size) 2 := {}.
 Global Instance: Params (@ty_own) 2 := {}.
 Global Instance: Params (@ty_shr) 2 := {}.
 
-Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
+Global Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
 
 Class TyWf `{!typeGS Σ} (ty : type) := { ty_lfts : list lft; ty_wf_E : elctx }.
-Arguments ty_lfts {_ _} _ {_}.
-Arguments ty_wf_E {_ _} _ {_}.
+Global Arguments ty_lfts {_ _} _ {_}.
+Global Arguments ty_wf_E {_ _} _ {_}.
 
 Definition ty_outlives_E `{!typeGS Σ} ty `{!TyWf ty} (κ : lft) : elctx :=
   (λ α, κ ⊑ₑ α) <$> (ty_lfts ty).
@@ -77,7 +77,7 @@ Inductive ListTyWf `{!typeGS Σ} : list type → Type :=
 | list_ty_wf_nil : ListTyWf []
 | list_ty_wf_cons ty tyl `{!TyWf ty, !ListTyWf tyl} : ListTyWf (ty::tyl).
 Existing Class ListTyWf.
-Existing Instances list_ty_wf_nil list_ty_wf_cons.
+Global Existing Instances list_ty_wf_nil list_ty_wf_cons.
 
 Fixpoint tyl_lfts `{!typeGS Σ} tyl {WF : ListTyWf tyl} : list lft :=
   match WF with
@@ -117,7 +117,7 @@ Record simple_type `{!typeGS Σ} :=
     st_size_eq tid vl : st_own tid vl -∗ ⌜length vl = 1%nat⌝;
     st_own_persistent tid vl : Persistent (st_own tid vl) }.
 Global Existing Instance st_own_persistent.
-Instance: Params (@st_own) 2 := {}.
+Global Instance: Params (@st_own) 2 := {}.
 
 Program Definition ty_of_st `{!typeGS Σ} (st : simple_type) : type :=
   {| ty_size := 1; ty_own := st.(st_own);
@@ -157,14 +157,14 @@ Section ofe.
       (∀ tid vs, ty1.(ty_own) tid vs ≡ ty2.(ty_own) tid vs) →
       (∀ κ tid l, ty1.(ty_shr) κ tid l ≡ ty2.(ty_shr) κ tid l) →
       type_equiv' ty1 ty2.
-  Instance type_equiv : Equiv type := type_equiv'.
+  Local Instance type_equiv : Equiv type := type_equiv'.
   Inductive type_dist' (n : nat) (ty1 ty2 : type) : Prop :=
     Type_dist :
       ty1.(ty_size) = ty2.(ty_size) →
       (∀ tid vs, ty1.(ty_own) tid vs ≡{n}≡ ty2.(ty_own) tid vs) →
       (∀ κ tid l, ty1.(ty_shr) κ tid l ≡{n}≡ ty2.(ty_shr) κ tid l) →
       type_dist' n ty1 ty2.
-  Instance type_dist : Dist type := type_dist'.
+  Local Instance type_dist : Dist type := type_dist'.
 
   Let T := prodO
     (prodO natO (thread_id -d> list val -d> iPropO Σ))
@@ -225,12 +225,12 @@ Section ofe.
     St_equiv :
       (∀ tid vs, ty1.(ty_own) tid vs ≡ ty2.(ty_own) tid vs) →
       st_equiv' ty1 ty2.
-  Instance st_equiv : Equiv simple_type := st_equiv'.
+  Local Instance st_equiv : Equiv simple_type := st_equiv'.
   Inductive st_dist' (n : nat) (ty1 ty2 : simple_type) : Prop :=
     St_dist :
       (∀ tid vs, ty1.(ty_own) tid vs ≡{n}≡ (ty2.(ty_own) tid vs)) →
       st_dist' n ty1 ty2.
-  Instance st_dist : Dist simple_type := st_dist'.
+  Local Instance st_dist : Dist simple_type := st_dist'.
 
   Definition st_unpack (ty : simple_type) : thread_id -d> list val -d> iPropO Σ :=
     λ tid vl, ty.(ty_own) tid vl.
@@ -399,31 +399,31 @@ Class Copy `{!typeGS Σ} (t : type) := {
       (na_own tid (F ∖ shr_locsE l t.(ty_size)) -∗ ▷l ↦∗{q'}: t.(ty_own) tid
                                   ={E}=∗ na_own tid F ∗ q.[κ])
 }.
-Existing Instances copy_persistent.
-Instance: Params (@Copy) 2 := {}.
+Global Existing Instances copy_persistent.
+Global Instance: Params (@Copy) 2 := {}.
 
 Class ListCopy `{!typeGS Σ} (tys : list type) := lst_copy : Forall Copy tys.
-Instance: Params (@ListCopy) 2 := {}.
+Global Instance: Params (@ListCopy) 2 := {}.
 Global Instance lst_copy_nil `{!typeGS Σ} : ListCopy [] := List.Forall_nil _.
 Global Instance lst_copy_cons `{!typeGS Σ} ty tys :
   Copy ty → ListCopy tys → ListCopy (ty :: tys) := List.Forall_cons _ _ _.
 
 Class Send `{!typeGS Σ} (t : type) :=
   send_change_tid tid1 tid2 vl : t.(ty_own) tid1 vl -∗ t.(ty_own) tid2 vl.
-Instance: Params (@Send) 2 := {}.
+Global Instance: Params (@Send) 2 := {}.
 
 Class ListSend `{!typeGS Σ} (tys : list type) := lst_send : Forall Send tys.
-Instance: Params (@ListSend) 2 := {}.
+Global Instance: Params (@ListSend) 2 := {}.
 Global Instance lst_send_nil `{!typeGS Σ} : ListSend [] := List.Forall_nil _.
 Global Instance lst_send_cons `{!typeGS Σ} ty tys :
   Send ty → ListSend tys → ListSend (ty :: tys) := List.Forall_cons _ _ _.
 
 Class Sync `{!typeGS Σ} (t : type) :=
   sync_change_tid κ tid1 tid2 l : t.(ty_shr) κ tid1 l -∗ t.(ty_shr) κ tid2 l.
-Instance: Params (@Sync) 2 := {}.
+Global Instance: Params (@Sync) 2 := {}.
 
 Class ListSync `{!typeGS Σ} (tys : list type) := lst_sync : Forall Sync tys.
-Instance: Params (@ListSync) 2 := {}.
+Global Instance: Params (@ListSync) 2 := {}.
 Global Instance lst_sync_nil `{!typeGS Σ} : ListSync [] := List.Forall_nil _.
 Global Instance lst_sync_cons `{!typeGS Σ} ty tys :
   Sync ty → ListSync tys → ListSync (ty :: tys) := List.Forall_cons _ _ _.
@@ -536,23 +536,23 @@ Definition type_incl `{!typeGS Σ} (ty1 ty2 : type) : iProp Σ :=
     (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
      (□ ∀ tid vl, ty1.(ty_own) tid vl -∗ ty2.(ty_own) tid vl) ∗
      (□ ∀ κ tid l, ty1.(ty_shr) κ tid l -∗ ty2.(ty_shr) κ tid l))%I.
-Instance: Params (@type_incl) 2 := {}.
+Global Instance: Params (@type_incl) 2 := {}.
 (* Typeclasses Opaque type_incl. *)
 
 Definition type_equal `{!typeGS Σ} (ty1 ty2 : type) : iProp Σ :=
     (⌜ty1.(ty_size) = ty2.(ty_size)⌝ ∗
      (□ ∀ tid vl, ty1.(ty_own) tid vl ∗-∗ ty2.(ty_own) tid vl) ∗
      (□ ∀ κ tid l, ty1.(ty_shr) κ tid l ∗-∗ ty2.(ty_shr) κ tid l))%I.
-Instance: Params (@type_equal) 2 := {}.
+Global Instance: Params (@type_equal) 2 := {}.
 
 Definition subtype `{!typeGS Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
   ∀ qmax qL, llctx_interp_noend qmax L qL -∗ □ (elctx_interp E -∗ type_incl ty1 ty2).
-Instance: Params (@subtype) 4 := {}.
+Global Instance: Params (@subtype) 4 := {}.
 
 (* TODO: The prelude should have a symmetric closure. *)
 Definition eqtype `{!typeGS Σ} (E : elctx) (L : llctx) (ty1 ty2 : type) : Prop :=
   subtype E L ty1 ty2 ∧ subtype E L ty2 ty1.
-Instance: Params (@eqtype) 4 := {}.
+Global Instance: Params (@eqtype) 4 := {}.
 
 Section subtyping.
   Context `{!typeGS Σ}.
