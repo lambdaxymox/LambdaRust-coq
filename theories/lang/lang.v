@@ -3,7 +3,7 @@ From stdpp Require Export strings binders.
 From stdpp Require Import gmap.
 From iris.prelude Require Import options.
 
-Open Scope Z_scope.
+Global Open Scope Z_scope.
 
 (** Expressions and vals. *)
 Definition block : Set := positive.
@@ -12,7 +12,7 @@ Definition loc : Set := block * Z.
 Declare Scope loc_scope.
 Bind Scope loc_scope with loc.
 Delimit Scope loc_scope with L.
-Open Scope loc_scope.
+Global Open Scope loc_scope.
 
 Inductive base_lit : Set :=
 | LitPoison | LitLoc (l : loc) | LitInt (n : Z).
@@ -43,8 +43,8 @@ Inductive expr :=
 | Case (e : expr) (el : list expr)
 | Fork (e : expr).
 
-Arguments App _%E _%E.
-Arguments Case _%E _%E.
+Global Arguments App _%E _%E.
+Global Arguments Case _%E _%E.
 
 Fixpoint is_closed (X : list string) (e : expr) : bool :=
   match e with
@@ -151,12 +151,12 @@ Fixpoint subst_l (xl : list binder) (esl : list expr) (e : expr) : option expr :
   | x::xl, es::esl => subst' x es <$> subst_l xl esl e
   | _, _ => None
   end.
-Arguments subst_l _%binder _ _%E.
+Global Arguments subst_l _%binder _ _%E.
 
 Definition subst_v (xl : list binder) (vsl : vec val (length xl))
                    (e : expr) : expr :=
   Vector.fold_right2 (λ b, subst' b ∘ of_val) e _ (list_to_vec xl) vsl.
-Arguments subst_v _%binder _ _%E.
+Global Arguments subst_v _%binder _ _%E.
 
 Lemma subst_v_eq (xl : list binder) (vsl : vec val (length xl)) e :
   Some $ subst_v xl vsl e = subst_l xl (of_val <$> vec_to_list vsl) e.

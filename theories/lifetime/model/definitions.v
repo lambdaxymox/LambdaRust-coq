@@ -17,7 +17,7 @@ Module Export lft_notation.
 End lft_notation.
 
 Definition static : lft := (∅ : gmultiset _).
-Instance lft_intersect : Meet lft := λ κ κ', κ ⊎ κ'.
+Global Instance lft_intersect : Meet lft := λ κ κ', κ ⊎ κ'.
 
 Definition positive_to_lft (p : positive) : lft := {[+ p +]}.
 

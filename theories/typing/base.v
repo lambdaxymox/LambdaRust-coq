@@ -6,7 +6,7 @@ From iris.prelude Require Import options.
    sets coming from the prelude. *)
 From lrust.lang.lib Require Export new_delete.
 
-Open Scope Z_scope.
+Global Open Scope Z_scope.
 
 Definition lft_userN : namespace := nroot .@ "lft_usr".
 

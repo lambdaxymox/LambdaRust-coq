@@ -45,10 +45,10 @@ Record type `{!typeGS Σ} :=
     ty_shr_mono κ κ' tid l :
       κ' ⊑ κ -∗ ty_shr κ tid l -∗ ty_shr κ' tid l
   }.
-Existing Instance ty_shr_persistent.
-Instance: Params (@ty_size) 2 := {}.
-Instance: Params (@ty_own) 2 := {}.
-Instance: Params (@ty_shr) 2 := {}.
+Global Existing Instance ty_shr_persistent.
+Global Instance: Params (@ty_size) 2 := {}.
+Global Instance: Params (@ty_own) 2 := {}.
+Global Instance: Params (@ty_shr) 2 := {}.
 
 Arguments ty_own {_ _} !_ _ _ / : simpl nomatch.
 
@@ -116,7 +116,7 @@ Record simple_type `{!typeGS Σ} :=
   { st_own : thread_id → list val → iProp Σ;
     st_size_eq tid vl : st_own tid vl -∗ ⌜length vl = 1%nat⌝;
     st_own_persistent tid vl : Persistent (st_own tid vl) }.
-Existing Instance st_own_persistent.
+Global Existing Instance st_own_persistent.
 Instance: Params (@st_own) 2 := {}.
 
 Program Definition ty_of_st `{!typeGS Σ} (st : simple_type) : type :=
@@ -283,7 +283,7 @@ Section type_dist2.
 
   Definition type_dist2_later (n : nat) ty1 ty2 : Prop :=
     match n with O => True | S n => type_dist2 n ty1 ty2 end.
-  Arguments type_dist2_later !_ _ _ /.
+  Global Arguments type_dist2_later !_ _ _ /.
 
   Global Instance type_dist2_later_equivalence n :
     Equivalence (type_dist2_later n).

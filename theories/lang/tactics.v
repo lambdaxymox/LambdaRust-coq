@@ -229,8 +229,8 @@ Ltac simpl_subst :=
       rewrite <-(W.to_expr_subst x); simpl (* ssr rewrite is slower *)
   end;
   unfold W.to_expr; simpl.
-Arguments W.to_expr : simpl never.
-Arguments subst : simpl never.
+Global Arguments W.to_expr : simpl never.
+Global Arguments subst : simpl never.
 
 (** The tactic [inv_head_step] performs inversion on hypotheses of the
 shape [head_step]. The tactic will discharge head-reductions starting
