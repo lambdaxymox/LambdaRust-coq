@@ -3,6 +3,7 @@ From stdpp Require Export gmultiset strings.
 From iris.base_logic.lib Require Export invariants.
 From iris.base_logic.lib Require Import boxes.
 From iris.bi Require Import fractional.
+From iris.proofmode Require Import proofmode.
 From iris.prelude Require Import options.
 
 Definition lftN : namespace := nroot .@ "lft".
@@ -88,9 +89,16 @@ Module Type lifetime_sig.
   Global Declare Instance lft_tok_fractional κ : Fractional (λ q, q.[κ])%I.
   Global Declare Instance lft_tok_as_fractional κ q :
     AsFractional q.[κ] (λ q, q.[κ])%I q.
+  Global Declare Instance frame_lft_tok p κ q1 q2 RES :
+    FrameFractionalHyps p q1.[κ] (λ q, q.[κ])%I RES q1 q2 →
+    Frame p q1.[κ] q2.[κ] RES | 5.
+
   Global Declare Instance idx_bor_own_fractional i : Fractional (λ q, idx_bor_own q i)%I.
   Global Declare Instance idx_bor_own_as_fractional i q :
     AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
+  Global Declare Instance frame_idx_bor_own p i q1 q2 RES :
+    FrameFractionalHyps p (idx_bor_own q1 i) (λ q, idx_bor_own q i)%I RES q1 q2 →
+    Frame p (idx_bor_own q1 i) (idx_bor_own q2 i) RES | 5.
 
   Global Declare Instance positive_to_lft_inj : Inj eq eq positive_to_lft.
 

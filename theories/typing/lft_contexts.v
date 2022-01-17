@@ -96,6 +96,11 @@ Section lft_contexts.
   Global Instance llctx_interp_as_fractional qmax L q :
     AsFractional (llctx_interp_noend qmax L q) (llctx_interp_noend qmax L) q.
   Proof. split; first done. apply _. Qed.
+  Global Instance frame_llctx_interp p qmax L q1 q2 RES :
+    FrameFractionalHyps p (llctx_interp_noend qmax L q1) (llctx_interp_noend qmax L) RES q1 q2 →
+    Frame p (llctx_interp_noend qmax L q1) (llctx_interp_noend qmax L q2) RES | 5.
+  Proof. apply: frame_fractional. Qed.
+
   Global Instance llctx_interp_permut qmax :
     Proper ((≡ₚ) ==> (⊣⊢)) (llctx_interp qmax).
   Proof. intros ???. by apply big_opL_permutation. Qed.

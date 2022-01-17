@@ -284,7 +284,7 @@ Section arc.
     - wp_apply (wp_cas_int_fail with "Hl"); [congruence|]. iIntros "Hl".
       iMod ("Hclose2" with "Hown") as "HP". iModIntro.
       iMod ("Hclose1" with "[-HP HΦ]") as "_".
-      { iExists _. iFrame. iExists qq. auto with iFrame. }
+      { iExists _. iFrame. iExists qq. iCombine "HP1 HP1'" as "$". auto with iFrame. }
       iModIntro. wp_case. iApply ("IH" with "HP HΦ").
   Qed.
 
@@ -411,7 +411,7 @@ Section arc.
           rewrite /= [xH ⋅ _]comm_L frac_op [(_ + q')%Qp]comm -[(_ + _)%Qp]assoc
                   Qp_div_2 left_id_L. auto with iFrame.
         + iIntros "Hl". iFrame. iApply ("Hclose1" with "[-]"). iExists _. iFrame.
-          iExists q. auto with iFrame.
+          iExists q. iCombine "HP1 HP1'" as "$". auto with iFrame.
       - iDestruct "H" as "[>$ ?]". iIntros "!>"; iSplit; first by auto with congruence.
         iIntros "Hl". iMod ("Hclose2" with "Hown") as "$". iApply "Hclose1".
         iExists _. auto with iFrame.
@@ -521,14 +521,16 @@ Section arc.
           by apply (op_local_update _ _ (Some (Cinr (Excl ())))). }
         iMod ("Hclose" with "[H● Hs Hw]") as "_"; first by iExists _; do 2 iFrame.
         iModIntro. wp_case. iApply wp_fupd. wp_op.
-        iApply ("HΦ"). rewrite -{2}Hq''. iFrame. by iApply close_last_strong.
+        iApply ("HΦ"). rewrite -{2}Hq''. iCombine "HP1 HP1'" as "$".
+        by iApply close_last_strong.
       + destruct Hqq' as [? ->].
         rewrite -[in (_, _)](Pos.succ_pred s) // -[wl in Cinl (_, wl)]left_id
                 -Pos.add_1_l 2!pair_op Cinl_op Some_op.
         iMod (own_update_2 _ _ _ _ with "H● Hown") as "H●".
         { apply auth_update_dealloc, prod_local_update_1, @cancel_local_update_unit, _. }
         iMod ("Hclose" with "[- HΦ]") as "_".
-        { iExists _. iFrame. iExists (q + q'')%Qp. iFrame. iSplit; last by destruct s.
+        { iExists _. iFrame. iExists (q + q'')%Qp. iCombine "HP1 HP1'" as "$".
+          iSplit; last by destruct s.
           iIntros "!> !%". rewrite assoc -Hq''. f_equal. apply comm, _. }
         iModIntro. wp_case. wp_op; case_bool_decide; simplify_eq. by iApply "HΦ".
     - wp_apply (wp_cas_int_fail with "Hs"); [congruence|]. iIntros "Hs".
@@ -553,7 +555,8 @@ Section arc.
         etrans; first apply: cancel_local_update_unit.
         by apply (op_local_update _ _ (Some (Cinr (Excl ())))). }
       iMod ("Hclose" with "[H● Hs Hw]") as "_"; first by iExists _; do 2 iFrame.
-      iApply ("HΦ" $! true). rewrite -{1}Hq''. iFrame. by iApply close_last_strong.
+      iApply ("HΦ" $! true). rewrite -{1}Hq''. iCombine "HP1 HP1'" as "$".
+      by iApply close_last_strong.
     - wp_apply (wp_cas_int_fail with "Hs"); [congruence|]. iIntros "Hs".
       iMod ("Hclose" with "[-Hown HP1 HΦ]") as "_"; first by iExists _; auto with iFrame.
       iApply ("HΦ" $! false). by iFrame.
@@ -610,13 +613,13 @@ Section arc.
           csum_local_update_l, prod_local_update_2, delete_option_local_update, _. }
         iMod ("Hclose" with "[-HΦ H◯ HP1]") as "_"; first by iExists _; auto with iFrame.
         iModIntro. wp_seq. iApply "HΦ". iFrame.
-      + setoid_subst. iDestruct "H" as (?) "(Hq & ? & ? & >? & >%)". subst. wp_read.
+      + setoid_subst. iDestruct "H" as (?) "(Hq & HP1' & ? & >? & >%)". subst. wp_read.
         iMod (own_update_2 with "H● H◯") as "H●".
         { apply auth_update_dealloc. rewrite -{1}[(_, 0%nat)]right_id.
           apply cancel_local_update_unit, _. }
         iMod ("Hclose" with "[H●]") as "_"; first by iExists _; iFrame.
         iModIntro. wp_seq. wp_op. wp_let. wp_op. wp_write. iApply "HΦ".
-        iDestruct "Hq" as %<-. iFrame.
+        iDestruct "Hq" as %<-. iCombine "HP1 HP1'" as "$". iFrame.
   Qed.
 
   Lemma try_unwrap_full_spec (γ : gname) (q: Qp) (l : loc) :

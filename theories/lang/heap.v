@@ -124,6 +124,11 @@ Section heap.
     AsFractional (l ↦{q} v) (λ q, l ↦{q} v)%I q.
   Proof. split; first done. apply _. Qed.
 
+  Global Instance frame_mapsto p l v q1 q2 RES :
+    FrameFractionalHyps p (l ↦{q1} v) (λ q, l ↦{q} v)%I RES q1 q2 →
+    Frame p (l ↦{q1} v) (l ↦{q2} v) RES | 5.
+  Proof. apply: frame_fractional. Qed.
+
   Global Instance heap_mapsto_vec_timeless l q vl : Timeless (l ↦∗{q} vl).
   Proof. rewrite /heap_mapsto_vec. apply _. Qed.
 

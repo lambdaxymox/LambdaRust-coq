@@ -302,6 +302,11 @@ Qed.
 Global Instance lft_tok_as_fractional κ q :
   AsFractional q.[κ] (λ q, q.[κ])%I q.
 Proof. split; first done. apply _. Qed.
+Global Instance frame_lft_tok p κ q1 q2 RES :
+  FrameFractionalHyps p q1.[κ] (λ q, q.[κ])%I RES q1 q2 →
+  Frame p q1.[κ] q2.[κ] RES | 5.
+Proof. apply: frame_fractional. Qed.
+
 Global Instance idx_bor_own_fractional i : Fractional (λ q, idx_bor_own q i)%I.
 Proof.
   intros p q. rewrite /idx_bor_own -own_bor_op /own_bor. f_equiv=>?.
@@ -310,6 +315,10 @@ Qed.
 Global Instance idx_bor_own_as_fractional i q :
   AsFractional (idx_bor_own q i) (λ q, idx_bor_own q i)%I q.
 Proof. split; first done. apply _. Qed.
+Global Instance frame_idx_bor_own p i q1 q2 RES :
+  FrameFractionalHyps p (idx_bor_own q1 i) (λ q, idx_bor_own q i)%I RES q1 q2 →
+  Frame p (idx_bor_own q1 i) (idx_bor_own q2 i) RES | 5.
+Proof. apply: frame_fractional. Qed.
 
 (** Lifetime inclusion *)
 Lemma lft_incl_acc E κ κ' q :
