@@ -49,6 +49,10 @@ Section cell.
   Lemma cell_proper' E L ty1 ty2 : eqtype E L ty1 ty2 → eqtype E L (cell ty1) (cell ty2).
   Proof. eapply cell_proper. Qed.
 
+  (* The real [Cell] in Rust is never [Copy], but that is mostly for reasons of
+     ergonomics -- it is widely agreed that it would be sound for [Cell] to be
+     [Copy]. [Cell] is also rather unique as an interior mutable [Copy] type, so
+     proving this is a good benchmark. *)
   Global Instance cell_copy ty :
     Copy ty → Copy (cell ty).
   Proof.
