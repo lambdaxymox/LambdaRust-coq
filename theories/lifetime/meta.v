@@ -64,4 +64,4 @@ Section lft_meta.
   Qed.
 End lft_meta.
 
-Typeclasses Opaque lft_meta.
+Global Typeclasses Opaque lft_meta.

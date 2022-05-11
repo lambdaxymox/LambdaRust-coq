@@ -125,4 +125,4 @@ Qed.
 
 End proof.
 
-Typeclasses Opaque finish_handle join_handle.
+Global Typeclasses Opaque finish_handle join_handle.

@@ -103,4 +103,4 @@ Lemma at_bor_acc_lftN `{!invGS Σ, !lftGS Σ userE} (P : iProp Σ) E κ :
              [†κ] ∗ |={E∖↑lftN,E}=> True.
 Proof. intros. by rewrite (at_bor_acc _ lftN) // difference_twice_L. Qed.
 
-Typeclasses Opaque at_bor.
+Global Typeclasses Opaque at_bor.

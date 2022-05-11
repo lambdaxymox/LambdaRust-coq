@@ -168,4 +168,4 @@ Proof.
     iDestruct (lft_tok_dead with "Hκ' H†'") as "[]".
 Qed.
 
-Typeclasses Opaque frac_bor.
+Global Typeclasses Opaque frac_bor.

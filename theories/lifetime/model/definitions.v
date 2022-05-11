@@ -219,7 +219,7 @@ Infix "⊑" := lft_incl (at level 70) : bi_scope.
 (* TODO: Making all these things opaque is rather annoying, we should
    find a way to avoid it, or *at least*, to avoid having to manually unfold
    this because iDestruct et al don't look through these names any more. *)
-Typeclasses Opaque lft_tok lft_dead bor_cnt lft_bor_alive lft_bor_dead
+Global Typeclasses Opaque lft_tok lft_dead bor_cnt lft_bor_alive lft_bor_dead
   lft_inh lft_inv_alive lft_vs_inv lft_vs lft_inv_dead lft_inv lft_incl
   idx_bor_own idx_bor raw_bor bor.
 

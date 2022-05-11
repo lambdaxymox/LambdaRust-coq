@@ -669,4 +669,4 @@ Section arc.
   Qed.
 End arc.
 
-Typeclasses Opaque is_arc arc_tok weak_tok.
+Global Typeclasses Opaque is_arc arc_tok weak_tok.

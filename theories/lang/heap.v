@@ -66,7 +66,7 @@ Section definitions.
          ∗ ⌜heap_freeable_rel σ hF⌝)%I.
 End definitions.
 
-Typeclasses Opaque heap_mapsto heap_freeable heap_mapsto_vec.
+Global Typeclasses Opaque heap_mapsto heap_freeable heap_mapsto_vec.
 Global Instance: Params (@heap_mapsto) 4 := {}.
 Global Instance: Params (@heap_freeable) 5 := {}.
 

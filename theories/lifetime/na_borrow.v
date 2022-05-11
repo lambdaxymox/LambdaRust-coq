@@ -63,4 +63,4 @@ Section na_bor.
   Qed.
 End na_bor.
 
-Typeclasses Opaque na_bor.
+Global Typeclasses Opaque na_bor.

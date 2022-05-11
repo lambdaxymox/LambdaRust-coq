@@ -109,4 +109,4 @@ Section proof.
   Qed.
 End proof.
 
-Typeclasses Opaque lock_proto.
+Global Typeclasses Opaque lock_proto.
