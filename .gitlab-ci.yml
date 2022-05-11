@@ -28,10 +28,10 @@ variables:
 
 ## Build jobs
 
-build-coq.8.14.0:
+build-coq.8.15.1:
   <<: *template
   variables:
-    OPAM_PINS: "coq version 8.14.0"
+    OPAM_PINS: "coq version 8.15.1"
     DENY_WARNINGS: "1"
     MANGLE_NAMES: "1"
   tags:
@@ -40,7 +40,7 @@ build-coq.8.14.0:
 trigger-iris.timing:
   <<: *template
   variables:
-    OPAM_PINS: "coq version 8.13.1   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
+    OPAM_PINS: "coq version 8.15.1   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
   tags:
   - fp-timing
   only:
@@ -56,7 +56,7 @@ trigger-iris.dev:
   variables:
     STDPP_REPO: "iris/stdpp"
     IRIS_REPO: "iris/iris"
-    OPAM_PINS: "coq version 8.14.dev   git+https://gitlab.mpi-sws.org/$STDPP_REPO#$STDPP_REV   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
+    OPAM_PINS: "coq version 8.15.dev   git+https://gitlab.mpi-sws.org/$STDPP_REPO#$STDPP_REV   git+https://gitlab.mpi-sws.org/$IRIS_REPO#$IRIS_REV"
   except:
   only:
     refs:
