@@ -1,5 +1,9 @@
 Missing APIs from the types we cover (APIs have been added after this formalization was done)
 
+# Mutex
+
+* Might become covariant: https://github.com/rust-lang/rust/pull/96820
+
 # Cell
 
 * Structural conversion for slices.  The matching operations in our model would be
