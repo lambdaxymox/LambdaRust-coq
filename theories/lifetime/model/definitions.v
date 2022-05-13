@@ -135,7 +135,7 @@ Section defs.
    Definition lft_vs_inv_go (κ : lft) (lft_inv_alive : ∀ κ', κ' ⊂ κ → iProp Σ)
        (I : gmap lft lft_names) : iProp Σ :=
      (own_ilft_auth I ∗
-       [∗ set] κ' ∈ dom _ I, ∀ Hκ : κ' ⊂ κ, lft_inv_alive κ' Hκ)%I.
+       [∗ set] κ' ∈ dom I, ∀ Hκ : κ' ⊂ κ, lft_inv_alive κ' Hκ)%I.
 
    Definition lft_vs_go (κ : lft) (lft_inv_alive : ∀ κ', κ' ⊂ κ → iProp Σ)
        (Pb Pi : iProp Σ) : iProp Σ :=
@@ -179,7 +179,7 @@ Section defs.
     (∃ (A : gmap atomic_lft bool) (I : gmap lft lft_names),
       own_alft_auth A ∗
       own_ilft_auth I ∗
-      [∗ set] κ ∈ dom _ I, lft_inv A κ)%I.
+      [∗ set] κ ∈ dom I, lft_inv A κ)%I.
 
   Definition lft_ctx : iProp Σ := inv mgmtN lfts_inv.
 
@@ -263,7 +263,7 @@ Qed.
 Lemma lft_vs_inv_unfold κ (I : gmap lft lft_names) :
   lft_vs_inv κ I ⊣⊢
     own_ilft_auth I ∗
-    [∗ set] κ' ∈ dom _ I, ⌜κ' ⊂ κ⌝ → lft_inv_alive κ'.
+    [∗ set] κ' ∈ dom I, ⌜κ' ⊂ κ⌝ → lft_inv_alive κ'.
 Proof.
   rewrite /lft_vs_inv /lft_vs_inv_go. by setoid_rewrite pure_impl_forall.
 Qed.

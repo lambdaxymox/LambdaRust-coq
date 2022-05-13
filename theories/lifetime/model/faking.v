@@ -9,9 +9,9 @@ Context `{!invGS Σ, !lftGS Σ userE}.
 Implicit Types κ : lft.
 
 Lemma ilft_create A I κ :
-  own_alft_auth A -∗ own_ilft_auth I -∗ ▷ ([∗ set] κ ∈ dom _ I, lft_inv A κ)
+  own_alft_auth A -∗ own_ilft_auth I -∗ ▷ ([∗ set] κ ∈ dom I, lft_inv A κ)
       ==∗ ∃ A' I', ⌜is_Some (I' !! κ)⌝ ∗
-    own_alft_auth A' ∗ own_ilft_auth I' ∗ ▷ ([∗ set] κ ∈ dom _ I', lft_inv A' κ).
+    own_alft_auth A' ∗ own_ilft_auth I' ∗ ▷ ([∗ set] κ ∈ dom I', lft_inv A' κ).
 Proof.
   iIntros "HA HI Hinv".
   destruct (decide (is_Some (I !! κ))) as [?|HIκ%eq_None_not_Some].

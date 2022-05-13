@@ -89,7 +89,7 @@ Proof.
   iMod ("Hvs" $! I with "[HI Hinv Hvs' Hinh HB● Hbox HB]
                          [$HPb $Hi] Hκ†") as "($ & $ & Hcnt')".
   { rewrite lft_vs_inv_unfold. iFrame "HI".
-    iApply (big_sepS_delete _ (dom (gset lft) I) with "[- $Hinv]"); first done.
+    iApply (big_sepS_delete _ (dom I) with "[- $Hinv]"); first done.
     iIntros (_). rewrite lft_inv_alive_unfold.
     iExists Pb', Pi'. iFrame "Hvs' Hinh". rewrite /lft_bor_alive.
     iExists (<[i:=Bor_in]>B'). rewrite /to_borUR !fmap_insert. iFrame.
@@ -111,7 +111,7 @@ Proof.
   { rewrite /lft_inv_dead. iDestruct "Hinvκ" as (Pi) "[Hbordead H]".
     iMod (raw_bor_fake with "Hbordead") as "[Hbordead $]"; first solve_ndisj.
     iApply "Hclose". iExists _, _. iFrame.
-    rewrite (big_opS_delete _ (dom _ _) κ') ?elem_of_dom // /lft_inv /lft_inv_dead.
+    rewrite (big_opS_delete _ (dom _) κ') ?elem_of_dom // /lft_inv /lft_inv_dead.
     auto 10 with iFrame. }
   rewrite {1}/raw_bor. iDestruct "Hraw" as (i') "[Hbor H]".
   iDestruct "H" as (P') "[#HP' #Hs']".
@@ -141,7 +141,7 @@ Proof.
     iRewrite "HeqPb'". iFrame. by iApply "HP'". }
   iDestruct "HH" as "([HI Hinvκ] & $ & Halive & Hvs)".
   iApply "Hclose". iExists _, _. iFrame.
-  rewrite (big_opS_delete _ (dom _ _) κ') ?elem_of_dom //.
+  rewrite (big_opS_delete _ (dom _) κ') ?elem_of_dom //.
   iDestruct ("Hclose'" with "Hinvκ") as "$".
   rewrite /lft_inv lft_inv_alive_unfold. auto 10 with iFrame.
 Qed.

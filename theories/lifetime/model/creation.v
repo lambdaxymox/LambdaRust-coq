@@ -36,7 +36,7 @@ Proof.
   iMod (box_empty with "Hbox") as "[HP Hbox]"=>//; first by solve_ndisj.
   { intros i s. by rewrite lookup_fmap fmap_Some=> -[? [/HB -> ->]]. }
   rewrite lft_vs_unfold; iDestruct "Hvs" as (n) "[Hcnt Hvs]".
-  iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom _ I) with "Halive")
+  iDestruct (big_sepS_filter_acc (.⊂ κ) _ _ (dom I) with "Halive")
     as "[Halive Halive']".
   { intros κ'. rewrite elem_of_dom. eauto. }
   iApply fupd_trans. iApply fupd_mask_mono; last
@@ -50,7 +50,7 @@ Proof.
   rewrite /Iinv. iFrame "Hdead Halive' HI".
   iModIntro. iMod (lft_inh_kill with "[$Hinh $HQ]"); first set_solver+.
   iModIntro. rewrite /lft_inv_dead. iExists Q. iFrame.
-  rewrite /lft_bor_dead. iExists (dom _ B), P.
+  rewrite /lft_bor_dead. iExists (dom B), P.
   rewrite !gset_to_gmap_dom -map_fmap_compose.
   rewrite (map_fmap_ext _ ((1%Qp,.) ∘ to_agree) B); last naive_solver.
   iFrame.
@@ -102,7 +102,7 @@ Proof.
 Qed.
 
 Definition kill_set (I : gmap lft lft_names) (Λ : atomic_lft) : gset lft :=
-  filter (Λ ∈.) (dom (gset lft) I).
+  filter (Λ ∈.) (dom I).
 
 Lemma elem_of_kill_set I Λ κ : κ ∈ kill_set I Λ ↔ Λ ∈ κ ∧ is_Some (I !! κ).
 Proof. by rewrite /kill_set elem_of_filter elem_of_dom. Qed.
@@ -116,7 +116,7 @@ Proof.
   assert (userE_lftN_disj:=userE_lftN_disj). iIntros (HP ?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
   rewrite ->pred_infinite_set in HP.
-  destruct (HP (dom (gset _) A)) as [Λ [HPx HΛ%not_elem_of_dom]].
+  destruct (HP (dom A)) as [Λ [HPx HΛ%not_elem_of_dom]].
   iMod (own_update with "HA") as "[HA HΛ]".
   { apply auth_update_alloc, (alloc_singleton_local_update _ Λ (Cinl 1%Qp))=>//.
     by rewrite lookup_fmap HΛ. }
@@ -140,8 +140,8 @@ Proof.
       (exclusive_local_update _ (Cinr ())). }
   iDestruct "HΛ" as "#HΛ". iModIntro; iNext.
   pose (K := kill_set I Λ).
-  pose (K' := filter (lft_alive_in A) (dom (gset lft) I) ∖ K).
-  destruct (proj1 (subseteq_disjoint_union_L (K ∪ K') (dom (gset lft) I))) as (K''&HI&HK'').
+  pose (K' := filter (lft_alive_in A) (dom I) ∖ K).
+  destruct (proj1 (subseteq_disjoint_union_L (K ∪ K') (dom I))) as (K''&HI&HK'').
   { set_solver+. }
   assert (K ## K') by set_solver+.
   rewrite HI !big_sepS_union //. iDestruct "Hinv" as "[[HinvK HinvD] Hinv]".

@@ -432,7 +432,7 @@ Proof.
 Qed.
 
 Definition fresh_block (σ : state) : block :=
-  let loclst : list loc := elements (dom _ σ : gset loc) in
+  let loclst : list loc := elements (dom σ : gset loc) in
   let blockset : gset block := foldr (λ l, ({[l.1]} ∪.)) ∅ loclst in
   fresh blockset.
 

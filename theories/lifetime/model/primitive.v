@@ -160,13 +160,13 @@ Qed.
 Global Instance lft_alive_in_dec A κ : Decision (lft_alive_in A κ).
 Proof.
   refine (cast_if (decide (set_Forall (λ Λ, A !! Λ = Some true)
-                  (dom (gset atomic_lft) κ))));
+                  (dom κ))));
     rewrite /lft_alive_in; by setoid_rewrite <-gmultiset_elem_of_dom.
 Qed.
 Global Instance lft_dead_in_dec A κ : Decision (lft_dead_in A κ).
 Proof.
   refine (cast_if (decide (set_Exists (λ Λ, A !! Λ = Some false)
-                  (dom (gset atomic_lft) κ))));
+                  (dom κ))));
       rewrite /lft_dead_in; by setoid_rewrite <-gmultiset_elem_of_dom.
 Qed.
 
@@ -174,9 +174,9 @@ Lemma lft_alive_or_dead_in A κ :
   (∃ Λ, Λ ∈ κ ∧ A !! Λ = None) ∨ (lft_alive_in A κ ∨ lft_dead_in A κ).
 Proof.
   rewrite /lft_alive_in /lft_dead_in.
-  destruct (decide (set_Exists (λ Λ, A !! Λ = None) (dom (gset _) κ)))
+  destruct (decide (set_Exists (λ Λ, A !! Λ = None) (dom κ)))
     as [(Λ & ?%gmultiset_elem_of_dom & HAΛ)|HA%(not_set_Exists_Forall _)]; first eauto.
-  destruct (decide (set_Exists (λ Λ, A !! Λ = Some false) (dom (gset _) κ)))
+  destruct (decide (set_Exists (λ Λ, A !! Λ = Some false) (dom κ)))
     as [(Λ & HΛ%gmultiset_elem_of_dom & ?)|HA'%(not_set_Exists_Forall _)]; first eauto.
   right; left. intros Λ HΛ%gmultiset_elem_of_dom.
   move: (HA _ HΛ) (HA' _ HΛ)=> /=. case: (A !! Λ)=>[[]|]; naive_solver.
