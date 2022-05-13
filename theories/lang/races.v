@@ -119,15 +119,15 @@ Proof.
   destruct Ha2; simplify_eq; econstructor; eauto; try apply lookup_insert.
   (* Oh my. FIXME. *)
   - eapply lit_eq_state; last done.
-    setoid_rewrite <-(not_elem_of_dom (D:=gset loc)). rewrite dom_insert_L.
+    setoid_rewrite <-not_elem_of_dom. rewrite dom_insert_L.
     rename select loc into l.
     rename select state into σ.
-    cut (is_Some (σ !! l)); last by eexists. rewrite -(elem_of_dom (D:=gset loc)). set_solver+.
+    cut (is_Some (σ !! l)); last by eexists. rewrite -elem_of_dom. set_solver+.
   - eapply lit_eq_state; last done.
-    setoid_rewrite <-(not_elem_of_dom (D:=gset loc)). rewrite dom_insert_L.
+    setoid_rewrite <-not_elem_of_dom. rewrite dom_insert_L.
     rename select loc into l.
     rename select state into σ.
-    cut (is_Some (σ !! l)); last by eexists. rewrite -(elem_of_dom (D:=gset loc)). set_solver+.
+    cut (is_Some (σ !! l)); last by eexists. rewrite -elem_of_dom. set_solver+.
 Qed.
 
 Lemma next_access_head_Free_concurent_step e1 e1' e2 e'f σ σ' κ o1 a2 l :
