@@ -9,7 +9,7 @@ Import uPred.
 Lemma tac_wp_value `{!lrustGS Σ} Δ E Φ e v :
   IntoVal e v →
   envs_entails Δ (Φ v) → envs_entails Δ (WP e @ E {{ Φ }}).
-Proof. rewrite envs_entails_eq=> ? ->. by apply wp_value. Qed.
+Proof. rewrite envs_entails_unseal=> ? ->. by apply wp_value. Qed.
 
 Ltac wp_value_head := eapply tac_wp_value; [iSolveTC|reduction.pm_prettify].
 
@@ -20,7 +20,7 @@ Lemma tac_wp_pure `{!lrustGS Σ} K Δ Δ' E e1 e2 φ n Φ :
   envs_entails Δ' (WP fill K e2 @ E {{ Φ }}) →
   envs_entails Δ (WP fill K e1 @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq=> ??? HΔ'. rewrite into_laterN_env_sound /=.
+  rewrite envs_entails_unseal=> ??? HΔ'. rewrite into_laterN_env_sound /=.
   rewrite -wp_bind HΔ' -wp_pure_step_later //. by rewrite -wp_bind_inv.
 Qed.
 
@@ -45,7 +45,7 @@ Lemma tac_wp_eq_loc `{!lrustGS Σ} K Δ Δ' E i1 i2 l1 l2 q1 q2 v1 v2 Φ :
   envs_entails Δ' (WP fill K (Lit (bool_decide (l1 = l2))) @ E {{ Φ }}) →
   envs_entails Δ (WP fill K (BinOp EqOp (Lit (LitLoc l1)) (Lit (LitLoc l2))) @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq=> ? /envs_lookup_sound /=. rewrite sep_elim_l=> ?.
+  rewrite envs_entails_unseal=> ? /envs_lookup_sound /=. rewrite sep_elim_l=> ?.
   move /envs_lookup_sound; rewrite sep_elim_l=> ? HΔ. rewrite -wp_bind.
   rewrite into_laterN_env_sound /=. eapply wp_eq_loc; eauto using later_mono.
 Qed.
@@ -70,7 +70,7 @@ Tactic Notation "wp_case" := wp_pure (Case _ _); try wp_value_head.
 Lemma tac_wp_bind `{!lrustGS Σ} K Δ E Φ e :
   envs_entails Δ (WP e @ E {{ v, WP fill K (of_val v) @ E {{ Φ }} }})%I →
   envs_entails Δ (WP fill K e @ E {{ Φ }}).
-Proof. rewrite envs_entails_eq=> ->. apply: wp_bind. Qed.
+Proof. rewrite envs_entails_unseal=> ->. apply: wp_bind. Qed.
 
 Ltac wp_bind_core K :=
   lazymatch eval hnf in K with
@@ -103,7 +103,7 @@ Lemma tac_wp_alloc K Δ Δ' E j1 j2 n Φ :
     envs_entails Δ'' (WP fill K (Lit $ LitLoc l) @ E {{ Φ }})) →
   envs_entails Δ (WP fill K (Alloc (Lit $ LitInt n)) @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq=> ?? HΔ. rewrite -wp_bind.
+  rewrite envs_entails_unseal=> ?? HΔ. rewrite -wp_bind.
   eapply wand_apply; first exact:wp_alloc.
   rewrite -persistent_and_sep. apply and_intro; first by auto.
   rewrite into_laterN_env_sound; apply later_mono, forall_intro=> l.
@@ -124,7 +124,7 @@ Lemma tac_wp_free K Δ Δ' Δ'' Δ''' E i1 i2 vl (n : Z) (n' : nat) l Φ :
   envs_entails Δ''' (WP fill K (Lit LitPoison) @ E {{ Φ }}) →
   envs_entails Δ (WP fill K (Free (Lit $ LitInt n) (Lit $ LitLoc l)) @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq; intros -> ?? <- ? <- -> HΔ. rewrite -wp_bind.
+  rewrite envs_entails_unseal; intros -> ?? <- ? <- -> HΔ. rewrite -wp_bind.
   eapply wand_apply; first exact:wp_free; simpl.
   rewrite into_laterN_env_sound -!later_sep; apply later_mono.
   do 2 (rewrite envs_lookup_sound //). by rewrite HΔ True_emp emp_wand -assoc.
@@ -137,7 +137,7 @@ Lemma tac_wp_read K Δ Δ' E i l q v o Φ :
   envs_entails Δ' (WP fill K (of_val v) @ E {{ Φ }}) →
   envs_entails Δ (WP fill K (Read o (Lit $ LitLoc l)) @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq; intros [->| ->] ???.
+  rewrite envs_entails_unseal; intros [->| ->] ???.
   - rewrite -wp_bind. eapply wand_apply; first exact:wp_read_na.
     rewrite into_laterN_env_sound -later_sep envs_lookup_split //; simpl.
     by apply later_mono, sep_mono_r, wand_mono.
@@ -155,7 +155,7 @@ Lemma tac_wp_write K Δ Δ' Δ'' E i l v e v' o Φ :
   envs_entails Δ'' (WP fill K (Lit LitPoison) @ E {{ Φ }}) →
   envs_entails Δ (WP fill K (Write o (Lit $ LitLoc l) e) @ E {{ Φ }}).
 Proof.
-  rewrite envs_entails_eq; intros ? [->| ->] ????.
+  rewrite envs_entails_unseal; intros ? [->| ->] ????.
   - rewrite -wp_bind. eapply wand_apply; first by apply wp_write_na.
     rewrite into_laterN_env_sound -later_sep envs_simple_replace_sound //; simpl.
     rewrite right_id. by apply later_mono, sep_mono_r, wand_mono.
