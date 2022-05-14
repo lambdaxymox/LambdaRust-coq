@@ -115,7 +115,7 @@ Lemma lft_create_strong P E :
 Proof.
   assert (userE_lftN_disj:=userE_lftN_disj). iIntros (HP ?) "#LFT".
   iInv mgmtN as (A I) "(>HA & >HI & Hinv)" "Hclose".
-  rewrite ->pred_infinite_set in HP.
+  rewrite ->(pred_infinite_set (C:=gset _)) in HP.
   destruct (HP (dom A)) as [Λ [HPx HΛ%not_elem_of_dom]].
   iMod (own_update with "HA") as "[HA HΛ]".
   { apply auth_update_alloc, (alloc_singleton_local_update _ Λ (Cinl 1%Qp))=>//.
