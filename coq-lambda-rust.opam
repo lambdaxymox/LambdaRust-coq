@@ -1,7 +1,7 @@
 opam-version: "2.0"
 maintainer: "Ralf Jung <jung@mpi-sws.org>"
 authors: "The RustBelt Team"
-license: "BSD"
+license: "BSD-3-Clause"
 homepage: "https://plv.mpi-sws.org/rustbelt/"
 bug-reports: "https://gitlab.mpi-sws.org/iris/lambda-rust/issues"
 dev-repo: "git+https://gitlab.mpi-sws.org/iris/lambda-rust.git"
